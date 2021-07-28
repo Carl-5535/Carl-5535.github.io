@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="referrer" content="origin">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>ETWS地震海啸预警</title>
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <a id="cover"></a>
+    <div id="header">
+    <div class="header">
+        <div class="vertical">
+            <div class="inner">
+                <h1 class="header-subtitle">ETWS地震海啸预警</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2021-07-17
+                        </span>
+                        
+                            <span id="/2021/07/17/ETWS地震海啸预警/" class="leancloud_visitors" data-flag-title="ETWS地震海啸预警">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2021/07/17/ETWS地震海啸预警/"></span>
+                        </span>  
+                    </p>                 
+                </div>
+            </div>
+        </div>
+        <canvas id="articleHeaderCanvas"></canvas>
+    </div>
+</div>
+    <div id="container">
+    <div id="content">
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <h1 id="Earthquake-and-Tsunami-Warning-System"><a href="#Earthquake-and-Tsunami-Warning-System" class="headerlink" title="Earthquake and Tsunami Warning System"></a>Earthquake and Tsunami Warning System</h1><p>ETWS即地震海啸预警系统，是为了在地震和海啸发生时提醒用户做好防护准备</p>
+<h2 id="ETWS简介"><a href="#ETWS简介" class="headerlink" title="ETWS简介"></a>ETWS简介</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/ETWSeg.png" alt="etws"></p>
+<p>ETWS会向设备发送两种信息：</p>
+<p>1.快速预警信息（Primary Notification）</p>
+<p>ETWS一直在强调唯快不破，在地震、海啸等重大灾难发生后，几秒最慢几分钟  后就会殃及到整个受灾区域。因此，此预警通知应迅速送达受紧急影响地区的用户，使其能够采取任何行动逃离危险，所以此预警信息携带数据较小，主要告诉用户灾害类型</p>
+<p>2.准确的警告通知（Secondary Notification）</p>
+<p>在已经发送了快速预警信息后，需要给用户提供更准确的信息，如逃生路线，安全区域，政府政策，灾害持续时间等。因此，此条信息应准确送达，负载更多信息，并且可以让多种类型的用户理解（如多语言显示）</p>
+<h3 id="ETWS的时效性"><a href="#ETWS的时效性" class="headerlink" title="ETWS的时效性"></a>ETWS的时效性</h3><p>Primary Notification 要求是迅速发送到UE，即使在拥堵的情况下，也要保证在4秒内送达UE</p>
+<p>Secondary Notification 要求一定要送达到UE，即使在拥堵的情况下，也要保证送达UE，Secondary Notification没有要求送达时间，只要求准确性</p>
+<p>备注：</p>
+<ol>
+<li>不在范围内或者关机的设备不需要考虑</li>
+<li>在Primary Notification后面不一定总是有Secondary Notification</li>
+<li>可能没有Primary Notification而只有Secondary Notification，完全依赖ETWS消息提供方策略</li>
+</ol>
+<h2 id="ETWS-数据"><a href="#ETWS-数据" class="headerlink" title="ETWS 数据"></a>ETWS 数据</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/etws_data.png" alt="data"></p>
+<h3 id="Primary-Notification"><a href="#Primary-Notification" class="headerlink" title="Primary Notification"></a>Primary Notification</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/primary_ctws.png" alt="Primary"></p>
+<h3 id="Serial-Number"><a href="#Serial-Number" class="headerlink" title="Serial Number"></a>Serial Number</h3><ul>
+<li>GS:00 (GS 是CBS的发送方填充的，00优先级最高，代表基站发送)</li>
+<li>Emergency Uset Alert: 1 （1：enable   0：disable）</li>
+<li>Popup：1（1：enable   0：disable）</li>
+<li>Upadte Number： 0 （相当于CBS信息版本，每更新一次+1）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/SN.png" alt="sn"></p>
+<h3 id="Message-Identifier"><a href="#Message-Identifier" class="headerlink" title="Message Identifier"></a>Message Identifier</h3><p>顾名思义代表消息id，此id的范围如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/etws_mi.png" alt="mi"></p>
+<h3 id="Warning-Type"><a href="#Warning-Type" class="headerlink" title="Warning Type"></a>Warning Type</h3><p>warning type主要存放在这部分的前7个字节</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/warn_typ.png" alt="Warning"></p>
+<p>具体意义如下图</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/warning_typ.png" alt="Warning"></p>
+<h2 id="Secondary-Notification"><a href="#Secondary-Notification" class="headerlink" title="Secondary Notification"></a>Secondary Notification</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/secondary_etws.png" alt="Secondary"></p>
+<h3 id="Message-Type"><a href="#Message-Type" class="headerlink" title="Message Type"></a>Message Type</h3><p>消息类型如下图</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/message_type.png" alt="Message"></p>
+<h3 id="Data-Coding-Scheme"><a href="#Data-Coding-Scheme" class="headerlink" title="Data Coding Scheme"></a>Data Coding Scheme</h3><p>编码方案，此编码和短信一样共有三种，7BIT,8BIT和USC2</p>
+<p>具体参考文档ETSI TS 123 038，文档部分截图如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/codingscheme.png" alt="Scheme"></p>
+<h3 id="CB-Data"><a href="#CB-Data" class="headerlink" title="CB Data"></a>CB Data</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/etwa_cb_data.png" alt="Data"></p>
+<p>最后的CB Data部分就按页数分割，以指定的长度解析即可</p>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Carl Chen
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2021/07/17/ETWS%E5%9C%B0%E9%9C%87%E6%B5%B7%E5%95%B8%E9%A2%84%E8%AD%A6/" target="_blank">ETWS地震海啸预警</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    <div class="article-footer">
+        
+            <div class="category">
+                分类：
+                
+                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        
+            <div class="tag">
+                标签：
+                
+                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        <div class="article-prev-next">
+            
+                <a href="/2021/07/21/cgi/" class="prev-prefix">« </a> 上一篇：    <a href="/2021/07/21/cgi/" title="发布于 2021-07-21 09:34">CGI</a>
+                <br>
+            
+            
+                <a href="/2021/07/17/CBS%E5%B0%8F%E5%8C%BA%E5%B9%BF%E6%92%AD/" class="next-prefix">» </a> 下一篇：    <a href="/2021/07/17/CBS%E5%B0%8F%E5%8C%BA%E5%B9%BF%E6%92%AD/" title="发布于 2021-07-17 07:57">CBS小区广播</a>
+            
+        </div>
+    </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
+
+    </div>
+</div>
+    <div id="footer"></div>
+    <div id="sidebar">
+    <div class="menu-wrap" style="display:none;">
+        <nav class="menu">
+            <div class="menu-introduce"> 
+                <div class="introduce-avatar"></div> 
+                <div class="introduce-info"> 
+                    <div class="introduce-user"><span></span></div>        
+                </div> 
+            </div> 
+            <div class="menu-list">
+                <ul></ul> 
+            </div> 
+            <div class="menu-link"></div> 
+        </nav>
+        <button class="menu-button-close"></button>
+        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
+                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
+            </svg>
+        </div>
+    </div>
+    <button class="menu-button-open">MENU</button>
+    <div class="menu-cover"></div>
+</div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
+<div class="search-window">
+    <div class="search-content">
+        <div class="search-content-icon">
+            <i class="iconfont icon-search"></i>
+        </div>
+        <div id="search-input" class="search-input"></div>
+    </div>
+
+    <div class="search-scroll">
+        <div class="search-result">
+            <div id="search-stats" class="search-stats"></div>
+            <div id="search-hits"></div>
+            <div id="search-pagination" class="search-pagination"></div>
+        </div>
+    </div>
+
+    <span class="search-close-icon">
+        <i class="iconfont icon-close"></i>
+    </span>
+</div>
+    <div id="tools">
+    <div class="progressbar-top"></div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
+    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
+    <div class="wrap-right"></div>
+    <div class="loading"></div>
+</div>
+    <script>
+    window.config = {
+        GitHubUserName     : 'first19326',
+        GitHubRepositories : 'Hexo-LiveForCode',
+
+        BlogUser      : 'Carl Chen',
+        BlogAvatar    : 'https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg',
+        BlogStartDate : '2020-11-08',
+
+        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, Live For Code',
+        WebsiteTitleBlurTimeOut  : 500,
+        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
+        WebsiteTitleFocusTimeOut : 1000,
+        WebsiteFavicon           : 'https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/ harmonica.png',
+
+        ProgressBar: {
+            id       : 'topProgressBar',
+            color    : '#77B6FF',
+            height   : '2px',
+            duration : 0.2
+        },
+
+        Loading: {
+            rebound: {
+                tension  : 16,
+                friction : 5
+            },
+            spinner: {
+                id     : 'spinner',
+                radius : 90,
+                sides  : 3,
+                depth  : 4,
+                colors : {
+                    background : '#F0F0F0',
+                    stroke     : '#272633',
+                    base       : '',
+                    child      : '#272633'
+                },
+                alwaysForward : true,
+                restAt        : 0.5,
+                renderBase    : false
+            }
+        },
+
+        HomeHeaderAnimationRendered : true,
+        HomeHeaderAnimation         : {
+            radius      : 15,
+            density     : 0.2,
+            color       : 'rgba(255, 255, 255, .2)',
+            clearOffset : 0.3
+        },
+
+        ArticleHeaderAnimationRendered : false,
+        ArticleHeaderAnimation         : {
+            triW                  : 14,
+            triH                  : 20,
+            neighbours            : [
+                
+                    'side',
+                
+                    'top',
+                
+                    'bottom',
+                
+            ],
+            speedTrailAppear      : 0.1,
+            speedTrailDisappear   : 0.1,
+            speedTriOpen          : 1,
+            trailMaxLength        : 30,
+            trailIntervalCreation : 100,
+            delayBeforeDisappear  : 2,
+            colors                : [
+                
+                    '#96EDA6',
+                
+                    '#5BC6A9',
+                
+                    '#38668C',
+                
+                    '#374D84',
+                
+                    '#BED5CB',
+                
+                    '#62ADC6',
+                
+                    '#8EE5DE',
+                
+                    '#304E7B',
+                
+            ]
+        },
+
+        BackAnimationRendered          : true,
+        IEBrowserBackAnimationRendered : false,
+        BackAnimation                  : {
+            colorSaturation  : '60%',
+            colorBrightness  : '50%',
+            colorAlpha       : 0.5,
+            colorCycleSpeed  : 5,
+            verticalPosition : 'random',
+            horizontalSpeed  : 200,
+            ribbonCount      : 3,
+            strokeSize       : 0,
+            parallaxAmount   : -0.2,
+            animateSections  : true
+        },
+
+        HomeHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
+            
+        ],
+        HomeBannerText  : '代码大部分时间是给人看的，只是偶尔运行一下',
+
+        ArticleHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
+            
+        ],
+
+        OtherBannerText  : '',
+
+        MenuList : [
+            
+                {
+                    name   : '首页',
+                    href   : '/',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '标签',
+                    href   : '/tag',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '分类',
+                    href   : '/category',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '归档',
+                    href   : '/archive',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '关于',
+                    href   : '/about',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '搜索',
+                    href   : '',    
+                    target : '',
+                    class  : 'search'
+                },
+            
+                {
+                    name   : '留言板',
+                    href   : '/comment',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '友情链接',
+                    href   : '/friend',    
+                    target : '',
+                    class  : ''
+                },
+            
+        ],
+        MenuLink : [
+            
+                {
+                    icon : 'icon-weibo', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-wechat', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-qq', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-github', 
+                    url  : 'https://github.com/carl-5535'
+                },
+            
+        ],
+
+        FooterStyle : 2,
+        BottomText  : {
+            icon    : 'like-fill',
+            left    : '人生若只如初见',
+            right   : '何事秋风悲画扇'
+        },
+        ThemeInfo   : false,
+
+        ConsoleList : [
+            
+                [
+                    
+                        'Based on cnblogs theme SimpleMemory.',
+                    
+                        '',
+                    
+                ],
+            
+                [
+                    
+                        'SimpleMemory Author:',
+                    
+                        'BNDong',
+                    
+                ],
+            
+                [
+                    
+                        'Theme:',
+                    
+                        'LiveForCode',
+                    
+                ],
+            
+        ],
+
+        FontIconExtend : "",
+
+        Donate : {
+            paypal  : '',
+            bitcoin : '',
+            alipay  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
+            wechat  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
+        },
+
+        Code : {
+            style : 'normal'
+        },  
+
+        Search : {
+            applicationID : 'XMCRUTQ6TF',
+            apiKey        : 'd163ebeca12b61ad7721462381cea6a9',
+            indexName     : 'BLOG',
+            hits          : {
+                page : 10
+            },
+            labels        : {
+                placeholder : '搜索',
+                empty       : '未发现与 「${query}」 相关的内容',
+                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
+            }
+        }, 
+
+        Valine : {
+            switch         : true,
+            el             : '.comments-content',
+            appId          : 'OVvCeGMH5XNm42b1wuU52HK0-gzGzoHsz',
+            appKey         : 'TltgUJqHRaoztnKrsy4SeYTW',
+            placeholder    : '你是我一生只会遇见一次的惊喜...',
+            avatar         : 'mm',
+            meta           : 'nick,mail,link',
+            requiredFields : 'nick,mail',
+            pageSize       : 5,
+            lang           : 'zh-cn',
+            visitor        : true,
+            enableQQ       : true
+        },
+
+        Tocbot : {
+            switch                : true,
+            tocSelector           : '.toc',
+            contentSelector       : '.article-body',
+            headingSelector       : 'h1, h2, h3, h4, h5',
+            headingsOffset        : 0,
+            scrollSmooth          : true,
+            scrollSmoothOffset    : -5,
+            positionFixedSelector : '.toc',
+            positionFixedClass    : 'toc-fixed',
+            fixedSidebarOffset    : '',
+        },
+
+        Require : {
+            baseUrl     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
+            waitSeconds : 100
+        },
+
+        Meting : {
+            id       : "3778678", 
+            lrcshow  : false, 
+            server   : "netease", 
+            type     : "playlist", 
+            fixed    : true, 
+            autoplay : false, 
+            loop     : "all", 
+            order    : "random", 
+            preload  : "auto", 
+            volume   : 0.67, 
+            mutex    : true
+        },
+
+        LazyLoad : {
+            default : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
+        },
+  
+
+        Style : {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
+            archive          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
+            donate           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
+            fancybox         : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
+            footer           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
+            iconfont         : "https://at.alicdn.com/t/font_1546312_l3yohatebw.css",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
+            menuBubble       : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
+            page             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
+            post             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
+            search           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
+            tocbot           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
+            normal           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
+            night            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
+            clipboard        : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
+        },
+
+        Script: {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
+            config           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
+            instantSearch    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
+            jQuery           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
+            loading          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
+            meting           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
+            iscroll          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
+            require          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
+        },
+
+        Font: {
+            LongCang   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
+            Monda      : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
+            NotoSansSC : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
+            Playball   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
+            PTMono     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
+            RobotoSlab : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
+            Rosario    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
+            UbuntuMono : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
+        },
+
+        Suffix : {
+            about : '不想秃头的Carl.'
+        },
+            
+        Theme : {
+            url  : 'https://github.com/first19326/Hexo-LiveForCode',
+            name : 'Hexo - Live For Code'
+        }  
+    };
+</script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js"></script>
+</body>
+</html>

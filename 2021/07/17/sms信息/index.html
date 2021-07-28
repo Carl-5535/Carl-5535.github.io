@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="referrer" content="origin">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>sms信息</title>
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <a id="cover"></a>
+    <div id="header">
+    <div class="header">
+        <div class="vertical">
+            <div class="inner">
+                <h1 class="header-subtitle">sms信息</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2021-07-17
+                        </span>
+                        
+                            <span id="/2021/07/17/sms信息/" class="leancloud_visitors" data-flag-title="sms信息">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2021/07/17/sms信息/"></span>
+                        </span>  
+                    </p>                 
+                </div>
+            </div>
+        </div>
+        <canvas id="articleHeaderCanvas"></canvas>
+    </div>
+</div>
+    <div id="container">
+    <div id="content">
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <h1 id="短信"><a href="#短信" class="headerlink" title="短信"></a>短信</h1><h2 id="短信概述"><a href="#短信概述" class="headerlink" title="短信概述"></a>短信概述</h2><h3 id="SMS（Short-Messaging-Service）"><a href="#SMS（Short-Messaging-Service）" class="headerlink" title="SMS（Short Messaging Service）"></a>SMS（Short Messaging Service）</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/sms.jpg" alt="sms"></p>
+<p>SMS协议就是短信协议的一种，目前短信协议有SMS短信、EMS短信和MMS彩信。</p>
+<p>SMS，短信服务是最早的短消息业务，也是现在普及率最高的一种短消息业务，通过它移动电话之间可以互相收发短信，内容以文本、数字或二进制非文本数据为主，目前，这种短消息的长度被限定在140字节之内。SMS以简单方便的使用功能受到广大用户的欢迎，迅速普及，但却始终是属于第一代的无线数据服务。</p>
+<p>SMS 是一种存储和转发服务。也就是说，短消息并不是直接从发送人发送到接收人，而始终通过 SMS 中心进行转发。如果接收人处于未连接状态（可能电话已关闭），则消息将在接收人再次连接时发送。</p>
+<h3 id="PDU编码"><a href="#PDU编码" class="headerlink" title="PDU编码"></a>PDU编码</h3><p>共有三种方式来发送和接收SMS信息：Block Mode, Text Mode和PDU Mode。其中PDU Mode被所有手机支持，可以使用任何字符集，这也是手机默认的编码方式。</p>
+<p>PDU相当于一个数据包、数据单元，它由构成短消息（SMS）的信息组成。</p>
+<p>GSM和CDMA的PDU又有着很大的区别。</p>
+<hr>
+<h2 id="GSM短信编码"><a href="#GSM短信编码" class="headerlink" title="GSM短信编码"></a>GSM短信编码</h2><p>短信包含很多的类型，如短信交付(SMS-DELIVER)、短信提交(SMS -SUBMIT)、短信命令(SMS-DELIVER)等。这里主要讲短信交付。</p>
+<p>SMS-DELIVER (Mobile Terminated):手机接受的短信，由短信中心到终端。SMS-SUBMIT (Mobile Originated):由手机发起的短信，由终端到短信中心。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/%E7%9F%AD%E4%BF%A1%E4%BA%A4%E4%BB%98%E6%B5%81%E7%A8%8B.png" alt="短信交付流程"></p>
+<h3 id="PDU的组成"><a href="#PDU的组成" class="headerlink" title="PDU的组成"></a>PDU的组成</h3><p>PDU主要由以下部分组成：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/pdu.png" alt="pdu"></p>
+<p>例如：</p>
+<p>240D91688102200982F601<strong>08</strong>21800381602423<strong>064F60597D0021</strong></p>
+<p>240D91688102200982F601<strong>04</strong>21800381602423<strong>0b68656c6c6f20776f726c64</strong></p>
+<p>240D91688102200982F601<strong>00</strong>21800381602423<strong>0bc8329bfd065ddf72363904</strong></p>
+<p>字段含义如下表</p>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>名称</th>
+<th>长度</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SCA</td>
+<td>Service Center Address</td>
+<td>1-12</td>
+<td>短消息服务中心号码</td>
+</tr>
+<tr>
+<td>PDU-Type</td>
+<td>Protocol Data Unit</td>
+<td>1</td>
+<td>协议数据单元类型</td>
+</tr>
+<tr>
+<td>MR</td>
+<td>Message Reference</td>
+<td>1</td>
+<td>所有成功的短信发送参考数目（0..255）</td>
+</tr>
+<tr>
+<td>OA</td>
+<td>Originator Address</td>
+<td>2-12</td>
+<td>发送方地址（手机号码）</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>Protocol Identifer</td>
+<td>1</td>
+<td>参数显示消息中心以何种方式处理消息内容</td>
+</tr>
+<tr>
+<td>DCS</td>
+<td>Data Coding Scheme</td>
+<td>1</td>
+<td>参数显示用户数据编码方案</td>
+</tr>
+<tr>
+<td>SCTS</td>
+<td>Service Center Time Stamp</td>
+<td>7</td>
+<td>消息中心收到消息时的时间戳</td>
+</tr>
+<tr>
+<td>UDL</td>
+<td>User Data Lenghth</td>
+<td>1</td>
+<td>用户数据长度</td>
+</tr>
+<tr>
+<td>UD</td>
+<td>User Data</td>
+<td>1</td>
+<td>用户数据</td>
+</tr>
+</tbody></table>
+<p>短信信息的解码主要关注红色的元素</p>
+<h3 id="GSM短信解析流程"><a href="#GSM短信解析流程" class="headerlink" title="GSM短信解析流程"></a>GSM短信解析流程</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/sms_gsm%E6%B5%81%E7%A8%8B.png" alt="GSM短信解析流程"></p>
+<h3 id="PDU-Type"><a href="#PDU-Type" class="headerlink" title="PDU-Type"></a>PDU-Type</h3><p>PDU-Type包含了MTI具体信息如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/pdu_type.png" alt="PDU-Type"></p>
+<p>其中2bit MTI如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/mti.png" alt="MTI"></p>
+<h3 id="OA"><a href="#OA" class="headerlink" title="OA"></a>OA</h3><p>OA 发送方地址(Originator Address)例如：0D 91 688102200982F6</p>
+<table>
+<thead>
+<tr>
+<th>1 Octet</th>
+<th>0-1 Octet</th>
+<th>0-10 Octet</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Len</td>
+<td>Type</td>
+<td>Addr</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Len:地址长度。如果Length为0D，后面的字节数是[2+(Length+1)]/2=8，后面8个字节是发送方的地址；</li>
+<li>Type：短消息中心地址的类型，一般为91，代表“+”。</li>
+<li>Addr:地址长度为奇数时，最后一个需要填充”F”</li>
+</ul>
+<h3 id="DCS"><a href="#DCS" class="headerlink" title="DCS"></a>DCS</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/gsm_dcs.png" alt="DCS"></p>
+<p>2-3bit代表用户数据的编码方式，0-1bit代表了短信的储存方式</p>
+<ul>
+<li>Class0：短消息直接显示到用户终端</li>
+<li>Class1：短消息存储在SIM卡上</li>
+<li>Class2：短消息必须存储在SIM卡上，禁止直接传输到中断</li>
+<li>Class3：短消息存贮在用户设备上</li>
+</ul>
+<h3 id="SCTS"><a href="#SCTS" class="headerlink" title="SCTS"></a>SCTS</h3><p>1bit-7bit分别代表年 月 日 时 分 秒 时区</p>
+<p>例如：</p>
+<p>21 80 03 81 60 24 23代表12年8月30号18时6分24秒</p>
+<h3 id="UDL"><a href="#UDL" class="headerlink" title="UDL"></a>UDL</h3><p>UDL用户数据长度，包含用户数据和用户数据头的长度</p>
+<ol>
+<li><p>如果用户用默认7位编码。表示的是编码前的字符串长度，而不是编码后的8位组个数！</p>
+</li>
+<li><p>如果用户用8位编码表示用户数据区的字节数，有数据头信息，包括在内。</p>
+</li>
+<li><p>如果为UCS2编码，则是用户数据区的字节数</p>
+</li>
+</ol>
+<h3 id="UD"><a href="#UD" class="headerlink" title="UD"></a>UD</h3><p>用户数据</p>
+<p>例如：<br>1、04 4F60597D（不包含用户头部信息）</p>
+<p>用户数据长度：4</p>
+<p>用户数据：4F60597D</p>
+<p>2、08 050003000201 C834 （包含用户头部信息)</p>
+<p>用户数据长度：8</p>
+<p>用户数据：C834</p>
+<p>用户头部长度：5</p>
+<p>用户头部信息：0003000201</p>
+<h3 id="UDH"><a href="#UDH" class="headerlink" title="UDH"></a>UDH</h3><p>050003000201</p>
+<ul>
+<li>05表示消息头后续长度</li>
+<li>00表示消息类型为长短信拆分</li>
+<li>03表示剩余短信消息头标识长度</li>
+<li>00表示短信ID，范围0~255</li>
+<li>02表示短信拆分总包数</li>
+<li>01表示当前短信是拆分短信的第几条</li>
+</ul>
+<hr>
+<h2 id="CDMA短信编码"><a href="#CDMA短信编码" class="headerlink" title="CDMA短信编码"></a>CDMA短信编码</h2><h3 id="CDMA-PDU"><a href="#CDMA-PDU" class="headerlink" title="CDMA PDU"></a>CDMA PDU</h3><p>pdu如下：</p>
+<blockquote>
+<p>00 00 02 10 02 02 07 02 c5 4c e2 25 a8 a8 06 01 4c 08 4d 00 03 10 01 f8 01 3e 20 f0 01 90 01 78 01 90 01 62 df ca 70 04 b1 ac b1 ab b4 23 96 14 c6 70 01 62 96 3b 2b 12 b9 82 7a e3 10 c0 01 72 9f 54 4c 0b 10 8b b4 23 91 8a 75 d0 01 63 31 7a 70 02 9f 52 e0 7c f0 f8 03 06 08 12 29 19 26 16</p>
+</blockquote>
+<p>CDMA PDU总体分为两部分：消息类型 + 字段</p>
+<ul>
+<li>0x00：点对点消息</li>
+<li>0x00：字段类型</li>
+<li>0x02：字段长度</li>
+</ul>
+<p>字段类型分为：0x00：Teleservice id；0x02：Originating addr；0x06：Bearer reply opt；0x08：Bearer data</p>
+<h3 id="CDMA短信解析流程"><a href="#CDMA短信解析流程" class="headerlink" title="CDMA短信解析流程"></a>CDMA短信解析流程</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/cdma%E7%9F%AD%E4%BF%A1%E6%B5%81%E7%A8%8B.png" alt="CDMA短信解析流程"></p>
+<h3 id="Originating-addr"><a href="#Originating-addr" class="headerlink" title="Originating addr"></a>Originating addr</h3><blockquote>
+<p>02 07 02 c5 4c e2 25 a8 a8</p>
+</blockquote>
+<ul>
+<li>0x02：addr</li>
+<li>0x07：长度</li>
+<li>0x02，0xc5：0000 0010 1100 0101</li>
+<li>第一个bit表示地址编码方式：</li>
+<li>0 : 4bit压缩;</li>
+<li>1 : 8bit压缩</li>
+<li>第二个bit表示NUMBER_MODE</li>
+<li>0：RIL_CDMA_SMS_NUMBER_MODE_NOT_DATA_NETWORK</li>
+<li>接着8bit表示号码长度</li>
+<li>0000 1011：11位号码</li>
+</ul>
+<h3 id="Bearer-data"><a href="#Bearer-data" class="headerlink" title="Bearer data"></a>Bearer data</h3><blockquote>
+<p>08 4d 00 03 10 01 f8 01 3e 20 f0 01 90 01 78 01 90 01 62 df ca 70 04 b1 ac b1 ab b4 23 96 14 c6 70 01 62 96 3b 2b 12 b9 82 7a e3 10 c0 01 72 9f 54 4c 0b 10 8b b4 23 91 8a 75 d0 01 63 31 7a 70 02 9f 52 e0 7c f0 f8 03 06 08 12 29 19 26 16</p>
+</blockquote>
+<ul>
+<li>0x08：data</li>
+<li>0x4d：长度77</li>
+</ul>
+<p>Data的内容也是由字段组成:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/sms_cdma_data.png" alt="Data"></p>
+<h3 id="IDENTIFER"><a href="#IDENTIFER" class="headerlink" title="IDENTIFER"></a>IDENTIFER</h3><p>00 03 10 01 f8</p>
+<ul>
+<li>0x03：长度</li>
+<li>0xf8：最后一个8bit中的第5个bit代表header_ind</li>
+</ul>
+<h3 id="USR-DATA"><a href="#USR-DATA" class="headerlink" title="USR DATA"></a>USR DATA</h3><blockquote>
+<p>01 3e 20 f0 01 90 01 78 01 90 01 62 df ca 70 04 b1 ac b1 ab b4 23 96 14 c6 70 01 62 96 3b 2b 12 b9 82 7a e3 10 c0 01 72 9f 54 4c 0b 10 8b b4 23 91 8a 75 d0 01 63 31 7a 70 02 9f 52 e0 7c f0</p>
+</blockquote>
+<p>0x3e：长度</p>
+<blockquote>
+<p>20 f0 01: 0010 0000 1111 0000 0000 0001</p>
+</blockquote>
+<ul>
+<li>前5个bit表示编码方式： 7bit（0x02） 、8bit （其他）、UCS2（0x04）</li>
+<li>接着8个bit表示字符长度,剩余部分为数据</li>
+</ul>
+<h3 id="TIME-STAMP"><a href="#TIME-STAMP" class="headerlink" title="TIME_STAMP"></a>TIME_STAMP</h3><blockquote>
+<p>03 06 08 12 29 19 26 16</p>
+</blockquote>
+<ul>
+<li>0x06：长度</li>
+<li>08 12 29 19 26 16：08年12月29号19时26分16秒</li>
+</ul>
+<h2 id="短信解码示例"><a href="#短信解码示例" class="headerlink" title="短信解码示例"></a>短信解码示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HIGH_8BIT_MASK(N) (0xFF &lt;&lt; (N))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOW_8BIT_MASK(N) (~HIGH_8BIT_MASK(N))</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gsmpdu_decode</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pdu)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ascii_to_hex</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ascii, <span class="keyword">int</span> ascii_length, <span class="keyword">char</span> *hex, <span class="keyword">int</span> *hex_length)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hex_to_ascii</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *hex, <span class="keyword">int</span> hex_length, <span class="keyword">char</span> *ascii, <span class="keyword">int</span> *ascii_length)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dencode_ucs2</span><span class="params">(<span class="keyword">char</span> *in, <span class="keyword">int</span> in_length, <span class="keyword">char</span> *out, <span class="keyword">int</span> *out_length)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_time</span><span class="params">(<span class="keyword">char</span> *pdu, <span class="keyword">int</span> length, <span class="keyword">char</span> *timer)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_number</span><span class="params">(<span class="keyword">char</span> *pdu_hex, <span class="keyword">int</span> number_length, <span class="keyword">char</span> *number)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">decode_8bit</span><span class="params">(<span class="keyword">char</span> *in, <span class="keyword">int</span> in_length, <span class="keyword">char</span> *out, <span class="keyword">int</span> *out_length)</span></span>;</span><br><span class="line"><span class="keyword">int</span> _7bit_to_ascii(<span class="keyword">char</span> *p_dst, <span class="keyword">unsigned</span> <span class="keyword">char</span> *p_src, <span class="keyword">int</span> src_size);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gsmpdu_decode</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pdu)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> pdu_length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> number_length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> pdu_hex_length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> pdu_type = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> code_mode = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> pdu_udl = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> pdu_udhl = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> number[<span class="number">64</span>];</span><br><span class="line">    <span class="keyword">char</span> timer[<span class="number">64</span>];</span><br><span class="line">    <span class="keyword">char</span> usrdata[<span class="number">640</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> datalength = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pdu_length = <span class="built_in">strlen</span>(pdu);</span><br><span class="line">    <span class="keyword">char</span> m_pdu[pdu_length + <span class="number">1</span>];</span><br><span class="line">    <span class="built_in">strncpy</span>(m_pdu, pdu, pdu_length);</span><br><span class="line"></span><br><span class="line">    pdu_hex_length = pdu_length / <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">char</span> pdu_hex[pdu_hex_length];</span><br><span class="line">    ascii_to_hex(pdu, pdu_length, pdu_hex, &amp;pdu_hex_length);</span><br><span class="line"></span><br><span class="line">    pdu_type = pdu_hex[offset++];</span><br><span class="line">    <span class="keyword">if</span> (pdu_type &amp; <span class="number">0x02</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;status!\n no this faction!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;message!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    number_length = pdu_hex[offset++] &amp; <span class="number">0xff</span>;</span><br><span class="line">    <span class="keyword">if</span> (number_length &amp; <span class="number">0x01</span>)</span><br><span class="line">        number_length++;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;number_length!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    number_length = number_length / <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> num = get_number(pdu_hex + offset, number_length, number);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Call Number : %s\tNumber Length :%d\n&quot;</span>, number, num);</span><br><span class="line">    offset += number_length;</span><br><span class="line">    offset++; <span class="comment">/*PID*/</span></span><br><span class="line"></span><br><span class="line">    code_mode = pdu_hex[offset++] &amp; <span class="number">0xff</span>; <span class="comment">/*dcs*/</span></span><br><span class="line"></span><br><span class="line">    get_time(pdu_hex + offset, <span class="number">7</span>, timer);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Send Time : %s\n&quot;</span>, timer);</span><br><span class="line">    offset += <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line">    pdu_udl = pdu_hex[offset++] &amp; <span class="number">0xff</span>; <span class="comment">/*udl*/</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, pdu_udl);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pdu_type &amp; <span class="number">0x40</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        pdu_udhl = pdu_hex[offset] &amp; <span class="number">0xff</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not decode UDH&quot;</span>);</span><br><span class="line">        offset += pdu_udhl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (code_mode &amp; <span class="number">0x08</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        dencode_ucs2(pdu_hex + offset, pdu_udl, usrdata, &amp;datalength);</span><br><span class="line">        <span class="comment">//ucs-2</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, usrdata);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (code_mode &amp; <span class="number">0x04</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        decode_8bit(pdu_hex + offset + pdu_udhl, pdu_udl - pdu_udhl, usrdata, &amp;datalength);</span><br><span class="line">        <span class="comment">//8-bit</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, usrdata);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        _7bit_to_ascii(usrdata, (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)(pdu_hex + offset), pdu_udl);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, usrdata);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ascii_to_hex</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ascii, <span class="keyword">int</span> ascii_length, <span class="keyword">char</span> *hex, <span class="keyword">int</span> *hex_length)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (ascii == <span class="literal">NULL</span> || hex == <span class="literal">NULL</span> || hex_length == <span class="literal">NULL</span> || ascii_length &lt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; index &lt; ascii_length; index++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (index % <span class="number">2</span> == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            hex[index / <span class="number">2</span>] = <span class="number">0x00</span>;</span><br><span class="line">            length++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            hex[index / <span class="number">2</span>] = hex[index / <span class="number">2</span>] &lt;&lt; <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ascii[index] &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; ascii[index] &lt;= <span class="string">&#x27;9&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            hex[index / <span class="number">2</span>] |= ascii[index] - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ascii[index] &gt;= <span class="string">&#x27;a&#x27;</span> &amp;&amp; ascii[index] &lt;= <span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            hex[index / <span class="number">2</span>] |= ascii[index] - <span class="string">&#x27;a&#x27;</span> + <span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ascii[index] &gt;= <span class="string">&#x27;A&#x27;</span> &amp;&amp; ascii[index] &lt;= <span class="string">&#x27;F&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            hex[index / <span class="number">2</span>] |= ascii[index] - <span class="string">&#x27;A&#x27;</span> + <span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    *hex_length = length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hex_to_ascii</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *hex, <span class="keyword">int</span> hex_length, <span class="keyword">char</span> *ascii, <span class="keyword">int</span> *ascii_length)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> temp = <span class="number">0x00</span>;</span><br><span class="line">    <span class="keyword">int</span> length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hex == <span class="literal">NULL</span> || hex_length &lt;= <span class="number">0</span> || ascii == <span class="literal">NULL</span> || ascii_length == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; index &lt; hex_length; index++)</span><br><span class="line">    &#123;</span><br><span class="line">        temp = (hex[index] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (temp &gt;= <span class="number">0x00</span> &amp;&amp; temp &lt;= <span class="number">0x09</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ascii[length] = temp + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (temp &gt;= <span class="number">0x0A</span> &amp;&amp; temp &lt;= <span class="number">0x0F</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ascii[length] = temp - <span class="number">0x0A</span> + <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        length++;</span><br><span class="line"></span><br><span class="line">        temp = hex[index] &amp; <span class="number">0x0F</span>;</span><br><span class="line">        <span class="keyword">if</span> (temp &gt;= <span class="number">0x00</span> &amp;&amp; temp &lt;= <span class="number">0x09</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ascii[length] = temp + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (temp &gt;= <span class="number">0x0A</span> &amp;&amp; temp &lt;= <span class="number">0x0F</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ascii[length] = temp - <span class="number">0x0A</span> + <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        length++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    *ascii_length = length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">decode_8bit</span><span class="params">(<span class="keyword">char</span> *in, <span class="keyword">int</span> in_length, <span class="keyword">char</span> *out, <span class="keyword">int</span> *out_length)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> length = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (in == <span class="literal">NULL</span> || in_length &lt;= <span class="number">0</span> || out == <span class="literal">NULL</span> || out_length == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; in_length; index++)</span><br><span class="line">    &#123;</span><br><span class="line">        out[length++] = in[index];</span><br><span class="line">    &#125;</span><br><span class="line">    *out_length = length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dencode_ucs2</span><span class="params">(<span class="keyword">char</span> *in, <span class="keyword">int</span> in_length1, <span class="keyword">char</span> *out, <span class="keyword">int</span> *out_length)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">iconv_t</span> icon_handler = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> in_length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *inbuff;</span><br><span class="line">    <span class="keyword">int</span> out_buffer_length;</span><br><span class="line">    <span class="keyword">char</span> *out_buffer;</span><br><span class="line">    <span class="keyword">char</span> temp = <span class="number">0x00</span>;</span><br><span class="line">    in_length = in_length1;</span><br><span class="line">    out_buffer_length = *out_length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (in == <span class="literal">NULL</span> || in_length &lt;= <span class="number">0</span> || in_length % <span class="number">2</span> != <span class="number">0</span> || out == <span class="literal">NULL</span> || out_length == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; in_length; index += <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        temp = in[index];</span><br><span class="line">        in[index] = in[index + <span class="number">1</span>];</span><br><span class="line">        in[index + <span class="number">1</span>] = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((icon_handler = iconv_open(<span class="string">&quot;utf-8&quot;</span>, <span class="string">&quot;ucs-2&quot;</span>)) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    out_buffer = out;</span><br><span class="line">    inbuff = in;</span><br><span class="line">    <span class="keyword">if</span> (iconv(icon_handler, &amp;inbuff, (<span class="keyword">size_t</span> *)&amp;in_length, &amp;out_buffer, (<span class="keyword">size_t</span> *)&amp;out_buffer_length) == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;decode_ucs2 errno = %d.\n&quot;</span>, errno);</span><br><span class="line">        iconv_close(icon_handler);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    iconv_close(icon_handler);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _7bit_to_ascii(<span class="keyword">char</span> *p_dst, <span class="keyword">unsigned</span> <span class="keyword">char</span> *p_src, <span class="keyword">int</span> src_size)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> pos = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> high_part, low_part;</span><br><span class="line">    left = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">    n = (src_size * <span class="number">8</span>) / <span class="number">7</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (left == <span class="number">8</span>)</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            p_dst[i] = p_src[pos] &amp; LOW_8BIT_MASK(<span class="number">7</span>);</span><br><span class="line">            left -= <span class="number">7</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (left == <span class="number">7</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            p_dst[i] = (p_src[pos] &amp; HIGH_8BIT_MASK(<span class="number">8</span> - left)) &gt;&gt; (<span class="number">8</span> - left);</span><br><span class="line">            left = <span class="number">8</span>;</span><br><span class="line">            pos++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            low_part = high_part = <span class="number">0</span>;</span><br><span class="line">            low_part = (p_src[pos] &amp; HIGH_8BIT_MASK(<span class="number">8</span> - left)) &gt;&gt; (<span class="number">8</span> - left);</span><br><span class="line">            high_part = (p_src[pos + <span class="number">1</span>] &amp; LOW_8BIT_MASK(<span class="number">7</span> - left)) &lt;&lt; left;</span><br><span class="line">            p_dst[i] = high_part | low_part;</span><br><span class="line">            left = <span class="number">8</span> - (<span class="number">7</span> - left);</span><br><span class="line">            pos++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_number</span><span class="params">(<span class="keyword">char</span> *pdu_hex, <span class="keyword">int</span> number_length, <span class="keyword">char</span> *number)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> num_length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> type = pdu_hex[offset++] &amp; <span class="number">0xff</span>;</span><br><span class="line">    <span class="keyword">if</span> (type == <span class="number">145</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        number[index++] = <span class="string">&#x27;+&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; i &lt; number_length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        pdu_hex[offset + i] = ((pdu_hex[offset + i] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0f</span>) | ((pdu_hex[offset + i] &lt;&lt; <span class="number">4</span>) &amp; <span class="number">0xf0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    hex_to_ascii(pdu_hex + offset, number_length - <span class="number">1</span>, number + index, &amp;num_length);</span><br><span class="line">    <span class="keyword">if</span> (number[num_length + index - <span class="number">1</span>] == <span class="string">&#x27;f&#x27;</span> || number[num_length + index - <span class="number">1</span>] == <span class="string">&#x27;F&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        number[num_length + index - <span class="number">1</span>] = <span class="number">0x00</span>;</span><br><span class="line">        num_length--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num_length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_time</span><span class="params">(<span class="keyword">char</span> *pdu, <span class="keyword">int</span> length, <span class="keyword">char</span> *timer)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*int offset = 0;</span></span><br><span class="line"><span class="comment">    int timer_length = 0;</span></span><br><span class="line"><span class="comment">    int i = 0;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    for(;i&lt;length;i++)</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">        pdu_hex[offset+i] = ((pdu_hex[offset+i]&gt;&gt;4)&amp;0x0f)|((pdu_hex[offset+i]&lt;&lt;4)&amp;0xf0);</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    return hex_to_ascii(pdu_hex+offset, length-1, timer, &amp;timer_length);*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> year = <span class="number">2000</span>;</span><br><span class="line">    <span class="keyword">int</span> mouth = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> day = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> hour = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> minute = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> second = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> zone = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    year += ((pdu[<span class="number">0</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">0</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line">    mouth += ((pdu[<span class="number">1</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">1</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line">    day += ((pdu[<span class="number">2</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">2</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line">    hour += ((pdu[<span class="number">3</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">3</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line">    minute += ((pdu[<span class="number">4</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">4</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line">    second += ((pdu[<span class="number">5</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">5</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line">    zone += ((pdu[<span class="number">6</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F</span>) + (pdu[<span class="number">6</span>] &amp; <span class="number">0x0F</span>) * <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sprintf</span>(timer, <span class="string">&quot;%04d-%02d-%02d %02d:%02d:%02d&quot;</span>, year, mouth, day, hour, minute, second);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*DCS:08*/</span></span><br><span class="line">    <span class="keyword">char</span> *p = <span class="string">&quot;240D91687113988853F90000126080916090230F31D98C56B3FD403FD00FF403&quot;</span>;</span><br><span class="line">    <span class="keyword">char</span> *q = <span class="string">&quot;240D91688102200982F60104218003816024230b68656c6c6f20776f726c64&quot;</span>;</span><br><span class="line">    <span class="keyword">char</span> *b = <span class="string">&quot;240D91688102200982F60100218003816024230bc8329bfd065ddf72363904&quot;</span>;</span><br><span class="line">    <span class="keyword">char</span> *test = <span class="string">&quot;240D91688102200982F601002180038160242304D4F29C0E&quot;</span>;</span><br><span class="line">    gsmpdu_decode(p);</span><br><span class="line">    gsmpdu_decode(q);</span><br><span class="line">    gsmpdu_decode(b);</span><br><span class="line">    gsmpdu_decode(test);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Carl Chen
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2021/07/17/sms%E4%BF%A1%E6%81%AF/" target="_blank">sms信息</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    <div class="article-footer">
+        
+            <div class="category">
+                分类：
+                
+                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        
+            <div class="tag">
+                标签：
+                
+                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        <div class="article-prev-next">
+            
+                <a href="/2021/07/17/sms%E4%BF%A1%E6%81%AF%E7%BC%96%E7%A0%81/" class="prev-prefix">« </a> 上一篇：    <a href="/2021/07/17/sms%E4%BF%A1%E6%81%AF%E7%BC%96%E7%A0%81/" title="发布于 2021-07-17 07:57">sms信息编码</a>
+                <br>
+            
+            
+                <a href="/2021/06/30/sqlite3/" class="next-prefix">» </a> 下一篇：    <a href="/2021/06/30/sqlite3/" title="发布于 2021-06-30 09:12">sqlite3</a>
+            
+        </div>
+    </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
+
+    </div>
+</div>
+    <div id="footer"></div>
+    <div id="sidebar">
+    <div class="menu-wrap" style="display:none;">
+        <nav class="menu">
+            <div class="menu-introduce"> 
+                <div class="introduce-avatar"></div> 
+                <div class="introduce-info"> 
+                    <div class="introduce-user"><span></span></div>        
+                </div> 
+            </div> 
+            <div class="menu-list">
+                <ul></ul> 
+            </div> 
+            <div class="menu-link"></div> 
+        </nav>
+        <button class="menu-button-close"></button>
+        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
+                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
+            </svg>
+        </div>
+    </div>
+    <button class="menu-button-open">MENU</button>
+    <div class="menu-cover"></div>
+</div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
+<div class="search-window">
+    <div class="search-content">
+        <div class="search-content-icon">
+            <i class="iconfont icon-search"></i>
+        </div>
+        <div id="search-input" class="search-input"></div>
+    </div>
+
+    <div class="search-scroll">
+        <div class="search-result">
+            <div id="search-stats" class="search-stats"></div>
+            <div id="search-hits"></div>
+            <div id="search-pagination" class="search-pagination"></div>
+        </div>
+    </div>
+
+    <span class="search-close-icon">
+        <i class="iconfont icon-close"></i>
+    </span>
+</div>
+    <div id="tools">
+    <div class="progressbar-top"></div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
+    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
+    <div class="wrap-right"></div>
+    <div class="loading"></div>
+</div>
+    <script>
+    window.config = {
+        GitHubUserName     : 'first19326',
+        GitHubRepositories : 'Hexo-LiveForCode',
+
+        BlogUser      : 'Carl Chen',
+        BlogAvatar    : 'https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg',
+        BlogStartDate : '2020-11-08',
+
+        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, Live For Code',
+        WebsiteTitleBlurTimeOut  : 500,
+        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
+        WebsiteTitleFocusTimeOut : 1000,
+        WebsiteFavicon           : 'https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/ harmonica.png',
+
+        ProgressBar: {
+            id       : 'topProgressBar',
+            color    : '#77B6FF',
+            height   : '2px',
+            duration : 0.2
+        },
+
+        Loading: {
+            rebound: {
+                tension  : 16,
+                friction : 5
+            },
+            spinner: {
+                id     : 'spinner',
+                radius : 90,
+                sides  : 3,
+                depth  : 4,
+                colors : {
+                    background : '#F0F0F0',
+                    stroke     : '#272633',
+                    base       : '',
+                    child      : '#272633'
+                },
+                alwaysForward : true,
+                restAt        : 0.5,
+                renderBase    : false
+            }
+        },
+
+        HomeHeaderAnimationRendered : true,
+        HomeHeaderAnimation         : {
+            radius      : 15,
+            density     : 0.2,
+            color       : 'rgba(255, 255, 255, .2)',
+            clearOffset : 0.3
+        },
+
+        ArticleHeaderAnimationRendered : false,
+        ArticleHeaderAnimation         : {
+            triW                  : 14,
+            triH                  : 20,
+            neighbours            : [
+                
+                    'side',
+                
+                    'top',
+                
+                    'bottom',
+                
+            ],
+            speedTrailAppear      : 0.1,
+            speedTrailDisappear   : 0.1,
+            speedTriOpen          : 1,
+            trailMaxLength        : 30,
+            trailIntervalCreation : 100,
+            delayBeforeDisappear  : 2,
+            colors                : [
+                
+                    '#96EDA6',
+                
+                    '#5BC6A9',
+                
+                    '#38668C',
+                
+                    '#374D84',
+                
+                    '#BED5CB',
+                
+                    '#62ADC6',
+                
+                    '#8EE5DE',
+                
+                    '#304E7B',
+                
+            ]
+        },
+
+        BackAnimationRendered          : true,
+        IEBrowserBackAnimationRendered : false,
+        BackAnimation                  : {
+            colorSaturation  : '60%',
+            colorBrightness  : '50%',
+            colorAlpha       : 0.5,
+            colorCycleSpeed  : 5,
+            verticalPosition : 'random',
+            horizontalSpeed  : 200,
+            ribbonCount      : 3,
+            strokeSize       : 0,
+            parallaxAmount   : -0.2,
+            animateSections  : true
+        },
+
+        HomeHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
+            
+        ],
+        HomeBannerText  : '代码大部分时间是给人看的，只是偶尔运行一下',
+
+        ArticleHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
+            
+        ],
+
+        OtherBannerText  : '',
+
+        MenuList : [
+            
+                {
+                    name   : '首页',
+                    href   : '/',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '标签',
+                    href   : '/tag',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '分类',
+                    href   : '/category',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '归档',
+                    href   : '/archive',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '关于',
+                    href   : '/about',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '搜索',
+                    href   : '',    
+                    target : '',
+                    class  : 'search'
+                },
+            
+                {
+                    name   : '留言板',
+                    href   : '/comment',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '友情链接',
+                    href   : '/friend',    
+                    target : '',
+                    class  : ''
+                },
+            
+        ],
+        MenuLink : [
+            
+                {
+                    icon : 'icon-weibo', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-wechat', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-qq', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-github', 
+                    url  : 'https://github.com/carl-5535'
+                },
+            
+        ],
+
+        FooterStyle : 2,
+        BottomText  : {
+            icon    : 'like-fill',
+            left    : '人生若只如初见',
+            right   : '何事秋风悲画扇'
+        },
+        ThemeInfo   : false,
+
+        ConsoleList : [
+            
+                [
+                    
+                        'Based on cnblogs theme SimpleMemory.',
+                    
+                        '',
+                    
+                ],
+            
+                [
+                    
+                        'SimpleMemory Author:',
+                    
+                        'BNDong',
+                    
+                ],
+            
+                [
+                    
+                        'Theme:',
+                    
+                        'LiveForCode',
+                    
+                ],
+            
+        ],
+
+        FontIconExtend : "",
+
+        Donate : {
+            paypal  : '',
+            bitcoin : '',
+            alipay  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
+            wechat  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
+        },
+
+        Code : {
+            style : 'normal'
+        },  
+
+        Search : {
+            applicationID : 'XMCRUTQ6TF',
+            apiKey        : 'd163ebeca12b61ad7721462381cea6a9',
+            indexName     : 'BLOG',
+            hits          : {
+                page : 10
+            },
+            labels        : {
+                placeholder : '搜索',
+                empty       : '未发现与 「${query}」 相关的内容',
+                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
+            }
+        }, 
+
+        Valine : {
+            switch         : true,
+            el             : '.comments-content',
+            appId          : 'OVvCeGMH5XNm42b1wuU52HK0-gzGzoHsz',
+            appKey         : 'TltgUJqHRaoztnKrsy4SeYTW',
+            placeholder    : '你是我一生只会遇见一次的惊喜...',
+            avatar         : 'mm',
+            meta           : 'nick,mail,link',
+            requiredFields : 'nick,mail',
+            pageSize       : 5,
+            lang           : 'zh-cn',
+            visitor        : true,
+            enableQQ       : true
+        },
+
+        Tocbot : {
+            switch                : true,
+            tocSelector           : '.toc',
+            contentSelector       : '.article-body',
+            headingSelector       : 'h1, h2, h3, h4, h5',
+            headingsOffset        : 0,
+            scrollSmooth          : true,
+            scrollSmoothOffset    : -5,
+            positionFixedSelector : '.toc',
+            positionFixedClass    : 'toc-fixed',
+            fixedSidebarOffset    : '',
+        },
+
+        Require : {
+            baseUrl     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
+            waitSeconds : 100
+        },
+
+        Meting : {
+            id       : "3778678", 
+            lrcshow  : false, 
+            server   : "netease", 
+            type     : "playlist", 
+            fixed    : true, 
+            autoplay : false, 
+            loop     : "all", 
+            order    : "random", 
+            preload  : "auto", 
+            volume   : 0.67, 
+            mutex    : true
+        },
+
+        LazyLoad : {
+            default : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
+        },
+  
+
+        Style : {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
+            archive          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
+            donate           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
+            fancybox         : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
+            footer           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
+            iconfont         : "https://at.alicdn.com/t/font_1546312_l3yohatebw.css",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
+            menuBubble       : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
+            page             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
+            post             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
+            search           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
+            tocbot           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
+            normal           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
+            night            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
+            clipboard        : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
+        },
+
+        Script: {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
+            config           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
+            instantSearch    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
+            jQuery           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
+            loading          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
+            meting           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
+            iscroll          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
+            require          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
+        },
+
+        Font: {
+            LongCang   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
+            Monda      : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
+            NotoSansSC : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
+            Playball   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
+            PTMono     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
+            RobotoSlab : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
+            Rosario    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
+            UbuntuMono : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
+        },
+
+        Suffix : {
+            about : '不想秃头的Carl.'
+        },
+            
+        Theme : {
+            url  : 'https://github.com/first19326/Hexo-LiveForCode',
+            name : 'Hexo - Live For Code'
+        }  
+    };
+</script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js"></script>
+</body>
+</html>
