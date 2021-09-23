@@ -6,7 +6,7 @@
     <meta name="referrer" content="origin">
     <meta http-equiv="Cache-Control" content="no-transform">
     <meta http-equiv="Cache-Control" content="no-siteapp">
-    <title>归档</title>
+    <title>深拷贝和浅拷贝</title>
 
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
@@ -17,181 +17,124 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
 
-    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
 <meta name="generator" content="Hexo 5.4.0"></head>
 <body>
     <a id="cover"></a>
     <div id="header">
-    <div class="header" >
+    <div class="header">
         <div class="vertical">
             <div class="inner">
-                <h1 class="header-title"></h1>
-                <h2 class="header-description" id="hitokoto"></h2>
-                <h3 class="header-info" id="hitokotoAuthor"></h3>
-                <!--
-                <h1 class="header-subtitle"></h1>
-                <p class="header-subinfo"></p>
-                -->
+                <h1 class="header-subtitle">深拷贝和浅拷贝</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2021-09-23
+                        </span>
+                        
+                            <span id="/2021/09/23/深拷贝和浅拷贝/" class="leancloud_visitors" data-flag-title="深拷贝和浅拷贝">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2021/09/23/深拷贝和浅拷贝/"></span>
+                        </span>  
+                    </p>                 
+                </div>
             </div>
         </div>
-        <a class="scroll-down" href="javascript:;" target="_self" data-offset="-45">
-            <span class="hidden">Scroll Down</span>
-            <i class="scroll-down-icon iconfont icon-return"></i>
-        </a>
+        <canvas id="articleHeaderCanvas"></canvas>
     </div>
 </div>
     <div id="container">
     <div id="content">
-        
-    <div class="articles">
-        
-        
-            
-                
-                    
-                    <div class="archives-wrap">      
-                        <div class="archive-year-wrap">
-                            <a href="/archive/2020" class="archive-year">
-                                2020
-                            </a>
-                        </div>
-                        <div class="archives">
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/19</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/19/%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95-1/">经典算法(1)</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/17</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/17/Linux%E5%91%BD%E4%BB%A4-sed/">Linux命令-sed</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/13</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/13/Python%E8%84%9A%E6%9C%AC-%E5%88%A0%E9%99%A4Windows%E4%B8%8A%E7%9A%84%E6%8D%A2%E8%A1%8C%E7%AC%A6/">Python脚本-删除Windows上的换行符</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/13</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/13/%E8%87%AA%E5%AD%A6Python-%E6%A0%87%E5%87%86%E5%BA%93sys/">自学Python-标准库sys</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/13</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/13/%E8%87%AA%E5%AD%A6Python-%E6%A0%87%E5%87%86%E5%BA%93os/">自学Python-标准库os</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/13</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/13/%E8%87%AA%E5%AD%A6Python-%E5%87%BD%E6%95%B0/">自学Python-函数</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/10</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/10/%E8%87%AA%E5%AD%A6Python-%E6%96%87%E4%BB%B6/">自学Python-文件</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/10</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/10/%E8%87%AA%E5%AD%A6Python-%E8%AF%AD%E5%8F%A5-3/">自学Python-语句(3)</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/10</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/10/%E8%87%AA%E5%AD%A6Python-%E8%AF%AD%E5%8F%A5-2/">自学Python-语句(2)</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>11/09</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/11/09/%E8%87%AA%E5%AD%A6Python-%E8%AF%AD%E5%8F%A5-1/">自学Python-语句(1)</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-        
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>最近原公司老板和一家公司合作开了个新公司，派遣了包括我在内的四位程序猿过去做开发，从原公司离职又到新公司报到，结果这刚过一个月就有一位离职又回原公司了，可能是新公司从零开始代码量太大，他不适应的原因吧</p>
+<p>言归正传，在新公司我们在做5G设备，毕竟现在5G比较火，我之前在原公司使用的是高通X55平台，没错就是iphone12使用的基带芯片，突出一个贵字，所以销量惨淡，一直在各种送样送客户，所以新公司直接上国内展讯平台，就是要便宜，完全从零开发实在是痛苦，所以在征得原公司领导的同意后，决定使用我之前部门的base库，这个库包含了C/S通讯，数据库操作，xml操作，上报时间，观察者模式等常用的基类和功能类，在使用这个库的时候出现了double free导致程序dump，一个在高通平台使用了两年的库，为什么拿到展讯平台就出问题呢？</p>
+<h2 id="分析错误原因"><a href="#分析错误原因" class="headerlink" title="分析错误原因"></a>分析错误原因</h2><p>经过gdb 调试定位到了出问题的类，由于版权原因我简单的表达一下这个类及base库中的使用方式：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">data_uri</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">char</span> *m_uri;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">data_uri</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *uri)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> uri_length = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        uri_length = <span class="built_in">strlen</span>(uri);</span><br><span class="line">        m_uri = <span class="keyword">new</span> <span class="keyword">char</span>[uri_length + <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">strcpy</span>(m_uri, uri);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">data_uri</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (m_uri != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">delete</span>[] m_uri;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> uri[<span class="number">128</span>] = <span class="string">&quot;db:teacher#limei&quot;</span>;m_</span><br><span class="line">    data_uri m_data_uri = <span class="built_in">data_uri</span>(uri);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个类在构造函数中分配了内存，但是没有定义拷贝构造函数，也没有重写运算描述符，这时会走默认构造函数，只是简单的把指针拷贝过去，即等号右边的 data_uri(uri) 先调用构造函数，然后调用拷贝构造函数，将类拷贝给 m_data_uri，注意两边的类中m_uri指向的是同一片内存，这时等号右边没有用了，会调用析构函数，由于左右两边指向同一块内存，所以当函数运行结束，左边再次析构的时候就会double free</p>
+<p>解决方法：</p>
+<ol>
+<li>写一个拷贝构造函数</li>
+<li>直接使用数组，这样不用再写拷贝构造函数，坏处是不能动态分配内存比较浪费空间</li>
+</ol>
+<h2 id="深拷贝和浅拷贝"><a href="#深拷贝和浅拷贝" class="headerlink" title="深拷贝和浅拷贝"></a>深拷贝和浅拷贝</h2><p>关于这个问题，大多讲的很复杂，我这里说下我的个人见解</p>
+<ol>
+<li>深拷贝和浅拷贝是对于类中有指向堆内存的指针时，不同的拷贝行为的描述</li>
+<li>浅拷贝指简单的赋值，没有新内存的分配，双方指向同一块内存</li>
+<li>深拷贝指开辟新的内存，将前者内存中的内容拷贝到自己的内存中</li>
+</ol>
+<p>这样应该就很好理解上面为什么会出错了，如果不写拷贝构造函数，默认拷贝构造函数可以完成对象的数据成员简单的复制,对象的数据资源是由指针指向的堆时,默认的拷贝构造函数只是将指针复制</p>
+<h2 id="为什么之前不出错"><a href="#为什么之前不出错" class="headerlink" title="为什么之前不出错"></a>为什么之前不出错</h2><p>这个问题就有意思了，为什么这个很容易发现的错误，却在项目中使用了两年呢？经过查看编译过程，发现在高通平台的交叉编译器会优化编译。编译器实现省略创建一个只是为了初始化另一个同类型对象的临时对象，即编译器认为不需要先构造再拷贝再析构，太麻烦了完全没必要，所以就把右边的操作全部优化掉了，直接构造一次就可以了</p>
+<p>展讯平台设置了编译选项：-fno-elide-constructors，这个选项将关闭这种优化，强制编译器在所有情况下都调用拷贝构造函数，man手册描述如下：</p>
+<blockquote>
+<p>The C++ standard allows an implementation to omit creating a temporary that is only used to initialize another object of the same type. Specifying this option disables that optimization, and forces G++ to call the copy constructor in all cases.</p>
+</blockquote>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
             </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Carl Chen
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2021/09/23/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" target="_blank">深拷贝和浅拷贝</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
         </div>
+    </div>
+    <div class="article-footer">
         
-    </div>   
-
-
-    <div class="pagination-bottom">
-        <div class="pagination">
+            <div class="category">
+                分类：
+                
+                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        
+            <div class="tag">
+                标签：
+                
+                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        <div class="article-prev-next">
             
-                <a class="extend prev" rel="prev" href="/archive/page/5/">上一页</a><a class="page-number" href="/archive/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archive/page/4/">4</a><a class="page-number" href="/archive/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/archive/page/7/">7</a><a class="extend next" rel="next" href="/archive/page/7/">下一页</a>
+            
+                <a href="/2021/08/11/%E6%89%93%E5%8C%85/" class="next-prefix">» </a> 下一篇：    <a href="/2021/08/11/%E6%89%93%E5%8C%85/" title="发布于 2021-08-11 10:11">打包</a>
             
         </div>
     </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
 
     </div>
 </div>
