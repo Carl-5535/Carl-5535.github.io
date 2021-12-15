@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="referrer" content="origin">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>中间件添加WIFI模块</title>
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <a id="cover"></a>
+    <div id="header">
+    <div class="header">
+        <div class="vertical">
+            <div class="inner">
+                <h1 class="header-subtitle">中间件添加WIFI模块</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2021-12-14
+                        </span>
+                        
+                            <span id="/2021/12/14/工作总结/中间件添加WIFI模块/" class="leancloud_visitors" data-flag-title="中间件添加WIFI模块">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2021/12/14/工作总结/中间件添加WIFI模块/"></span>
+                        </span>  
+                    </p>                 
+                </div>
+            </div>
+        </div>
+        <canvas id="articleHeaderCanvas"></canvas>
+    </div>
+</div>
+    <div id="container">
+    <div id="content">
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <h2 id="中间件添加WIFI模块"><a href="#中间件添加WIFI模块" class="headerlink" title="中间件添加WIFI模块"></a>中间件添加WIFI模块</h2><p>距离上次更新已经过去了一个半月了，这段时间一直在忙WIFI功能的添加，此项目是直接买的两个wifi芯片，8812和8192，一个是2.4G一个是5G，手里只有一份8812的手册，再也没有其他资料，是一次学习，也是一次挑战。</p>
+<p>此前我是没有做过WiFi相关的中间件的工作，这次因为公司没人（三个中间件开发，负责WiFi的同事离职了），由我来顶上，借此机会也对WiFi进行了基本的学习。</p>
+<h2 id="具体任务"><a href="#具体任务" class="headerlink" title="具体任务"></a>具体任务</h2><p>BSP的同事负责修改、移植WIFI驱动。使用的平台是64位的，没有现成的驱动，需要把找到的32位驱动移植过来(为了节省资金，直接购买的芯片，没有FAE的支持，只能自己搞)</p>
+<p>我负责把WiFi功能添加到SDK中并向上提供接口，所需接口可以大致为以下几个：</p>
+<ul>
+<li>WiFi参数的设置和获取（SSID，密码，加密模式，信道，信道宽度等）</li>
+<li>WiFi黑名单白名单的设置和获取</li>
+<li>WPS PBC/PIN 模式的设置</li>
+<li>WPS状态获取</li>
+<li>WPS取消/关闭</li>
+</ul>
+<p>每个接口又分为2.4G和5G，本次以2.4G为记录，5G和2.4G基本一样，只用改interface即可。</p>
+<h2 id="WIFI启动前的准备工作"><a href="#WIFI启动前的准备工作" class="headerlink" title="WIFI启动前的准备工作"></a>WIFI启动前的准备工作</h2><p>此次没有使用hostapd，也没有使用脚本，采用直接操作驱动，即使用iwpriv的方式进行设置，根据需求先在数据库中建立了三张表，一张表为WiFi参数，一张表为白名单，一张表为黑名单：</p>
+<ul>
+<li>WiFi参数</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/WIFI%E5%8F%82%E6%95%B0%E8%A1%A8.png" alt="WiFi参数"></p>
+<ul>
+<li>黑名单</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/WiFi%E9%BB%91%E5%90%8D%E5%8D%95.png" alt="黑名单"></p>
+<ul>
+<li>白名单</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/WiFi%E7%99%BD%E5%90%8D%E5%8D%95.png" alt="白名单"></p>
+<h3 id="参数介绍"><a href="#参数介绍" class="headerlink" title="参数介绍"></a>参数介绍</h3><p>黑白名单里均为12位mac地址，就不过多赘述了，主要看一下表中wifi参数</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>enable</td>
+<td>0-disable, 1-enable</td>
+<td>WiFi开关</td>
+</tr>
+<tr>
+<td>hidden_ssid</td>
+<td>0-disable, 1-enable</td>
+<td>隐藏WiFi</td>
+</tr>
+<tr>
+<td>ssid</td>
+<td>string</td>
+<td>WiFi名称</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>WiFi密码</td>
+</tr>
+<tr>
+<td>max_user</td>
+<td>int</td>
+<td>WiFi最大连接数</td>
+</tr>
+<tr>
+<td>frequency</td>
+<td>0-2.4g, 1-5g</td>
+<td>wifi模式</td>
+</tr>
+<tr>
+<td>auth_mode</td>
+<td>0-open, 4-wpa2, 6-wpa/wpa2 mixed</td>
+<td>加密类型</td>
+</tr>
+<tr>
+<td>encryp_type</td>
+<td>2–TKIP, 8–AES(CCMP), 10–TKIP/AES mixed</td>
+<td>密码组</td>
+</tr>
+<tr>
+<td>band_mode</td>
+<td>1–11b, 2–11g, 4–11a, 8–11n, 64–11ac</td>
+<td>波段选择，可以按位或操作</td>
+</tr>
+<tr>
+<td>channel</td>
+<td>0 for auto channel, 1-14 for 11b/11g</td>
+<td>信道</td>
+</tr>
+<tr>
+<td>band_width</td>
+<td>0-20M, 1-40M, 2-80M</td>
+<td>信道宽度</td>
+</tr>
+<tr>
+<td>mac_enable</td>
+<td>0-disable, 1-enable</td>
+<td>黑白名单功能开关</td>
+</tr>
+<tr>
+<td>mac_mod</td>
+<td>0-黑名单, 1-白名单</td>
+<td>黑白名单模式</td>
+</tr>
+</tbody></table>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>表有了，我们创建一个类来管理和使用表中的数据</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">wifi_24g</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> m_enable;</span><br><span class="line">    <span class="keyword">int</span> m_hiden_ssid;</span><br><span class="line">    string m_ssid;</span><br><span class="line">    string m_password;</span><br><span class="line">    <span class="keyword">int</span> m_max_user;</span><br><span class="line">    <span class="keyword">int</span> m_frequency;</span><br><span class="line">    <span class="keyword">int</span> m_auth_mode;</span><br><span class="line">    <span class="keyword">int</span> m_encryp_type;</span><br><span class="line">    <span class="keyword">int</span> m_band_mode;</span><br><span class="line">    <span class="keyword">int</span> m_channel;</span><br><span class="line">    <span class="keyword">int</span> m_band_width;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="built_in">wifi_24g</span>(); <span class="comment">//初始化，将WiFi配置读取并赋值给成员变量</span></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">wifi_24g</span>();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">save_conf_to_db</span><span class="params">()</span></span>; <span class="comment">//保存WiFi配置</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">save_mac_filter</span><span class="params">(<span class="keyword">int</span> enable, <span class="keyword">int</span> mod)</span></span>; <span class="comment">//保存黑白名单配置</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">get_mac_filter</span><span class="params">(<span class="keyword">int</span> *enable, <span class="keyword">int</span> *mod)</span></span>; <span class="comment">//读黑白名单配置</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">string <span class="title">read_config</span><span class="params">(string config_name)</span></span>; <span class="comment">//读取数据库</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">save_config</span><span class="params">(string config_name, string config_value)</span></span>; <span class="comment">//保存到数据库</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动WIFI"><a href="#启动WIFI" class="headerlink" title="启动WIFI"></a>启动WIFI</h2><p>启动分为加载驱动，设置参数，up interface，建立网桥这几步，具体实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//m_wifi_24g 为wifi_24g的实例</span></span><br><span class="line"><span class="comment">//m_mac_mod,m_mac_enable为黑白名单参数，wifi驱动中只定义了aclmode，0-disable， 1-白名单， 2-黑名单</span></span><br><span class="line"><span class="comment">//m_mac_list_black m_mac_list_white 为黑白名单mac地址列表</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">start_wifi_24g</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    list&lt;string&gt; cmd_list;</span><br><span class="line">    list&lt;string&gt; mac_list;</span><br><span class="line">    string tmp;</span><br><span class="line">    <span class="keyword">int</span> mod = m_mac_mod + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;insmod /lib/modules/rtl8192es.ko&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib wsc_enable=2&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib regdomain=3&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib opmode=16&quot;</span>);</span><br><span class="line">    <span class="comment">//RF</span></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib channel=&quot;</span> + <span class="built_in">to_string</span>(m_wifi_24g-&gt;m_channel);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib ch_hi=14&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib ch_low=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib MIMO_TR_mode=3&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib tssi1=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib tssi2=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib trswitch=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib rfe_type=0&quot;</span>);</span><br><span class="line">    <span class="comment">//rate</span></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib basicrates=15&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib oprates=4095&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib autorate=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib rtsthres=2347&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib fragthres=2346&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib expired_time=30000&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib bcnint=100&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib dtimperiod=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib preamble=0&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//hiden SSID</span></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib hiddenAP=&quot;</span> + <span class="built_in">to_string</span>(m_wifi_24g-&gt;m_hiden_ssid);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//SSID</span></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib ssid=&quot;</span> + m_wifi_24g-&gt;m_ssid;</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//max client number</span></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan1 set_mib stanum=&quot;</span> + m_wifi_24g-&gt;m_max_user;</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//acl start</span></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib aclnum=0&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!m_mac_enable)</span><br><span class="line">    &#123;</span><br><span class="line">        mod = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib aclmode=&quot;</span> + <span class="built_in">to_string</span>(mod);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mod == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        mac_list = m_mac_list_white;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        mac_list = m_mac_list_black;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mac_list.<span class="built_in">size</span>() &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (list&lt;string&gt;::iterator it = mac_list.<span class="built_in">begin</span>(); it != mac_list.<span class="built_in">end</span>(); ++it)</span><br><span class="line">        &#123;</span><br><span class="line">            tmp = <span class="string">&quot;iwpriv wlan0 set_mib acladdr=&quot;</span> + (*it);</span><br><span class="line">            cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//acl end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//Set to 2 to use open system or shared key automatically</span></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib authtype=2&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//auth_mode</span></span><br><span class="line">    <span class="keyword">if</span> (m_wifi_24g-&gt;m_auth_mode == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib encmode=0&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib encmode=2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib 802_1x=0&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//band</span></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib band=&quot;</span> + <span class="built_in">to_string</span>(m_wifi_24g-&gt;m_band_mode);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib deny_legacy=0&quot;</span>);</span><br><span class="line"></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib use40M=&quot;</span> + <span class="built_in">to_string</span>(m_wifi_24g-&gt;m_band_width);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib 2ndchoffset=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib shortGI20M=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib shortGI40M=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib shortGI80M=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib ampdu=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib amsdu=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib stbc=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib coexist=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib disable_protection=0&quot;</span>);</span><br><span class="line"></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib groupID=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib block_relay=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib wifi_specific=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib qos_enable=1&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib guest_access=0&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib countrycode=CN&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in"><span class="keyword">switch</span></span> (m_wifi_24g-&gt;m_auth_mode)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib psk_enable=0&quot;</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib psk_enable=2&quot;</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib psk_enable=3&quot;</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib psk_enable=3&quot;</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (m_wifi_24g-&gt;m_auth_mode == <span class="number">2</span> || m_wifi_24g-&gt;m_auth_mode == <span class="number">6</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp = <span class="string">&quot;iwpriv wlan0 set_mib wpa_cipher=&quot;</span> + <span class="built_in">to_string</span>(m_wifi_24g-&gt;m_encryp_type);</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (m_wifi_24g-&gt;m_auth_mode == <span class="number">4</span> || m_wifi_24g-&gt;m_auth_mode == <span class="number">6</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp = <span class="string">&quot;iwpriv wlan0 set_mib wpa2_cipher=&quot;</span> + <span class="built_in">to_string</span>(m_wifi_24g-&gt;m_encryp_type);</span><br><span class="line">        cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//password</span></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib passphrase=&quot;</span> + m_wifi_24g-&gt;m_password;</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib gk_rekey=86400&quot;</span>);</span><br><span class="line"></span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;ifconfig wlan0 up&quot;</span>);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;brctl addif br-lan wlan0&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">do_command</span>(<span class="string">&quot;start_wifi.sh&quot;</span>, cmd_list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>do_command函数就是对我之前提到的do_system()的封装，代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_command</span><span class="params">(string file_name, list&lt;string&gt; arg_list)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *fp = <span class="literal">NULL</span>;</span><br><span class="line">    string path = <span class="string">&quot;/tmp/&quot;</span> + file_name;</span><br><span class="line"></span><br><span class="line">    fp = <span class="built_in">fopen</span>(path.<span class="built_in">c_str</span>(), <span class="string">&quot;w+&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (list&lt;string&gt;::iterator list_iterator = arg_list.<span class="built_in">begin</span>(); list_iterator != arg_list.<span class="built_in">end</span>(); list_iterator++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(fp, <span class="string">&quot;%s\n&quot;</span>, (*list_iterator).<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">fprintf</span>(fp, <span class="string">&quot;rm -f %s\n&quot;</span>, path.<span class="built_in">c_str</span>());</span><br><span class="line">    <span class="built_in">fclose</span>(fp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span>(<span class="built_in">do_system</span>(<span class="number">1</span>, <span class="literal">NULL</span>, <span class="string">&quot;sh&quot;</span>, path.<span class="built_in">c_str</span>(), <span class="literal">NULL</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_system</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> wait, <span class="keyword">int</span> *svc_pid, <span class="keyword">const</span> <span class="keyword">char</span> *exec_file, ...)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> status = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">int</span> rc = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">sigset_t</span> chldmask, savemask;</span><br><span class="line">    list&lt;string&gt;::iterator list_iterator;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (exec_file == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* now block SIGCHLD */</span></span><br><span class="line">    <span class="built_in">sigemptyset</span>(&amp;chldmask);</span><br><span class="line">    <span class="built_in">sigaddset</span>(&amp;chldmask, SIGCHLD);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">sigprocmask</span>(SIG_BLOCK, &amp;chldmask, &amp;savemask))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">-2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Error. */</span></span><br><span class="line">        rc = <span class="number">-3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Child. */</span></span><br><span class="line">        <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">char</span> **argv;</span><br><span class="line">        <span class="keyword">int</span> argc = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">char</span> **p;</span><br><span class="line">        va_list args;</span><br><span class="line"></span><br><span class="line">        n = <span class="number">1</span>; <span class="comment">/* =1 for argv[0]. */</span></span><br><span class="line">        <span class="built_in">va_start</span>(args, exec_file);</span><br><span class="line">        <span class="keyword">for</span> (; <span class="built_in">va_arg</span>(args, <span class="keyword">char</span> *);)</span><br><span class="line">        &#123;</span><br><span class="line">            ++n;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">va_end</span>(args);</span><br><span class="line"></span><br><span class="line">        p = argv = (<span class="keyword">char</span> **)<span class="built_in">malloc</span>((n + <span class="number">1</span>) * <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">char</span> *)); <span class="comment">/* +1 for terminal NULL */</span></span><br><span class="line"></span><br><span class="line">        p[<span class="number">0</span>] = (<span class="keyword">char</span> *)exec_file;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">va_start</span>(args, exec_file);</span><br><span class="line">        <span class="keyword">for</span> (; n--;)</span><br><span class="line">        &#123;</span><br><span class="line">            *++p = <span class="built_in">va_arg</span>(args, <span class="keyword">char</span> *);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">va_end</span>(args);</span><br><span class="line">        *p = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">sigprocmask</span>(SIG_SETMASK, &amp;savemask, <span class="literal">NULL</span>);</span><br><span class="line">        n = <span class="built_in">execvp</span>(exec_file, argv);</span><br><span class="line">        <span class="built_in">free</span>(argv);</span><br><span class="line">        <span class="built_in">exit</span>(n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">usleep</span>(<span class="number">1</span> * <span class="number">1000</span>);</span><br><span class="line">        <span class="keyword">if</span> (svc_pid)</span><br><span class="line">        &#123;</span><br><span class="line">            *svc_pid = pid;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (wait)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">do</span></span><br><span class="line">            &#123;</span><br><span class="line">                rc = <span class="built_in">waitpid</span>(pid, &amp;status, <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> (rc &lt; <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (errno != EINTR)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    rc = <span class="built_in">WEXITSTATUS</span>(status);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">while</span> (<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            rc = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sigprocmask</span>(SIG_SETMASK, &amp;savemask, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动WiFi的过程中，参数的意义和数据库基本一致，比较值得注意的是auth_mode</p>
+<ul>
+<li>如果auth_mode为0，encmode为0否则为2，2代表WPA/WPA2模式</li>
+<li>auth_mode为0，psk_enable为0，否则为一一对应的值(代码中的switch为映射关系)</li>
+<li>auth_mode不为0，才需要设置wpa_cipher或wpa2_cipher</li>
+</ul>
+<h2 id="WIFI接口"><a href="#WIFI接口" class="headerlink" title="WIFI接口"></a>WIFI接口</h2><h3 id="WIFI参数配置和获取"><a href="#WIFI参数配置和获取" class="headerlink" title="WIFI参数配置和获取"></a>WIFI参数配置和获取</h3><p>获取参数时只需返回wifi_24g实例的成员变量即可</p>
+<p>配置时，将接收到的值赋给wifi_24g的成员变量，并重新加载WiFi驱动</p>
+<h3 id="WiFi黑名单白名单的设置和获取"><a href="#WiFi黑名单白名单的设置和获取" class="headerlink" title="WiFi黑名单白名单的设置和获取"></a>WiFi黑名单白名单的设置和获取</h3><p>获取黑白名单配置时，只需读出表中数据返回即可</p>
+<p>设置黑白名单时，将数据保存到表中，并执行黑白名单的参数配置命令即可：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">list&lt;string&gt; cmd_list;</span><br><span class="line">list&lt;string&gt; mac_list;</span><br><span class="line">string tmp;</span><br><span class="line"><span class="keyword">int</span> mod = m_mac_mod + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;ifconfig wlan0 down&quot;</span>);</span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan0 set_mib aclnum=0&quot;</span>);</span><br><span class="line"></span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;ifconfig wlan1 down&quot;</span>);</span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;iwpriv wlan1 set_mib aclnum=0&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (!m_mac_enable)</span><br><span class="line">&#123;</span><br><span class="line">    mod = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tmp = <span class="string">&quot;iwpriv wlan0 set_mib aclmode=&quot;</span> + <span class="built_in">to_string</span>(mod);</span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">tmp = <span class="string">&quot;iwpriv wlan1 set_mib aclmode=&quot;</span> + <span class="built_in">to_string</span>(mod);</span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (mod == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    mac_list = m_mac_list_white;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    mac_list = m_mac_list_black;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (list&lt;string&gt;::iterator it = mac_list.<span class="built_in">begin</span>(); it != mac_list.<span class="built_in">end</span>(); ++it)</span><br><span class="line">&#123;</span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan0 set_mib acladdr=&quot;</span> + (*it);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line"></span><br><span class="line">    tmp = <span class="string">&quot;iwpriv wlan1 set_mib acladdr=&quot;</span> + (*it);</span><br><span class="line">    cmd_list.<span class="built_in">push_back</span>(tmp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;ifconfig wlan0 up&quot;</span>);</span><br><span class="line">cmd_list.<span class="built_in">push_back</span>(<span class="string">&quot;ifconfig wlan1 up&quot;</span>);</span><br><span class="line"><span class="built_in">do_command</span>(CMD_WIFI_MAC_FILTER, cmd_list);</span><br></pre></td></tr></table></figure>
+
+<p>wlan0为2.4GWiFi，wlan1为5GWiFi，黑白名单需要同时配置两个WiFi</p>
+<h3 id="WPS-PBC-PIN-模式的设置"><a href="#WPS-PBC-PIN-模式的设置" class="headerlink" title="WPS PBC/PIN 模式的设置"></a>WPS PBC/PIN 模式的设置</h3><p>开启WPS只用下发WPS命令，PBC模式为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">system</span>(<span class="string">&quot;wscd -sig_pbc wlan0&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>PIN模式为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">string cmd = <span class="string">&quot;iwpriv wlan0 set_mib pin=&quot;</span> + pin_code;</span><br><span class="line"><span class="built_in">system</span>(cmd.<span class="built_in">c_str</span>());</span><br></pre></td></tr></table></figure>
+
+<h3 id="WPS状态获取"><a href="#WPS状态获取" class="headerlink" title="WPS状态获取"></a>WPS状态获取</h3><p>WPS的状态保存在文件中，直接读取”/tmp/wscd_status”即可。状态值如下：</p>
+<p>-1：未启动， 0：启动， 2：超时， 3：成功</p>
+<h3 id="WPS取消-关闭"><a href="#WPS取消-关闭" class="headerlink" title="WPS取消/关闭"></a>WPS取消/关闭</h3><p>WPS取消/关闭时只需要创建一个文件，wscd检测到文件，就会停止WPS：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">system</span>(<span class="string">&quot;touch /tmp/wscd_cancel&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Carl Chen
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2021/12/14/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%B7%BB%E5%8A%A0WIFI%E6%A8%A1%E5%9D%97/" target="_blank">中间件添加WIFI模块</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    <div class="article-footer">
+        
+            <div class="category">
+                分类：
+                
+                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        
+            <div class="tag">
+                标签：
+                
+                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
+                
+            </div>
+        
+        <div class="article-prev-next">
+            
+                <a href="/2021/12/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/WPS%E8%B0%83%E8%AF%95/" class="prev-prefix">« </a> 上一篇：    <a href="/2021/12/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/WPS%E8%B0%83%E8%AF%95/" title="发布于 2021-12-16 05:29">WPS功能调试</a>
+                <br>
+            
+            
+                <a href="/2021/11/01/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" class="next-prefix">» </a> 下一篇：    <a href="/2021/11/01/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" title="发布于 2021-11-01 09:41">第二次代码优化</a>
+            
+        </div>
+    </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
+
+    </div>
+</div>
+    <div id="footer"></div>
+    <div id="sidebar">
+    <div class="menu-wrap" style="display:none;">
+        <nav class="menu">
+            <div class="menu-introduce"> 
+                <div class="introduce-avatar"></div> 
+                <div class="introduce-info"> 
+                    <div class="introduce-user"><span></span></div>        
+                </div> 
+            </div> 
+            <div class="menu-list">
+                <ul></ul> 
+            </div> 
+            <div class="menu-link"></div> 
+        </nav>
+        <button class="menu-button-close"></button>
+        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
+                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
+            </svg>
+        </div>
+    </div>
+    <button class="menu-button-open">MENU</button>
+    <div class="menu-cover"></div>
+</div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
+<div class="search-window">
+    <div class="search-content">
+        <div class="search-content-icon">
+            <i class="iconfont icon-search"></i>
+        </div>
+        <div id="search-input" class="search-input"></div>
+    </div>
+
+    <div class="search-scroll">
+        <div class="search-result">
+            <div id="search-stats" class="search-stats"></div>
+            <div id="search-hits"></div>
+            <div id="search-pagination" class="search-pagination"></div>
+        </div>
+    </div>
+
+    <span class="search-close-icon">
+        <i class="iconfont icon-close"></i>
+    </span>
+</div>
+    <div id="tools">
+    <div class="progressbar-top"></div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
+    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
+    <div class="wrap-right"></div>
+    <div class="loading"></div>
+</div>
+    <script>
+    window.config = {
+        GitHubUserName     : 'first19326',
+        GitHubRepositories : 'Hexo-LiveForCode',
+
+        BlogUser      : 'Carl Chen',
+        BlogAvatar    : 'https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg',
+        BlogStartDate : '2020-11-08',
+
+        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, Live For Code',
+        WebsiteTitleBlurTimeOut  : 500,
+        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
+        WebsiteTitleFocusTimeOut : 1000,
+        WebsiteFavicon           : 'https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/ harmonica.png',
+
+        ProgressBar: {
+            id       : 'topProgressBar',
+            color    : '#77B6FF',
+            height   : '2px',
+            duration : 0.2
+        },
+
+        Loading: {
+            rebound: {
+                tension  : 16,
+                friction : 5
+            },
+            spinner: {
+                id     : 'spinner',
+                radius : 90,
+                sides  : 3,
+                depth  : 4,
+                colors : {
+                    background : '#F0F0F0',
+                    stroke     : '#272633',
+                    base       : '',
+                    child      : '#272633'
+                },
+                alwaysForward : true,
+                restAt        : 0.5,
+                renderBase    : false
+            }
+        },
+
+        HomeHeaderAnimationRendered : true,
+        HomeHeaderAnimation         : {
+            radius      : 15,
+            density     : 0.2,
+            color       : 'rgba(255, 255, 255, .2)',
+            clearOffset : 0.3
+        },
+
+        ArticleHeaderAnimationRendered : false,
+        ArticleHeaderAnimation         : {
+            triW                  : 14,
+            triH                  : 20,
+            neighbours            : [
+                
+                    'side',
+                
+                    'top',
+                
+                    'bottom',
+                
+            ],
+            speedTrailAppear      : 0.1,
+            speedTrailDisappear   : 0.1,
+            speedTriOpen          : 1,
+            trailMaxLength        : 30,
+            trailIntervalCreation : 100,
+            delayBeforeDisappear  : 2,
+            colors                : [
+                
+                    '#96EDA6',
+                
+                    '#5BC6A9',
+                
+                    '#38668C',
+                
+                    '#374D84',
+                
+                    '#BED5CB',
+                
+                    '#62ADC6',
+                
+                    '#8EE5DE',
+                
+                    '#304E7B',
+                
+            ]
+        },
+
+        BackAnimationRendered          : true,
+        IEBrowserBackAnimationRendered : false,
+        BackAnimation                  : {
+            colorSaturation  : '60%',
+            colorBrightness  : '50%',
+            colorAlpha       : 0.5,
+            colorCycleSpeed  : 5,
+            verticalPosition : 'random',
+            horizontalSpeed  : 200,
+            ribbonCount      : 3,
+            strokeSize       : 0,
+            parallaxAmount   : -0.2,
+            animateSections  : true
+        },
+
+        HomeHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
+            
+        ],
+        HomeBannerText  : '代码大部分时间是给人看的，只是偶尔运行一下',
+
+        ArticleHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
+            
+        ],
+
+        OtherBannerText  : '',
+
+        MenuList : [
+            
+                {
+                    name   : '首页',
+                    href   : '/',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '标签',
+                    href   : '/tag',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '分类',
+                    href   : '/category',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '归档',
+                    href   : '/archive',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '关于',
+                    href   : '/about',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '搜索',
+                    href   : '',    
+                    target : '',
+                    class  : 'search'
+                },
+            
+                {
+                    name   : '留言板',
+                    href   : '/comment',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '友情链接',
+                    href   : '/friend',    
+                    target : '',
+                    class  : ''
+                },
+            
+        ],
+        MenuLink : [
+            
+                {
+                    icon : 'icon-weibo', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-wechat', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-qq', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-github', 
+                    url  : 'https://github.com/carl-5535'
+                },
+            
+        ],
+
+        FooterStyle : 2,
+        BottomText  : {
+            icon    : 'like-fill',
+            left    : '人生若只如初见',
+            right   : '何事秋风悲画扇'
+        },
+        ThemeInfo   : false,
+
+        ConsoleList : [
+            
+                [
+                    
+                        'Based on cnblogs theme SimpleMemory.',
+                    
+                        '',
+                    
+                ],
+            
+                [
+                    
+                        'SimpleMemory Author:',
+                    
+                        'BNDong',
+                    
+                ],
+            
+                [
+                    
+                        'Theme:',
+                    
+                        'LiveForCode',
+                    
+                ],
+            
+        ],
+
+        FontIconExtend : "",
+
+        Donate : {
+            paypal  : '',
+            bitcoin : '',
+            alipay  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
+            wechat  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
+        },
+
+        Code : {
+            style : 'normal'
+        },  
+
+        Search : {
+            applicationID : 'XMCRUTQ6TF',
+            apiKey        : 'd163ebeca12b61ad7721462381cea6a9',
+            indexName     : 'BLOG',
+            hits          : {
+                page : 10
+            },
+            labels        : {
+                placeholder : '搜索',
+                empty       : '未发现与 「${query}」 相关的内容',
+                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
+            }
+        }, 
+
+        Valine : {
+            switch         : true,
+            el             : '.comments-content',
+            appId          : 'OVvCeGMH5XNm42b1wuU52HK0-gzGzoHsz',
+            appKey         : 'TltgUJqHRaoztnKrsy4SeYTW',
+            placeholder    : '你是我一生只会遇见一次的惊喜...',
+            avatar         : 'mm',
+            meta           : 'nick,mail,link',
+            requiredFields : 'nick,mail',
+            pageSize       : 5,
+            lang           : 'zh-cn',
+            visitor        : true,
+            enableQQ       : true
+        },
+
+        Tocbot : {
+            switch                : true,
+            tocSelector           : '.toc',
+            contentSelector       : '.article-body',
+            headingSelector       : 'h1, h2, h3, h4, h5',
+            headingsOffset        : 0,
+            scrollSmooth          : true,
+            scrollSmoothOffset    : -5,
+            positionFixedSelector : '.toc',
+            positionFixedClass    : 'toc-fixed',
+            fixedSidebarOffset    : '',
+        },
+
+        Require : {
+            baseUrl     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
+            waitSeconds : 100
+        },
+
+        Meting : {
+            id       : "3778678", 
+            lrcshow  : false, 
+            server   : "netease", 
+            type     : "playlist", 
+            fixed    : true, 
+            autoplay : false, 
+            loop     : "all", 
+            order    : "random", 
+            preload  : "auto", 
+            volume   : 0.67, 
+            mutex    : true
+        },
+
+        LazyLoad : {
+            default : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
+        },
+  
+
+        Style : {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
+            archive          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
+            donate           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
+            fancybox         : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
+            footer           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
+            iconfont         : "https://at.alicdn.com/t/font_1546312_l3yohatebw.css",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
+            menuBubble       : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
+            page             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
+            post             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
+            search           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
+            tocbot           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
+            normal           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
+            night            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
+            clipboard        : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
+        },
+
+        Script: {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
+            config           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
+            instantSearch    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
+            jQuery           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
+            loading          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
+            meting           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
+            iscroll          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
+            require          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
+        },
+
+        Font: {
+            LongCang   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
+            Monda      : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
+            NotoSansSC : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
+            Playball   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
+            PTMono     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
+            RobotoSlab : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
+            Rosario    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
+            UbuntuMono : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
+        },
+
+        Suffix : {
+            about : '不想秃头的Carl.'
+        },
+            
+        Theme : {
+            url  : 'https://github.com/first19326/Hexo-LiveForCode',
+            name : 'Hexo - Live For Code'
+        }  
+    };
+</script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js"></script>
+</body>
+</html>
