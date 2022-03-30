@@ -6,8 +6,7 @@
     <meta name="referrer" content="origin">
     <meta http-equiv="Cache-Control" content="no-transform">
     <meta http-equiv="Cache-Control" content="no-siteapp">
-    
-    <title>标签</title>
+    <title>友元</title>
 
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
@@ -18,12 +17,13 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
 
-    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
     
         <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
     
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
 <meta name="generator" content="Hexo 5.4.0"></head>
 <body>
     <a id="cover"></a>
@@ -31,10 +31,21 @@
     <div class="header">
         <div class="vertical">
             <div class="inner">
-                <h1 class="header-subtitle">标签</h1>
+                <h1 class="header-subtitle">友元</h1>
                 <div class="header-subinfo">
-                    <p class="article-info-text Chinese"></p>
-                    <p class="article-info-text English"></p>                  
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2022-03-30
+                        </span>
+                        
+                            <span id="/2022/03/30/C++/友元/" class="leancloud_visitors" data-flag-title="友元">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2022/03/30/C++/友元/"></span>
+                        </span>  
+                    </p>                 
                 </div>
             </div>
         </div>
@@ -43,13 +54,85 @@
 </div>
     <div id="container">
     <div id="content">
-        <div class="tags">
-    <div class="tags-title">
-        目前共计 16 个标签
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <p>类的友元函数 (friend) 是定义在类外部, 但是有权限访问类的所有私有 (private) 成员和保护 (protected) 成员</p>
+<p>公有成员和私有成员的概念:</p>
+<ul>
+<li>公有成员 (public) : 在类外可以访问</li>
+<li>私有成员 (private): 只有本类中的函数可以访问</li>
+</ul>
+<p>友元 (friend) 可以访问与其有好友关系的类中的私有成员 (有限制的共享).</p>
+<p>友元包括友元函数和友元类:</p>
+<ul>
+<li>友元函数: 如果在本类以外的其他地方定义的函数, 在类体重用 friend 进行声明. 此函数就称为本类的有元函数, 友元函数可以访问这个类中的私有成员</li>
+<li>友元类: 类 A 将另一个类 B 声明为其友元类, 友元类 B 中的所有函数都是 A 类的友元函数, 可以访问 A 类中的所有成员</li>
+</ul>
+<h2 id="友元函数"><a href="#友元函数" class="headerlink" title="友元函数"></a>友元函数</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::cout;</span><br><span class="line"><span class="keyword">using</span> std::endl;</span><br><span class="line"><span class="keyword">using</span> std::string;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">student</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">student</span>(string &amp;name, <span class="keyword">int</span> &amp;age)</span><br><span class="line">    &#123;</span><br><span class="line">            my_name = name;</span><br><span class="line">            my_age = age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">who_are_you</span><span class="params">(student &amp;s)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    string my_name;</span><br><span class="line">    <span class="keyword">int</span> my_age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">who_are_you</span><span class="params">(student &amp;s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;name: &quot;</span> &lt;&lt; s.my_name &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;age: &quot;</span> &lt;&lt; s.my_age &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    string name = <span class="string">&quot;张三&quot;</span>;</span><br><span class="line">    <span class="keyword">int</span> age = <span class="number">18</span>;</span><br><span class="line">    <span class="function">student <span class="title">s</span><span class="params">(name,age)</span></span>;</span><br><span class="line">    <span class="built_in">who_are_you</span>(s);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="友元类"><a href="#友元类" class="headerlink" title="友元类"></a>友元类</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::cout;</span><br><span class="line"><span class="keyword">using</span> std::endl;</span><br><span class="line"><span class="keyword">using</span> std::string;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">teacher</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">student</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">student</span>(string &amp;name, <span class="keyword">int</span> &amp;age)</span><br><span class="line">    &#123;</span><br><span class="line">            my_name = name;</span><br><span class="line">            my_age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">friend</span> <span class="class"><span class="keyword">class</span> <span class="title">teacher</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    string my_name;</span><br><span class="line">    <span class="keyword">int</span> my_age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">teacher</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">who_are_you</span><span class="params">(student &amp;s)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;name: &quot;</span> &lt;&lt; s.my_name &lt;&lt; endl;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;age: &quot;</span> &lt;&lt; s.my_age &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    string name = <span class="string">&quot;张三&quot;</span>;</span><br><span class="line">    <span class="keyword">int</span> age = <span class="number">18</span>;</span><br><span class="line">    <span class="function">student <span class="title">s</span><span class="params">(name,age)</span></span>;</span><br><span class="line">    teacher t;</span><br><span class="line">    t.<span class="built_in">who_are_you</span>(s);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>友元包含友元函数和友元类</li>
+<li>友元是C++提供的一种破坏数据封装和数据隐藏的机制。</li>
+<li>通过将一个模块声明为另一个模块的友元，一个模块能够引用到另外一个模块中本是被隐藏的信息。</li>
+<li>为了确保数据的完整性，及数据封装与隐藏的原则，<br>建议尽量不使用或少使用友元。</li>
+</ul>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Carl Chen
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2022/03/30/C++/%E5%8F%8B%E5%85%83/" target="_blank">友元</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
     </div>
-    <div class="tags-content">
-        <a href="/tags/C/" style="font-size: 17.78px; color: #797979">C++</a> <a href="/tags/CMake/" style="font-size: 16.33px; color: #8e8e8e">CMake</a> <a href="/tags/Linux%E5%91%BD%E4%BB%A4/" style="font-size: 14.89px; color: #a2a2a2">Linux命令</a> <a href="/tags/linux%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/" style="font-size: 13.44px; color: #b7b7b7">linux常用工具</a> <a href="/tags/linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" style="font-size: 25px; color: #111">linux系统编程</a> <a href="/tags/python/" style="font-size: 22.11px; color: #3b3b3b">python</a> <a href="/tags/python%E8%84%9A%E6%9C%AC/" style="font-size: 13.44px; color: #b7b7b7">python脚本</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" style="font-size: 23.56px; color: #262626">工作总结</a> <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" style="font-size: 13.44px; color: #b7b7b7">排序算法</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 19.22px; color: #646464">数据结构</a> <a href="/tags/%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97/" style="font-size: 13.44px; color: #b7b7b7">栈和队列</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 12px; color: #ccc">算法</a> <a href="/tags/%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95/" style="font-size: 12px; color: #ccc">经典算法</a> <a href="/tags/%E8%87%AA%E5%AD%A6python/" style="font-size: 20.67px; color: #4f4f4f">自学python</a> <a href="/tags/%E9%80%A0%E8%BD%AE%E5%AD%90/" style="font-size: 14.89px; color: #a2a2a2">造轮子</a> <a href="/tags/%E9%93%BE%E8%A1%A8/" style="font-size: 14.89px; color: #a2a2a2">链表</a>
+    <div class="article-footer">
+        
+            <div class="category">
+                分类：
+                
+                    <a href="/category/C/">C++</a>
+                
+            </div>
+        
+        
+            <div class="tag">
+                标签：
+                
+                    <a href="/tags/C/">C++</a>
+                
+            </div>
+        
+        <div class="article-prev-next">
+            
+            
+                <a href="/2022/03/27/C++/%E6%A8%A1%E6%9D%BF/" class="next-prefix">» </a> 下一篇：    <a href="/2022/03/27/C++/%E6%A8%A1%E6%9D%BF/" title="发布于 2022-03-27 06:24">模板</a>
+            
+        </div>
     </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
 </div>
 
     </div>
