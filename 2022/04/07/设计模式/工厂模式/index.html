@@ -6,7 +6,7 @@
     <meta name="referrer" content="origin">
     <meta http-equiv="Cache-Control" content="no-transform">
     <meta http-equiv="Cache-Control" content="no-siteapp">
-    <title>归档</title>
+    <title>简单工厂模式</title>
 
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
@@ -17,181 +17,131 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
 
-    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
 <meta name="generator" content="Hexo 5.4.0"></head>
 <body>
     <a id="cover"></a>
     <div id="header">
-    <div class="header" >
+    <div class="header">
         <div class="vertical">
             <div class="inner">
-                <h1 class="header-title"></h1>
-                <h2 class="header-description" id="hitokoto"></h2>
-                <h3 class="header-info" id="hitokotoAuthor"></h3>
-                <!--
-                <h1 class="header-subtitle"></h1>
-                <p class="header-subinfo"></p>
-                -->
+                <h1 class="header-subtitle">简单工厂模式</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2022-04-07
+                        </span>
+                        
+                            <span id="/2022/04/07/设计模式/工厂模式/" class="leancloud_visitors" data-flag-title="简单工厂模式">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2022/04/07/设计模式/工厂模式/"></span>
+                        </span>  
+                    </p>                 
+                </div>
             </div>
         </div>
-        <a class="scroll-down" href="javascript:;" target="_self" data-offset="-45">
-            <span class="hidden">Scroll Down</span>
-            <i class="scroll-down-icon iconfont icon-return"></i>
-        </a>
+        <canvas id="articleHeaderCanvas"></canvas>
     </div>
 </div>
     <div id="container">
     <div id="content">
-        
-    <div class="articles">
-        
-        
-            
-                
-                    
-                    <div class="archives-wrap">      
-                        <div class="archive-year-wrap">
-                            <a href="/archive/2021" class="archive-year">
-                                2021
-                            </a>
-                        </div>
-                        <div class="archives">
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>07/17</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/07/17/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/sms%E4%BF%A1%E6%81%AF/">sms信息</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>06/30</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/06/30/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/sqlite3/">sqlite3</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>06/30</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/06/30/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E5%A5%97%E6%8E%A5%E5%AD%972/">套接字2</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>06/30</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/06/30/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E5%A5%97%E6%8E%A5%E5%AD%971/">套接字1</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>05/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/05/31/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E4%BF%A1%E5%8F%B7%E9%87%8F/">信号量</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>05/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/05/31/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/">共享内存</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>05/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/05/31/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>05/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/05/31/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E4%BF%A1%E5%8F%B7/">信号</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>05/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/05/31/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/">有名管道</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>05/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2021/05/31/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/%E7%AE%A1%E9%81%93/">管道</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-        
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ol>
+<li><p>定义：定义一个工厂类，他可以根据参数的不同返回不同类的实例，被创建的实例通常都具有共同的父类</p>
+</li>
+<li><p>在简单工厂模式中用于被创建实例的方法通常为静态(static)方法,因此简单工厂模式又被成为静态工厂方法(Static Factory Method)</p>
+</li>
+<li><p>需要什么，只需要传入一个正确的参数，就可以获取所需要的对象，而无需知道其实现过程</p>
+</li>
+</ol>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/factory.73jpd9kkbv00.png" alt="uml"></p>
+<p>其中工厂类为:TankFactory</p>
+<p>产品类为:Tank</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    Tank_Type_56,</span><br><span class="line">    Tank_Type_96,</span><br><span class="line">    Tank_Type_Num</span><br><span class="line">&#125; Tank_Type;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tank</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">const</span> <span class="built_in">string</span> &amp;<span class="title">type</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tank56</span> :</span> <span class="keyword">public</span> Tank</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Tank56() : Tank(), mstr_type(<span class="string">&quot;Tank56&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">const</span> <span class="built_in">string</span> &amp;<span class="title">type</span><span class="params">()</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; mstr_type.data() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> mstr_type;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">string</span> mstr_type;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//具体的产品类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tank96</span> :</span> <span class="keyword">public</span> Tank</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Tank96() : Tank(), mstr_type(<span class="string">&quot;Tank96&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> <span class="built_in">string</span> &amp;<span class="title">type</span><span class="params">()</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; mstr_type.data() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> mstr_type;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">string</span> mstr_type;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//工厂类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TankFactory</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//根据产品信息创建具体的产品类实例，返回一个抽象产品类</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> Tank *<span class="title">createTank</span><span class="params">(Tank_Type type)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (type)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">case</span> Tank_Type_56:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Tank56();</span><br><span class="line">        <span class="keyword">case</span> Tank_Type_96:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Tank96();</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    TankFactory *factory = <span class="keyword">new</span> TankFactory();</span><br><span class="line">    Tank *tank56 = factory-&gt;createTank(Tank_Type_56);</span><br><span class="line">    tank56-&gt;type();</span><br><span class="line">    Tank *tank96 = factory-&gt;createTank(Tank_Type_96);</span><br><span class="line">    tank96-&gt;type();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> tank96;</span><br><span class="line">    tank96 = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">delete</span> tank56;</span><br><span class="line">    tank56 = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">delete</span> factory;</span><br><span class="line">    factory = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>工厂类包含必要的逻辑判断，可以决定在什么时候创建哪一个产品的实例。客户端可以免除直接创建产品对象的职责</li>
+<li>客户端无需知道所创建具体产品的类名，只需知道参数即可</li>
+<li>也可以引入配置文件，在不修改客户端代码的情况下更换和添加新的具体产品类</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>工厂类集中了所有产品的创建逻辑，职责过重，一旦异常，整个系统将受影响</li>
+<li>使用简单工厂模式会增加系统中类的个数(引入新的工厂类)，增加系统的复杂度和理解难度</li>
+<li>系统扩展困难，一旦增加新产品不得不修改工厂逻辑，在产品类型较多时，可能造成逻辑过于复杂</li>
+<li>简单工厂模式使用了static工厂方法，造成工厂角色无法形成基于继承的等级结构。</li>
+</ol>
+<h2 id="简单工厂模式的适用环境"><a href="#简单工厂模式的适用环境" class="headerlink" title="简单工厂模式的适用环境"></a>简单工厂模式的适用环境</h2><ol>
+<li>工厂类负责创建的对象比较少，因为不会造成工厂方法中的业务逻辑过于复杂</li>
+<li>客户端只知道传入工厂类的参数，对如何创建对象不关心</li>
+</ol>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
             </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Carl Chen
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2022/04/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" target="_blank">简单工厂模式</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
         </div>
+    </div>
+    <div class="article-footer">
         
-    </div>   
-
-
-    <div class="pagination-bottom">
-        <div class="pagination">
+            <div class="category">
+                分类：
+                
+                    <a href="/category/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                
+            </div>
+        
+        
+            <div class="tag">
+                标签：
+                
+                    <a href="/tags/C/">C++</a>
+                
+                    <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                
+            </div>
+        
+        <div class="article-prev-next">
             
-                <a class="extend prev" rel="prev" href="/archive/page/3/">上一页</a><a class="page-number" href="/archive/">1</a><a class="page-number" href="/archive/page/2/">2</a><a class="page-number" href="/archive/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/archive/page/5/">5</a><a class="page-number" href="/archive/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/archive/page/9/">9</a><a class="extend next" rel="next" href="/archive/page/5/">下一页</a>
+            
+                <a href="/2022/04/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" class="next-prefix">» </a> 下一篇：    <a href="/2022/04/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" title="发布于 2022-04-06 08:58">状态模式</a>
             
         </div>
     </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
 
     </div>
 </div>
