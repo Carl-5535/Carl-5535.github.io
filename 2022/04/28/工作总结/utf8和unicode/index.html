@@ -6,7 +6,7 @@
     <meta name="referrer" content="origin">
     <meta http-equiv="Cache-Control" content="no-transform">
     <meta http-equiv="Cache-Control" content="no-siteapp">
-    <title>单例模式</title>
+    <title>utf8和unicode</title>
 
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
@@ -31,19 +31,19 @@
     <div class="header">
         <div class="vertical">
             <div class="inner">
-                <h1 class="header-subtitle">单例模式</h1>
+                <h1 class="header-subtitle">utf8和unicode</h1>
                 <div class="header-subinfo">
                     <p class="article-info-text">
                         <span>
-                            <i class="iconfont icon-time"></i> 发表时间：2022-04-24
+                            <i class="iconfont icon-time"></i> 发表时间：2022-04-28
                         </span>
                         
-                            <span id="/2022/04/24/设计模式/单例模式/" class="leancloud_visitors" data-flag-title="单例模式">
+                            <span id="/2022/04/28/工作总结/utf8和unicode/" class="leancloud_visitors" data-flag-title="utf8和unicode">
                                 <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
                             </span>
                         
                         <span>
-                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2022/04/24/设计模式/单例模式/"></span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2022/04/28/工作总结/utf8和unicode/"></span>
                         </span>  
                     </p>                 
                 </div>
@@ -57,29 +57,69 @@
         <div id="article">
     <div class="toc"></div>
     <div class="article-body">
-        <p>单例应该是我接触的第一个设计模式，当时是需要一个读取和保存配置文件的方法类，由于多处需要用到，经过了解知道了单例模式，进而知道了设计模式</p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><blockquote>
-<p>单例模式(Singleton Pattern)：确保某一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。单例模式是一种对象创建型模式。</p>
+        <p>最近又遇到了短信编解码的问题，个别符号显示乱码，所以有了这次学习记录。</p>
+<p>关于短信PDU编码之前有过详细介绍：<a href="/2021/07/17/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/sms%E4%BF%A1%E6%81%AF/">sms信息</a></p>
+<p>关于短信内容的三种编码方式也有过介绍：<a href="/2021/07/17/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/sms%E4%BF%A1%E6%81%AF%E7%BC%96%E7%A0%81/">sms信息编码</a></p>
+<p>本次主要学习UTF-8和Unicode码及其互相转换</p>
+<h2 id="ASCII码"><a href="#ASCII码" class="headerlink" title="ASCII码"></a>ASCII码</h2><blockquote>
+<p>ASCII ((American Standard Code for Information Interchange): 美国信息交换标准代码）是基于拉丁字母的一套电脑编码系统，主要用于显示现代英语和其他西欧语言。</p>
 </blockquote>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>定义一个单例类：</p>
+<p>ASCII 码使用指定的7 位或8 位二进制数组合来表示128 或256 种可能的字符。标准ASCII 码也叫基础ASCII码，使用7 位二进制数（剩下的1位二进制为0）来表示所有的大写和小写字母，数字0 到9、标点符号，以及在美式英语中使用的特殊控制字符。</p>
+<p>我们常说的ASCII 码也就是基础ASCII码，ASCII码表如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/ascll.png" alt="ASCII码表"></p>
+<p>ASCII码有局限性，基础表只能显示现代英语和数字，拓展表每个西欧语言又有不同的规定，再加上只最大只能表示256个字符，对于像中文这样有几万个汉字的语言来说，完全不够用。</p>
+<h2 id="Unicode码"><a href="#Unicode码" class="headerlink" title="Unicode码"></a>Unicode码</h2><blockquote>
+<p>统一码（Unicode），也叫万国码、单一码，是计算机科学领域里的一项业界标准，包括字符集、编码方案等。Unicode是为了解决传统的字符编码方案的局限而产生的，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，以满足跨语言、跨平台进行文本转换、处理的要求。</p>
+</blockquote>
+<p>Unicode 是一个很大的集合，现在的规模可以容纳100多万个符号。每个符号的编码都不一样，比如，U+0639表示阿拉伯字母Ain，U+0041表示英语的大写字母A，U+4E25表示汉字严。具体的符号对应表，可以查询<a target="_blank" rel="noopener" href="https://home.unicode.org/">unicode.org</a>，或者专门的汉字对应表。</p>
+<p>Unicode通常占两个字节，有一些特殊的拓展会占三个字节。</p>
+<p>由于Unicode码只是一个码表，当按照码表储存时，计算机不知道怎么去解析，如有三个字节，那么这是三个ASCII 码还是一个SCII 码和一个Unicode码，又或者是一个三字节的Unicode码.</p>
+<h2 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h2><p>随着互联网的普及，在数据传输中需要一种统一的编码方式，这时UTF编码出现了，而UTF-8是使用最广的编码方式。值得注意的是UTF-8只是Unicode码的一种表示方式！</p>
+<p>UTF-8 最大的一个特点，就是它是一种变长的编码方式。它可以使用1~4个字节表示一个符号，根据不同的符号而变化字节长度。</p>
+<p>UTF-8 的编码规则只有两条：</p>
 <ol>
-<li>私有化它的构造函数，以防止外界创建单例类的对象；</li>
-<li>使用类的私有静态指针变量指向类的唯一实例；</li>
-<li>使用一个公有的静态方法获取该实例。</li>
+<li><p>对于单字节的符号，字节的第一位设为0，后面7位为这个符号的 Unicode 码。因此对于英语字母，UTF-8 编码和 ASCII 码是相同的。</p>
+</li>
+<li><p>对于n字节的符号（n &gt; 1），第一个字节的前n位都设为1，第n + 1位设为0，后面字节的前两位一律设为10。剩下的没有提及的二进制位，全部为这个符号的 Unicode 码。</p>
+</li>
 </ol>
-<p>最直观的实现方式如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Singleton</span>()&#123;cout&lt;&lt; <span class="string">&quot;creat Singleton&quot;</span> &lt;&lt;endl;&#125;</span><br><span class="line">    <span class="keyword">static</span> Singleton *instance;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">static</span> Singleton *<span class="title">getInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Singleton* Singleton::instance = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+<p>下表总结了编码规则，字母x表示可用编码的位。</p>
+<table>
+<thead>
+<tr>
+<th align="center">Unicode符号范围</th>
+<th align="center">UTF-8编码方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">(十六进制)</td>
+<td align="center">(二进制)</td>
+</tr>
+<tr>
+<td align="center">0000 0000-0000 007F</td>
+<td align="center">0xxxxxxx</td>
+</tr>
+<tr>
+<td align="center">0000 0080-0000 07FF</td>
+<td align="center">110xxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td align="center">0000 0800-0000 FFFF</td>
+<td align="center">1110xxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td align="center">0001 0000-0010 FFFF</td>
+<td align="center">11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td align="center">跟据上表，解读 UTF-8 编码非常简单。如果一个字节的第一位是0，则这个字节单独就是一个字符；如果第一位是1，则连续有多少个1，就表示当前字符占用多少个字节。</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>根据这张表我们就可以写出转换函数了</p>
+<h2 id="UTF-8转Unicode码"><a href="#UTF-8转Unicode码" class="headerlink" title="UTF-8转Unicode码"></a>UTF-8转Unicode码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">utf8_to_unicode</span><span class="params">(<span class="keyword">char</span> *in, <span class="keyword">char</span> *out, <span class="keyword">int</span> in_len, <span class="keyword">int</span> *out_len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">nullptr</span> == in || <span class="literal">nullptr</span> == out)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> * in_hex = (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)in;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> index = <span class="number">0</span>; index &lt; in_len; )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (in_hex[index] &lt; <span class="number">0x80</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            out[length + <span class="number">0</span>] = <span class="number">0x00</span>;</span><br><span class="line">            out[length + <span class="number">1</span>] = in_hex[index];</span><br><span class="line">            index ++;</span><br><span class="line">            length += <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (in_hex[index] &lt; <span class="number">0xE0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            out[length + <span class="number">0</span>] = (in_hex[index + <span class="number">0</span>] &amp; <span class="number">0x1f</span>) &gt;&gt; <span class="number">2</span>;</span><br><span class="line">            out[length + <span class="number">1</span>] = ((in_hex[index + <span class="number">0</span>] &amp; <span class="number">0x03</span>) &lt;&lt; <span class="number">6</span>) | (in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x3f</span>) ;</span><br><span class="line">            length += <span class="number">2</span>;</span><br><span class="line">            index += <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (in_hex[index] &lt; <span class="number">0xF0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            out[length + <span class="number">0</span>] = ((in_hex[index + <span class="number">0</span>] &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">4</span>) | ((in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x3f</span>) &gt;&gt; <span class="number">2</span>);</span><br><span class="line">            out[length + <span class="number">1</span>] = ((in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x03</span>) &lt;&lt; <span class="number">6</span>) | (in_hex[index + <span class="number">2</span>] &amp; <span class="number">0x3f</span>) ;</span><br><span class="line">            length += <span class="number">2</span>;</span><br><span class="line">            index += <span class="number">3</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="comment">//Supplementary Private Use Area</span></span><br><span class="line">        &#123;</span><br><span class="line">            out[length + <span class="number">0</span>] = ((in_hex[index + <span class="number">0</span>] &amp; <span class="number">0x08</span>) &lt;&lt; <span class="number">2</span>) | ((in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x3f</span>) &gt;&gt; <span class="number">4</span>);</span><br><span class="line">            out[length + <span class="number">1</span>] = ((in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">4</span>) |((in_hex[index + <span class="number">2</span>] &amp; <span class="number">0x3f</span>) &gt;&gt; <span class="number">2</span>);</span><br><span class="line">            out[length + <span class="number">2</span>] = ((in_hex[index + <span class="number">2</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) |(in_hex[index + <span class="number">3</span>] &amp; <span class="number">0x3f</span>);</span><br><span class="line">            length += <span class="number">3</span>;</span><br><span class="line">            index += <span class="number">4</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    *out_len = length;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>上面这种实现是线程不安全的，容易出现重入的问题，所以需要进行优化</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>单例有两种最常见模式：懒汉模式和饿汉模式</p>
-<p>上面的实现就是典型的懒汉模式，考虑上线程安全，我们加上锁：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒汉模式</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Singleton</span>()&#123;cout&lt;&lt; <span class="string">&quot;creat Singleton&quot;</span> &lt;&lt;endl;&#125;</span><br><span class="line">    <span class="keyword">static</span> Singleton *instance;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">pthread_mutex_t</span> mutex;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">static</span> Singleton *<span class="title">getInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">nullptr</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">pthread_mutex_lock</span>(&amp;mutex);</span><br><span class="line">            <span class="keyword">if</span> (instance == <span class="literal">nullptr</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">pthread_mutex_unlock</span>(&amp;mutex);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">pthread_mutex_t</span> Singleton::mutex;</span><br><span class="line">Singleton* Singleton::instance = <span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure>
-
-<p>饿汉模式就是在未进入main函数时就先创建好单例，如果没有使用会造成内存的浪费，我之前喜欢使用这种方式，因为简单：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//饿汉模式</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Singleton</span>()&#123;cout&lt;&lt; <span class="string">&quot;creat Singleton&quot;</span> &lt;&lt;endl;&#125;</span><br><span class="line">    <span class="keyword">static</span> Singleton *instance;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">static</span> Singleton *<span class="title">getInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Singleton* Singleton::instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br></pre></td></tr></table></figure>
-
-<p>最近看到知乎上有个更优雅的方式实现<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37469260">单例</a>，不过需要在C++0x之后的版本使用：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Singleton</span>()&#123;cout&lt;&lt; <span class="string">&quot;creat Singleton&quot;</span> &lt;&lt;endl;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">static</span> Singleton&amp; <span class="title">getInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">static</span> Singleton instance;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="Unicode码转UTF-8"><a href="#Unicode码转UTF-8" class="headerlink" title="Unicode码转UTF-8"></a>Unicode码转UTF-8</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">unicode_to_utf8</span><span class="params">(<span class="keyword">char</span> *in, <span class="keyword">unsigned</span> <span class="keyword">int</span> in_len, <span class="keyword">char</span> *out, <span class="keyword">unsigned</span> <span class="keyword">int</span> *out_len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">nullptr</span> == in || <span class="literal">nullptr</span> == out || in_len % <span class="number">2</span> != <span class="number">0</span> || <span class="literal">nullptr</span> == out_len)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span>   *in_hex = (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)in;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span>    length  = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> index = <span class="number">0</span>; index &lt; in_len; index += <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (in_hex[index] == <span class="number">0x00</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            out[length++] = in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x7f</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        out[length + <span class="number">0</span>] = <span class="number">0xe0</span> | (in_hex[index + <span class="number">0</span>] &gt;&gt; <span class="number">4</span>);</span><br><span class="line">        out[length + <span class="number">1</span>] = <span class="number">0x80</span> | ((in_hex[index + <span class="number">0</span>] &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">2</span>) | (in_hex[index + <span class="number">1</span>] &gt;&gt; <span class="number">6</span>);</span><br><span class="line">        out[length + <span class="number">2</span>] = <span class="number">0x80</span> | (in_hex[index + <span class="number">1</span>] &amp; <span class="number">0x3f</span>);</span><br><span class="line">        length += <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    *out_len = length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">
@@ -89,7 +129,7 @@
             <div class="suffix-box-right">
                 <span class="suffix-box-title">文章作者</span>：Carl Chen
                 <br>
-                <span class="suffix-box-title">文章出处</span>：<a href="/2022/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" target="_blank">单例模式</a>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2022/04/28/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/utf8%E5%92%8Cunicode/" target="_blank">utf8和unicode</a>
                 <br>
                 <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
                 <br>
@@ -106,7 +146,7 @@
             <div class="category">
                 分类：
                 
-                    <a href="/category/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
                 
             </div>
         
@@ -114,19 +154,14 @@
             <div class="tag">
                 标签：
                 
-                    <a href="/tags/C/">C++</a>
-                
-                    <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
                 
             </div>
         
         <div class="article-prev-next">
             
-                <a href="/2022/04/25/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B4%E5%9E%8B/" class="prev-prefix">« </a> 上一篇：    <a href="/2022/04/25/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B4%E5%9E%8B/" title="发布于 2022-04-25 09:51">整型数据</a>
-                <br>
             
-            
-                <a href="/2022/04/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" class="next-prefix">» </a> 下一篇：    <a href="/2022/04/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="发布于 2022-04-13 08:28">抽象工厂模式</a>
+                <a href="/2022/04/25/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/jiffies/" class="next-prefix">» </a> 下一篇：    <a href="/2022/04/25/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/jiffies/" title="发布于 2022-04-25 09:59">jiffies</a>
             
         </div>
     </div>
