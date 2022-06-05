@@ -60,7 +60,7 @@
         <h2 id="产测工具"><a href="#产测工具" class="headerlink" title="产测工具"></a>产测工具</h2><p>又是一个多月过去了，在WiFi功能完成差不多后，我又需要做一个产测工具，用于工厂生产和测试。在不知不觉中这个产品的开发已经进入收尾了，要开始产测了。</p>
 <p>产测工具已经完成，并出差去了工厂现场调试，现将方案和遇到的问题做一个记录</p>
 <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>主要分为五个工作站，分别为固件下载，WiFi校准，功能测试，驻网测试，打印标签。功能和流程如下图：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/mptool.png" alt="流程"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/mptool.png" alt="流程"></p>
 <h2 id="工具设计"><a href="#工具设计" class="headerlink" title="工具设计"></a>工具设计</h2><p>工具和设备主要使用UDP进行通信，设备作为一个udp server，工具作为client，通过定义好的规则，工具可以向设备发送命令，获取信息，设置参数等</p>
 <p>工具功能：</p>
 <ul>
@@ -82,8 +82,8 @@
 <p>QT开发有三种方式，纯代码，纯UI，以及代码UI结合的方式，本次为了提高开发效率使用代码和UI结合的方式进行开发（上一个高通的5G MIFI采用纯代码开发）</p>
 <p>标签打印使用codesoft6，完成标签模板，设置变量，产测工具通过接口将变量传给codesoft6进行打印</p>
 <p>放几张界面图片：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/QTselect.png" alt="select"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/QTfunc.png" alt="func"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/QTselect.png" alt="select"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/QTfunc.png" alt="func"></p>
 <h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h2><p>流程控制是工具对接工厂的MES系统</p>
 <blockquote>
 <p>MES系统是一套面向制造企业车间执行层的生产信息化管理系统。MES可以为企业提供包括制造数据管理、计划排程管理、生产调度管理、库存管理、质量管理、人力资源管理、工作中心/设备管理、工具工装管理、采购管理、成本管理、项目看板管理、生产过程控制、底层数据集成分析、上层数据集成分解等管理模块，为企业打造一个扎实、可靠、全面、可行的制造协同管理平台。</p>

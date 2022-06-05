@@ -69,23 +69,23 @@
 <li>如果终端连接CS域，则不需要接收CBS消息。如果终端连接在PS域中且当前没有传输数据，那么终端应该可以接收消息。</li>
 </ul>
 <p>一条CBS消息最多由15个CBS page构成，每个CBS page至多82个字节，如果采用GSM7位编码的话，82*8/7=93个字符，并且每个CBS page拥有相同的Message ID和SN号</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/cbs_description.png" alt="description"></p>
-<h2 id="CBS-数据"><a href="#CBS-数据" class="headerlink" title="CBS 数据"></a>CBS 数据</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/cbs_data.png" alt="CBS data"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/cbs_description.png" alt="description"></p>
+<h2 id="CBS-数据"><a href="#CBS-数据" class="headerlink" title="CBS 数据"></a>CBS 数据</h2><p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/cbs_data.png" alt="CBS data"></p>
 <p>此数据为十进制，但是我们解析时是按位解析的</p>
 <h2 id="数据解析"><a href="#数据解析" class="headerlink" title="数据解析"></a>数据解析</h2><h3 id="CBS"><a href="#CBS" class="headerlink" title="CBS"></a>CBS</h3><p>CBS就是由下图部分组分</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/cbs_decode.png" alt="cbs"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/cbs_decode.png" alt="cbs"></p>
 <h3 id="Serial-Number"><a href="#Serial-Number" class="headerlink" title="Serial Number"></a>Serial Number</h3><ul>
 <li>GS:00 (GS 是CBS的发送方填充的，00优先级最高，代表基站发送)</li>
 <li>Emergency Uset Alert: 1 （1：enable   0：disable）</li>
 <li>Popup：1（1：enable   0：disable）</li>
 <li>Upadte Number： 0 （相当于CBS信息版本，每更新一次+1）</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/SN.png" alt="sn"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/SN.png" alt="sn"></p>
 <h3 id="Message-Identifier"><a href="#Message-Identifier" class="headerlink" title="Message Identifier"></a>Message Identifier</h3><p>顾名思义代表消息id，此id的范围如下</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/MI.png" alt="mi"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/MI.png" alt="mi"></p>
 <h3 id="Data-Coding-Scheme"><a href="#Data-Coding-Scheme" class="headerlink" title="Data Coding Scheme"></a>Data Coding Scheme</h3><p>编码方案，此编码和短信一样共有三种，7BIT,8BIT和USC2</p>
 <p>具体参考文档ETSI TS 123 038，文档部分截图如下</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/codingscheme.png" alt="Scheme"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/codingscheme.png" alt="Scheme"></p>
 <p>最后的CB Data部分就按指定的编码方式解析即可</p>
 
         <p class="suffix-end">__END__</p>

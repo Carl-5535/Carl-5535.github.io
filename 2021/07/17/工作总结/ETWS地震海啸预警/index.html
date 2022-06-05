@@ -58,7 +58,7 @@
     <div class="toc"></div>
     <div class="article-body">
         <h1 id="Earthquake-and-Tsunami-Warning-System"><a href="#Earthquake-and-Tsunami-Warning-System" class="headerlink" title="Earthquake and Tsunami Warning System"></a>Earthquake and Tsunami Warning System</h1><p>ETWS即地震海啸预警系统，是为了在地震和海啸发生时提醒用户做好防护准备</p>
-<h2 id="ETWS简介"><a href="#ETWS简介" class="headerlink" title="ETWS简介"></a>ETWS简介</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/ETWSeg.png" alt="etws"></p>
+<h2 id="ETWS简介"><a href="#ETWS简介" class="headerlink" title="ETWS简介"></a>ETWS简介</h2><p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/ETWSeg.png" alt="etws"></p>
 <p>ETWS会向设备发送两种信息：</p>
 <p>1.快速预警信息（Primary Notification）</p>
 <p>ETWS一直在强调唯快不破，在地震、海啸等重大灾难发生后，几秒最慢几分钟  后就会殃及到整个受灾区域。因此，此预警通知应迅速送达受紧急影响地区的用户，使其能够采取任何行动逃离危险，所以此预警信息携带数据较小，主要告诉用户灾害类型</p>
@@ -72,28 +72,28 @@
 <li>在Primary Notification后面不一定总是有Secondary Notification</li>
 <li>可能没有Primary Notification而只有Secondary Notification，完全依赖ETWS消息提供方策略</li>
 </ol>
-<h2 id="ETWS-数据"><a href="#ETWS-数据" class="headerlink" title="ETWS 数据"></a>ETWS 数据</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/etws_data.png" alt="data"></p>
-<h3 id="Primary-Notification"><a href="#Primary-Notification" class="headerlink" title="Primary Notification"></a>Primary Notification</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/primary_ctws.png" alt="Primary"></p>
+<h2 id="ETWS-数据"><a href="#ETWS-数据" class="headerlink" title="ETWS 数据"></a>ETWS 数据</h2><p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/etws_data.png" alt="data"></p>
+<h3 id="Primary-Notification"><a href="#Primary-Notification" class="headerlink" title="Primary Notification"></a>Primary Notification</h3><p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/primary_ctws.png" alt="Primary"></p>
 <h3 id="Serial-Number"><a href="#Serial-Number" class="headerlink" title="Serial Number"></a>Serial Number</h3><ul>
 <li>GS:00 (GS 是CBS的发送方填充的，00优先级最高，代表基站发送)</li>
 <li>Emergency Uset Alert: 1 （1：enable   0：disable）</li>
 <li>Popup：1（1：enable   0：disable）</li>
 <li>Upadte Number： 0 （相当于CBS信息版本，每更新一次+1）</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/SN.png" alt="sn"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/SN.png" alt="sn"></p>
 <h3 id="Message-Identifier"><a href="#Message-Identifier" class="headerlink" title="Message Identifier"></a>Message Identifier</h3><p>顾名思义代表消息id，此id的范围如下</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/etws_mi.png" alt="mi"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/etws_mi.png" alt="mi"></p>
 <h3 id="Warning-Type"><a href="#Warning-Type" class="headerlink" title="Warning Type"></a>Warning Type</h3><p>warning type主要存放在这部分的前7个字节</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/warn_typ.png" alt="Warning"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/warn_typ.png" alt="Warning"></p>
 <p>具体意义如下图</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/warning_typ.png" alt="Warning"></p>
-<h2 id="Secondary-Notification"><a href="#Secondary-Notification" class="headerlink" title="Secondary Notification"></a>Secondary Notification</h2><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/secondary_etws.png" alt="Secondary"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/warning_typ.png" alt="Warning"></p>
+<h2 id="Secondary-Notification"><a href="#Secondary-Notification" class="headerlink" title="Secondary Notification"></a>Secondary Notification</h2><p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/secondary_etws.png" alt="Secondary"></p>
 <h3 id="Message-Type"><a href="#Message-Type" class="headerlink" title="Message Type"></a>Message Type</h3><p>消息类型如下图</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/message_type.png" alt="Message"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/message_type.png" alt="Message"></p>
 <h3 id="Data-Coding-Scheme"><a href="#Data-Coding-Scheme" class="headerlink" title="Data Coding Scheme"></a>Data Coding Scheme</h3><p>编码方案，此编码和短信一样共有三种，7BIT,8BIT和USC2</p>
 <p>具体参考文档ETSI TS 123 038，文档部分截图如下</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/codingscheme.png" alt="Scheme"></p>
-<h3 id="CB-Data"><a href="#CB-Data" class="headerlink" title="CB Data"></a>CB Data</h3><p><img src="https://cdn.jsdelivr.net/gh/Carl-5535/images@master/blog/etwa_cb_data.png" alt="Data"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/codingscheme.png" alt="Scheme"></p>
+<h3 id="CB-Data"><a href="#CB-Data" class="headerlink" title="CB Data"></a>CB Data</h3><p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/etwa_cb_data.png" alt="Data"></p>
 <p>最后的CB Data部分就按页数分割，以指定的长度解析即可</p>
 
         <p class="suffix-end">__END__</p>
