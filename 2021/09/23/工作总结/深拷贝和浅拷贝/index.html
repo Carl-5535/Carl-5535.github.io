@@ -1,66 +1,282 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
-    <meta name="referrer" content="origin">
-    <meta http-equiv="Cache-Control" content="no-transform">
-    <meta http-equiv="Cache-Control" content="no-siteapp">
-    <title>深拷贝和浅拷贝</title>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="浅拷贝造成的double free">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深拷贝和浅拷贝">
+<meta property="og:url" content="http://example.com/2021/09/23/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="浅拷贝造成的double free">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-23T13:32:36.000Z">
+<meta property="article:modified_time" content="2022-09-28T16:37:08.060Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="工作总结">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>深拷贝和浅拷贝 - Carl&#39;s Blog</title>
 
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
-    
-        <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
-    
 
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
 
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
 <meta name="generator" content="Hexo 5.4.0"></head>
+
+
 <body>
-    <a id="cover"></a>
-    <div id="header">
-    <div class="header">
-        <div class="vertical">
-            <div class="inner">
-                <h1 class="header-subtitle">深拷贝和浅拷贝</h1>
-                <div class="header-subinfo">
-                    <p class="article-info-text">
-                        <span>
-                            <i class="iconfont icon-time"></i> 发表时间：2021-09-23
-                        </span>
-                        
-                            <span id="/2021/09/23/工作总结/深拷贝和浅拷贝/" class="leancloud_visitors" data-flag-title="深拷贝和浅拷贝">
-                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
-                            </span>
-                        
-                        <span>
-                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2021/09/23/工作总结/深拷贝和浅拷贝/"></span>
-                        </span>  
-                    </p>                 
-                </div>
-            </div>
-        </div>
-        <canvas id="articleHeaderCanvas"></canvas>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深拷贝和浅拷贝"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-23 21:32" pubdate>
+          2021年9月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
 </div>
-    <div id="container">
-    <div id="content">
-        <div id="article">
-    <div class="toc"></div>
-    <div class="article-body">
-        <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>最近原公司老板和一家公司合作开了个新公司，派遣了包括我在内的四位程序猿过去做开发，从原公司离职又到新公司报到，结果这刚过一个月就有一位离职又回原公司了，可能是新公司从零开始代码量太大，他不适应的原因吧</p>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">深拷贝和浅拷贝</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>最近原公司老板和一家公司合作开了个新公司，派遣了包括我在内的四位程序猿过去做开发，从原公司离职又到新公司报到，结果这刚过一个月就有一位离职又回原公司了，可能是新公司从零开始代码量太大，他不适应的原因吧</p>
 <p>言归正传，在新公司我们在做5G设备，毕竟现在5G比较火，我之前在原公司使用的是高通X55平台，没错就是iphone12使用的基带芯片，突出一个贵字，所以销量惨淡，一直在各种送样送客户，所以新公司直接上国内展讯平台，就是要便宜，完全从零开发实在是痛苦，所以在征得原公司领导的同意后，决定使用我之前部门的base库，这个库包含了C/S通讯，数据库操作，xml操作，上报时间，观察者模式等常用的基类和功能类，在使用这个库的时候出现了double free导致程序dump，一个在高通平台使用了两年的库，为什么拿到展讯平台就出问题呢？</p>
 <h2 id="分析错误原因"><a href="#分析错误原因" class="headerlink" title="分析错误原因"></a>分析错误原因</h2><p>经过gdb 调试定位到了出问题的类，由于版权原因我简单的表达一下这个类及base库中的使用方式：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">data_uri</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">char</span> *m_uri;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">data_uri</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *uri)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> uri_length = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        uri_length = <span class="built_in">strlen</span>(uri);</span><br><span class="line">        m_uri = <span class="keyword">new</span> <span class="keyword">char</span>[uri_length + <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">strcpy</span>(m_uri, uri);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">data_uri</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (m_uri != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">delete</span>[] m_uri;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> uri[<span class="number">128</span>] = <span class="string">&quot;db:teacher#limei&quot;</span>;</span><br><span class="line">    data_uri m_data_uri = <span class="built_in">data_uri</span>(uri);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">data_uri</span></span><br><span class="hljs-class">&#123;</span><br><span class="hljs-keyword">private</span>:<br>    <span class="hljs-keyword">char</span> *m_uri;<br><br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">data_uri</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *uri)</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">int</span> uri_length = <span class="hljs-number">0</span>;<br><br>        uri_length = <span class="hljs-built_in">strlen</span>(uri);<br>        m_uri = <span class="hljs-keyword">new</span> <span class="hljs-keyword">char</span>[uri_length + <span class="hljs-number">1</span>];<br>        <span class="hljs-built_in">strcpy</span>(m_uri, uri);<br>    &#125;;<br>    <span class="hljs-keyword">virtual</span> ~<span class="hljs-built_in">data_uri</span>()<br>    &#123;<br>        <span class="hljs-keyword">if</span> (m_uri != <span class="hljs-literal">NULL</span>)<br>        &#123;<br>            <span class="hljs-keyword">delete</span>[] m_uri;<br>        &#125;<br>    &#125;;<br>&#125;;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> uri[<span class="hljs-number">128</span>] = <span class="hljs-string">&quot;db:teacher#limei&quot;</span>;<br>    data_uri m_data_uri = <span class="hljs-built_in">data_uri</span>(uri);<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <p>这个类在构造函数中分配了内存，但是没有定义拷贝构造函数，也没有重写运算描述符，这时会走默认构造函数，只是简单的把指针拷贝过去，即等号右边的 data_uri(uri) 先调用构造函数，然后调用拷贝构造函数，将类拷贝给 m_data_uri，注意两边的类中m_uri指向的是同一片内存，这时等号右边没有用了，会调用析构函数，由于左右两边指向同一块内存，所以当函数运行结束，左边再次析构的时候就会double free</p>
 <p>解决方法：</p>
@@ -81,494 +297,369 @@
 <p>The C++ standard allows an implementation to omit creating a temporary that is only used to initialize another object of the same type. Specifying this option disables that optimization, and forces G++ to call the copy constructor in all cases.</p>
 </blockquote>
 
-        <p class="suffix-end">__END__</p>
-        <div class="suffix-box">
-            <div class="suffix-box-left">
-                <img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
-            </div>
-            <div class="suffix-box-right">
-                <span class="suffix-box-title">文章作者</span>：Carl Chen
-                <br>
-                <span class="suffix-box-title">文章出处</span>：<a href="/2021/09/23/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" target="_blank">深拷贝和浅拷贝</a>
-                <br>
-                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
-                <br>
-                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
-                <br>
-                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
-                <br>
-            </div>
-            <div style="clear: both;"></div>
-        </div>
-    </div>
-    <div class="article-footer">
-        
-            <div class="category">
-                分类：
                 
-                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
-                
-            </div>
-        
-        
-            <div class="tag">
-                标签：
-                
-                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
-                
-            </div>
-        
-        <div class="article-prev-next">
+              </div>
             
-                <a href="/2021/10/13/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/getprop%E7%9A%84%E5%9D%91/" class="prev-prefix">« </a> 上一篇：    <a href="/2021/10/13/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/getprop%E7%9A%84%E5%9D%91/" title="发布于 2021-10-13 09:32">getprop的坑</a>
-                <br>
-            
-            
-                <a href="/2021/08/11/CMake/%E6%89%93%E5%8C%85/" class="next-prefix">» </a> 下一篇：    <a href="/2021/08/11/CMake/%E6%89%93%E5%8C%85/" title="发布于 2021-08-11 10:11">打包</a>
-            
-        </div>
-    </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
     
-    <div class="article-comments">
-        <div class="comments-title">
-            评论列表
-        </div>
-        <div class="comments-content">
-        </div>
-    </div>
-
-</div>
-
-    </div>
-</div>
-    <div id="footer"></div>
-    <div id="sidebar">
-    <div class="menu-wrap" style="display:none;">
-        <nav class="menu">
-            <div class="menu-introduce"> 
-                <div class="introduce-avatar"></div> 
-                <div class="introduce-info"> 
-                    <div class="introduce-user"><span></span></div>        
-                </div> 
-            </div> 
-            <div class="menu-list">
-                <ul></ul> 
-            </div> 
-            <div class="menu-link"></div> 
-        </nav>
-        <button class="menu-button-close"></button>
-        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
-                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
-            </svg>
-        </div>
-    </div>
-    <button class="menu-button-open">MENU</button>
-    <div class="menu-cover"></div>
-</div>
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
-<script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
-<script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
-<div class="search-window">
-    <div class="search-content">
-        <div class="search-content-icon">
-            <i class="iconfont icon-search"></i>
-        </div>
-        <div id="search-input" class="search-input"></div>
-    </div>
-
-    <div class="search-scroll">
-        <div class="search-result">
-            <div id="search-stats" class="search-stats"></div>
-            <div id="search-hits"></div>
-            <div id="search-pagination" class="search-pagination"></div>
-        </div>
-    </div>
-
-    <span class="search-close-icon">
-        <i class="iconfont icon-close"></i>
-    </span>
-</div>
-    <div id="tools">
-    <div class="progressbar-top"></div>
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
-    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
-    <div class="wrap-right"></div>
-    <div class="loading"></div>
-</div>
-    <script>
-    window.config = {
-        GitHubUserName     : 'first19326',
-        GitHubRepositories : 'Hexo-LiveForCode',
-
-        BlogUser      : 'Carl Chen',
-        BlogAvatar    : 'https://fastly.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg',
-        BlogStartDate : '2020-11-08',
-
-        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, Live For Code',
-        WebsiteTitleBlurTimeOut  : 500,
-        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
-        WebsiteTitleFocusTimeOut : 1000,
-        WebsiteFavicon           : 'https://fastly.jsdelivr.net/gh/Carl-5535/images@master/head/ harmonica.png',
-
-        ProgressBar: {
-            id       : 'topProgressBar',
-            color    : '#77B6FF',
-            height   : '2px',
-            duration : 0.2
-        },
-
-        Loading: {
-            rebound: {
-                tension  : 16,
-                friction : 5
-            },
-            spinner: {
-                id     : 'spinner',
-                radius : 90,
-                sides  : 3,
-                depth  : 4,
-                colors : {
-                    background : '#F0F0F0',
-                    stroke     : '#272633',
-                    base       : '',
-                    child      : '#272633'
-                },
-                alwaysForward : true,
-                restAt        : 0.5,
-                renderBase    : false
-            }
-        },
-
-        HomeHeaderAnimationRendered : true,
-        HomeHeaderAnimation         : {
-            radius      : 15,
-            density     : 0.2,
-            color       : 'rgba(255, 255, 255, .2)',
-            clearOffset : 0.3
-        },
-
-        ArticleHeaderAnimationRendered : false,
-        ArticleHeaderAnimation         : {
-            triW                  : 14,
-            triH                  : 20,
-            neighbours            : [
-                
-                    'side',
-                
-                    'top',
-                
-                    'bottom',
-                
-            ],
-            speedTrailAppear      : 0.1,
-            speedTrailDisappear   : 0.1,
-            speedTriOpen          : 1,
-            trailMaxLength        : 30,
-            trailIntervalCreation : 100,
-            delayBeforeDisappear  : 2,
-            colors                : [
-                
-                    '#96EDA6',
-                
-                    '#5BC6A9',
-                
-                    '#38668C',
-                
-                    '#374D84',
-                
-                    '#BED5CB',
-                
-                    '#62ADC6',
-                
-                    '#8EE5DE',
-                
-                    '#304E7B',
-                
-            ]
-        },
-
-        BackAnimationRendered          : true,
-        IEBrowserBackAnimationRendered : false,
-        BackAnimation                  : {
-            colorSaturation  : '60%',
-            colorBrightness  : '50%',
-            colorAlpha       : 0.5,
-            colorCycleSpeed  : 5,
-            verticalPosition : 'random',
-            horizontalSpeed  : 200,
-            ribbonCount      : 3,
-            strokeSize       : 0,
-            parallaxAmount   : -0.2,
-            animateSections  : true
-        },
-
-        HomeHeaderImage : [
-            
-                'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
-            
-        ],
-        HomeBannerText  : '代码大部分时间是给人看的，只是偶尔运行一下',
-
-        ArticleHeaderImage : [
-            
-                'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
-            
-        ],
-
-        OtherBannerText  : '',
-
-        MenuList : [
-            
-                {
-                    name   : '首页',
-                    href   : '/',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '标签',
-                    href   : '/tag',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '分类',
-                    href   : '/category',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '归档',
-                    href   : '/archive',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '关于',
-                    href   : '/about',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '搜索',
-                    href   : '',    
-                    target : '',
-                    class  : 'search'
-                },
-            
-                {
-                    name   : '留言板',
-                    href   : '/comment',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '友情链接',
-                    href   : '/friend',    
-                    target : '',
-                    class  : ''
-                },
-            
-        ],
-        MenuLink : [
-            
-                {
-                    icon : 'icon-weibo', 
-                    url  : ''
-                },
-            
-                {
-                    icon : 'icon-wechat', 
-                    url  : ''
-                },
-            
-                {
-                    icon : 'icon-qq', 
-                    url  : ''
-                },
-            
-                {
-                    icon : 'icon-github', 
-                    url  : 'https://github.com/carl-5535'
-                },
-            
-        ],
-
-        FooterStyle : 2,
-        BottomText  : {
-            icon    : 'like-fill',
-            left    : '人生若只如初见',
-            right   : '何事秋风悲画扇'
-        },
-        ThemeInfo   : false,
-
-        ConsoleList : [
-            
-                [
-                    
-                        'Based on cnblogs theme SimpleMemory.',
-                    
-                        '',
-                    
-                ],
-            
-                [
-                    
-                        'SimpleMemory Author:',
-                    
-                        'BNDong',
-                    
-                ],
-            
-                [
-                    
-                        'Theme:',
-                    
-                        'LiveForCode',
-                    
-                ],
-            
-        ],
-
-        FontIconExtend : "",
-
-        Donate : {
-            paypal  : '',
-            bitcoin : '',
-            alipay  : 'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
-            wechat  : 'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
-        },
-
-        Code : {
-            style : 'normal'
-        },  
-
-        Search : {
-            applicationID : 'XMCRUTQ6TF',
-            apiKey        : 'd163ebeca12b61ad7721462381cea6a9',
-            indexName     : 'BLOG',
-            hits          : {
-                page : 10
-            },
-            labels        : {
-                placeholder : '搜索',
-                empty       : '未发现与 「${query}」 相关的内容',
-                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
-            }
-        }, 
-
-        Valine : {
-            switch         : true,
-            el             : '.comments-content',
-            appId          : 'OVvCeGMH5XNm42b1wuU52HK0-gzGzoHsz',
-            appKey         : 'TltgUJqHRaoztnKrsy4SeYTW',
-            placeholder    : '你是我一生只会遇见一次的惊喜...',
-            avatar         : 'mm',
-            meta           : 'nick,mail,link',
-            requiredFields : 'nick,mail',
-            pageSize       : 5,
-            lang           : 'zh-cn',
-            visitor        : true,
-            enableQQ       : true
-        },
-
-        Tocbot : {
-            switch                : true,
-            tocSelector           : '.toc',
-            contentSelector       : '.article-body',
-            headingSelector       : 'h1, h2, h3, h4, h5',
-            headingsOffset        : 0,
-            scrollSmooth          : true,
-            scrollSmoothOffset    : -5,
-            positionFixedSelector : '.toc',
-            positionFixedClass    : 'toc-fixed',
-            fixedSidebarOffset    : '',
-        },
-
-        Require : {
-            baseUrl     : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
-            waitSeconds : 100
-        },
-
-        Meting : {
-            id       : "3778678", 
-            lrcshow  : false, 
-            server   : "netease", 
-            type     : "playlist", 
-            fixed    : true, 
-            autoplay : false, 
-            loop     : "all", 
-            order    : "random", 
-            preload  : "auto", 
-            volume   : 0.67, 
-            mutex    : true
-        },
-
-        LazyLoad : {
-            default : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
-        },
+      <span class="category-chain">
+        
+  <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" class="category-chain-item">工作总结</a>
+  
   
 
-        Style : {
-            aplayer          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
-            archive          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
-            donate           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
-            fancybox         : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
-            footer           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
-            iconfont         : "https://at.alifastly.com/t/font_1546312_l3yohatebw.css",
-            index            : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
-            menuBubble       : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
-            page             : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
-            post             : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
-            search           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
-            tocbot           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
-            normal           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
-            night            : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
-            clipboard        : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
-        },
+      </span>
+    
+  
+</span>
 
-        Script: {
-            aplayer          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
-            config           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
-            index            : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
-            instantSearch    : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
-            jQuery           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
-            loading          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
-            meting           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
-            iscroll          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
-            require          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
-        },
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">#工作总结</a>
+      
+    </div>
+  
+</div>
 
-        Font: {
-            LongCang   : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
-            Monda      : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
-            NotoSansSC : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
-            Playball   : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
-            PTMono     : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
-            RobotoSlab : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
-            Rosario    : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
-            UbuntuMono : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
-        },
 
-        Suffix : {
-            about : '不想秃头的Carl.'
-        },
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深拷贝和浅拷贝</div>
+      <div>http://example.com/2021/09/23/工作总结/深拷贝和浅拷贝/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
             
-        Theme : {
-            url  : 'https://github.com/first19326/Hexo-LiveForCode',
-            name : 'Hexo - Live For Code'
-        }  
-    };
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/13/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/getprop%E7%9A%84%E5%9D%91/" title="getprop的坑">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">getprop的坑</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/11/CMake/%E6%89%93%E5%8C%85/" title="打包">
+                        <span class="hidden-mobile">打包</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
 </script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js"></script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>

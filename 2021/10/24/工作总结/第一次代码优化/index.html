@@ -1,72 +1,288 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
-    <meta name="referrer" content="origin">
-    <meta http-equiv="Cache-Control" content="no-transform">
-    <meta http-equiv="Cache-Control" content="no-siteapp">
-    <title>第一次代码优化</title>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="第一次代码优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第一次代码优化">
+<meta property="og:url" content="http://example.com/2021/10/24/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="第一次代码优化">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-24T14:17:08.000Z">
+<meta property="article:modified_time" content="2022-09-28T16:34:42.616Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="工作总结">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>第一次代码优化 - Carl&#39;s Blog</title>
 
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
-    
-        <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
-    
 
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
 
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
 <meta name="generator" content="Hexo 5.4.0"></head>
+
+
 <body>
-    <a id="cover"></a>
-    <div id="header">
-    <div class="header">
-        <div class="vertical">
-            <div class="inner">
-                <h1 class="header-subtitle">第一次代码优化</h1>
-                <div class="header-subinfo">
-                    <p class="article-info-text">
-                        <span>
-                            <i class="iconfont icon-time"></i> 发表时间：2021-10-24
-                        </span>
-                        
-                            <span id="/2021/10/24/工作总结/第一次代码优化/" class="leancloud_visitors" data-flag-title="第一次代码优化">
-                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
-                            </span>
-                        
-                        <span>
-                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2021/10/24/工作总结/第一次代码优化/"></span>
-                        </span>  
-                    </p>                 
-                </div>
-            </div>
-        </div>
-        <canvas id="articleHeaderCanvas"></canvas>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="第一次代码优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-10-24 22:17" pubdate>
+          2021年10月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
 </div>
-    <div id="container">
-    <div id="content">
-        <div id="article">
-    <div class="toc"></div>
-    <div class="article-body">
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前大部分代码都是写好的，只是偶尔修改一下bug，添加新需求。只要代码不报错，没有语法错误，就能入库，现在新公司提交代码后，CTO也就是技术总监（现在软件部有一个BSP负责驱动和编译，两个嵌入式开发负责写代码，还有一个CTO负责整个团队）会仔细的review代码，并给出修改意见，这才是review的作用，原公司的review感觉只是个形式。</p>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第一次代码优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前大部分代码都是写好的，只是偶尔修改一下bug，添加新需求。只要代码不报错，没有语法错误，就能入库，现在新公司提交代码后，CTO也就是技术总监（现在软件部有一个BSP负责驱动和编译，两个嵌入式开发负责写代码，还有一个CTO负责整个团队）会仔细的review代码，并给出修改意见，这才是review的作用，原公司的review感觉只是个形式。</p>
 <p>这第一次代码优化就是根据CTO的意见进行的，非常感谢他，如果没有人提出意见我可能一直不会有新的提升与收获。</p>
 <p>下面就以此记录修改的地方</p>
 <h2 id="宏定义"><a href="#宏定义" class="headerlink" title="宏定义"></a>宏定义</h2><h3 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h3><p>由于项目中的类很多，有很多类都使用了同一个文件、程序、字符串、字符长度等，在使用时为了图方便都写到了对应的cpp文件上方，造成了有很多意义重复的宏定义</p>
 <h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>创建一个公有的头文件，里面只放宏定义，有两个及以上的类要用到的宏定义都放到这个头文件中，需要使用时包含这个头文件即可</p>
 <h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><h3 id="现状-1"><a href="#现状-1" class="headerlink" title="现状"></a>现状</h3><p>代码中有很多绝对数字，让人费解，如下,是判断当前网络设置的代码，对于数字让其他人很难理解：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mode == <span class="number">11</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (mode == <span class="number">18</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (mode == <span class="number">19</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">if</span> (mode == <span class="hljs-number">11</span>)<br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mode == <span class="hljs-number">18</span>)<br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mode == <span class="hljs-number">19</span>)<br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br><span class="hljs-keyword">else</span><br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="优化-1"><a href="#优化-1" class="headerlink" title="优化"></a>优化</h3><p>使用枚举让代码更加便于阅读,更方便维护：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">MS_NETWORK_MODE</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    MODE_LTE_ONLY=<span class="number">11</span>,</span><br><span class="line">    MODE_LTE_5GNR=<span class="number">18</span>,</span><br><span class="line">    MODE_5GNR_SA=<span class="number">19</span>,</span><br><span class="line">    MODE_AUTO=<span class="number">40</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (mode == MODE_LTE_ONLY)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (mode == MODE_LTE_5GNR)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (mode == MODE_5GNR_SA)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/*TO DO*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">MS_NETWORK_MODE</span></span><br><span class="hljs-class">&#123;</span><br>    MODE_LTE_ONLY=<span class="hljs-number">11</span>,<br>    MODE_LTE_5GNR=<span class="hljs-number">18</span>,<br>    MODE_5GNR_SA=<span class="hljs-number">19</span>,<br>    MODE_AUTO=<span class="hljs-number">40</span><br>&#125;;<br><br><span class="hljs-keyword">if</span> (mode == MODE_LTE_ONLY)<br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mode == MODE_LTE_5GNR)<br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mode == MODE_5GNR_SA)<br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br><span class="hljs-keyword">else</span><br>&#123;<br>    <span class="hljs-comment">/*TO DO*/</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h2 id="system"><a href="#system" class="headerlink" title="system()"></a>system()</h2><p>在代码中经常使用system()完成一些Linux的操作，如复制，移动，删除等。我一直认为这是很正常的，直到CTO给我说了system()的调用过成我才知道为什么要优化他。</p>
 <p>system()的调用过程为：</p>
@@ -77,510 +293,385 @@
 <li>执行完成，父进程等待结束，返回结果</li>
 </ol>
 <p>第三步是多余的操作，相当于shell又fork了一个进程去执行我们的命令(不知道这样理解是否正确)，完全可以跳过这步，于是有了自己实现的do_system(),也就是上篇服务管理系统的核心函数，如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_system</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> wait, <span class="keyword">int</span> *svc_pid, <span class="keyword">const</span> <span class="keyword">char</span> *exec_file, <span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt; arg_list)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> status;</span><br><span class="line">    <span class="keyword">sigset_t</span> chldmask, savemask;</span><br><span class="line">    <span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt;::iterator list_iterator;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (exec_file == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* now block SIGCHLD */</span></span><br><span class="line">    sigemptyset(&amp;chldmask);</span><br><span class="line">    sigaddset(&amp;chldmask, SIGCHLD);</span><br><span class="line">    <span class="keyword">if</span> (sigprocmask(SIG_BLOCK, &amp;chldmask, &amp;savemask))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">-2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Error. */</span></span><br><span class="line">        sigprocmask(SIG_SETMASK, &amp;savemask, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">-3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Child. */</span></span><br><span class="line">        <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">char</span> **argv;</span><br><span class="line">        <span class="keyword">int</span> argc = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">char</span> **p;</span><br><span class="line">        n = arg_list.size();</span><br><span class="line">        p = argv = (<span class="keyword">char</span> **)<span class="built_in">malloc</span>((n + <span class="number">1</span>) * <span class="keyword">sizeof</span>(<span class="keyword">char</span> *));</span><br><span class="line">        p[argc] = (<span class="keyword">char</span> *)exec_file;</span><br><span class="line">        <span class="keyword">if</span> (n &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (list_iterator = arg_list.begin(); list_iterator != arg_list.end(); list_iterator++)</span><br><span class="line">            &#123;</span><br><span class="line">                p[++argc] = (<span class="keyword">char</span>*)(*list_iterator).c_str();</span><br><span class="line">                ALOGI(<span class="string">&quot;param:%s&quot;</span>,p[argc]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        p[++argc] = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">        n = execvp(exec_file, argv);</span><br><span class="line">        <span class="comment">/* on error */</span></span><br><span class="line">        <span class="built_in">free</span>(argv);</span><br><span class="line">        <span class="built_in">exit</span>(n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Parent. */</span></span><br><span class="line">        <span class="keyword">if</span> (svc_pid)</span><br><span class="line">        &#123;</span><br><span class="line">            *svc_pid = pid;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (wait)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span> (waitpid(pid, &amp;status, <span class="number">0</span>) &lt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (errno != EINTR)</span><br><span class="line">                &#123;</span><br><span class="line">                    sigprocmask(SIG_SETMASK, &amp;savemask, <span class="literal">NULL</span>);</span><br><span class="line">                    <span class="keyword">return</span> (<span class="number">-1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            sigprocmask(SIG_SETMASK, &amp;savemask, <span class="literal">NULL</span>);</span><br><span class="line">            <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sigprocmask(SIG_SETMASK, &amp;savemask, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> WEXITSTATUS(status);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">do_system</span><span class="hljs-params">(<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> wait, <span class="hljs-keyword">int</span> *svc_pid, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *exec_file, <span class="hljs-built_in">list</span>&lt;<span class="hljs-built_in">string</span>&gt; arg_list)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">pid_t</span> pid;<br>    <span class="hljs-keyword">int</span> status;<br>    <span class="hljs-keyword">sigset_t</span> chldmask, savemask;<br>    <span class="hljs-built_in">list</span>&lt;<span class="hljs-built_in">string</span>&gt;::iterator list_iterator;<br><br>    <span class="hljs-keyword">if</span> (exec_file == <span class="hljs-literal">NULL</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> (<span class="hljs-number">-1</span>);<br>    &#125;<br><br>    <span class="hljs-comment">/* now block SIGCHLD */</span><br>    sigemptyset(&amp;chldmask);<br>    sigaddset(&amp;chldmask, SIGCHLD);<br>    <span class="hljs-keyword">if</span> (sigprocmask(SIG_BLOCK, &amp;chldmask, &amp;savemask))<br>    &#123;<br>        <span class="hljs-keyword">return</span> (<span class="hljs-number">-2</span>);<br>    &#125;<br><br>    pid = fork();<br>    <span class="hljs-keyword">if</span> (pid &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-comment">/* Error. */</span><br>        sigprocmask(SIG_SETMASK, &amp;savemask, <span class="hljs-literal">NULL</span>);<br>        <span class="hljs-keyword">return</span> (<span class="hljs-number">-3</span>);<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pid == <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-comment">/* Child. */</span><br>        <span class="hljs-keyword">int</span> n = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">char</span> **argv;<br>        <span class="hljs-keyword">int</span> argc = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">char</span> **p;<br>        n = arg_list.size();<br>        p = argv = (<span class="hljs-keyword">char</span> **)<span class="hljs-built_in">malloc</span>((n + <span class="hljs-number">1</span>) * <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">char</span> *));<br>        p[argc] = (<span class="hljs-keyword">char</span> *)exec_file;<br>        <span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-keyword">for</span> (list_iterator = arg_list.begin(); list_iterator != arg_list.end(); list_iterator++)<br>            &#123;<br>                p[++argc] = (<span class="hljs-keyword">char</span>*)(*list_iterator).c_str();<br>                ALOGI(<span class="hljs-string">&quot;param:%s&quot;</span>,p[argc]);<br>            &#125;<br>        &#125;<br><br>        p[++argc] = <span class="hljs-literal">NULL</span>;<br><br>        n = execvp(exec_file, argv);<br>        <span class="hljs-comment">/* on error */</span><br>        <span class="hljs-built_in">free</span>(argv);<br>        <span class="hljs-built_in">exit</span>(n);<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        <span class="hljs-comment">/* Parent. */</span><br>        <span class="hljs-keyword">if</span> (svc_pid)<br>        &#123;<br>            *svc_pid = pid;<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (wait)<br>        &#123;<br>            <span class="hljs-keyword">while</span> (waitpid(pid, &amp;status, <span class="hljs-number">0</span>) &lt; <span class="hljs-number">0</span>)<br>            &#123;<br>                <span class="hljs-keyword">if</span> (errno != EINTR)<br>                &#123;<br>                    sigprocmask(SIG_SETMASK, &amp;savemask, <span class="hljs-literal">NULL</span>);<br>                    <span class="hljs-keyword">return</span> (<span class="hljs-number">-1</span>);<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            sigprocmask(SIG_SETMASK, &amp;savemask, <span class="hljs-literal">NULL</span>);<br>            <span class="hljs-keyword">return</span> (<span class="hljs-number">0</span>);<br>        &#125;<br>    &#125;<br><br>    sigprocmask(SIG_SETMASK, &amp;savemask, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">return</span> WEXITSTATUS(status);<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>其中参数列表list可以换成C语言的多参数，以便在C中使用，关于多参数我后面也会单独记录</p>
 <h2 id="多命令连续使用system"><a href="#多命令连续使用system" class="headerlink" title="多命令连续使用system()"></a>多命令连续使用system()</h2><h3 id="现状-2"><a href="#现状-2" class="headerlink" title="现状"></a>现状</h3><p>在代码中有连续的system()调用，即使换成我们自己实现的system()也会fork很多进程，例如备份文件的代码，如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">system(<span class="string">&quot;rm -f /usr/www/Backup.zip&quot;</span>);</span><br><span class="line">system(<span class="string">&quot;mkdir /usr/www/backup&quot;</span>);</span><br><span class="line">system(<span class="string">&quot;mkdir /usr/www/backup/etc&quot;</span>);</span><br><span class="line">system(<span class="string">&quot;mkdir /usr/www/backup/data&quot;</span>);</span><br><span class="line">system(<span class="string">&quot;mkdir /usr/www/backup/cgi&quot;</span>);</span><br><span class="line">system(<span class="string">&quot;cp -p /data/cgi/admin_config /usr/www/backup/cgi/admin_config&quot;</span>);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">...cp file more</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">system(<span class="string">&quot;cp -p /etc/timezone /usr/www/backup/timezone&quot;</span>);</span><br><span class="line"></span><br><span class="line">system(<span class="string">&quot;tar -zcf /usr/www/Backup.zip /usr/www/backup/*&quot;</span>);</span><br><span class="line">system(<span class="string">&quot;rm -rf /usr/www/backup&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs C">system(<span class="hljs-string">&quot;rm -f /usr/www/Backup.zip&quot;</span>);<br>system(<span class="hljs-string">&quot;mkdir /usr/www/backup&quot;</span>);<br>system(<span class="hljs-string">&quot;mkdir /usr/www/backup/etc&quot;</span>);<br>system(<span class="hljs-string">&quot;mkdir /usr/www/backup/data&quot;</span>);<br>system(<span class="hljs-string">&quot;mkdir /usr/www/backup/cgi&quot;</span>);<br>system(<span class="hljs-string">&quot;cp -p /data/cgi/admin_config /usr/www/backup/cgi/admin_config&quot;</span>);<br><span class="hljs-comment">/*</span><br><span class="hljs-comment">...cp file more</span><br><span class="hljs-comment">*/</span><br>system(<span class="hljs-string">&quot;cp -p /etc/timezone /usr/www/backup/timezone&quot;</span>);<br><br>system(<span class="hljs-string">&quot;tar -zcf /usr/www/Backup.zip /usr/www/backup/*&quot;</span>);<br>system(<span class="hljs-string">&quot;rm -rf /usr/www/backup&quot;</span>);<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="优化-2"><a href="#优化-2" class="headerlink" title="优化"></a>优化</h3><p>将命令全部写到文件中，然后调用shell命令运行文件，避免多次调用system()，简单实现如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SHELL_FILE   /tmp/cmd_shell.sh</span></span><br><span class="line"></span><br><span class="line">FILE *fp;</span><br><span class="line"><span class="keyword">char</span> line[<span class="number">128</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ((fp = fopen(SHELL_FILE, <span class="string">&quot;w&quot;</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">sprintf</span>(line, <span class="string">&quot;rm -f /usr/www/Backup.zip\n&quot;</span>);</span><br><span class="line">    fwrite(line, <span class="keyword">sizeof</span>(<span class="keyword">char</span>), <span class="built_in">strlen</span>(line), fp);</span><br><span class="line">    <span class="built_in">sprintf</span>(line, <span class="string">&quot;mkdir /usr/www/backup\n&quot;</span>);</span><br><span class="line">    fwrite(line, <span class="keyword">sizeof</span>(<span class="keyword">char</span>), <span class="built_in">strlen</span>(line), fp);</span><br><span class="line">    <span class="built_in">sprintf</span>(line, <span class="string">&quot;mkdir /usr/www/backup/etc\n&quot;</span>);</span><br><span class="line">    fwrite(line, <span class="keyword">sizeof</span>(<span class="keyword">char</span>), <span class="built_in">strlen</span>(line), fp);</span><br><span class="line">    <span class="built_in">sprintf</span>(line, <span class="string">&quot;mkdir /usr/www/backup/data\n&quot;</span>);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    more sprintf</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    fflush(fp);</span><br><span class="line">    fclose(fp);</span><br><span class="line">&#125;</span><br><span class="line">system(<span class="string">&quot;sh &quot;</span>SHELL_FILE);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SHELL_FILE   /tmp/cmd_shell.sh</span><br><br>FILE *fp;<br><span class="hljs-keyword">char</span> line[<span class="hljs-number">128</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br><br><span class="hljs-keyword">if</span> ((fp = fopen(SHELL_FILE, <span class="hljs-string">&quot;w&quot;</span>)) != <span class="hljs-literal">NULL</span>)<br>&#123;<br>    <span class="hljs-built_in">sprintf</span>(line, <span class="hljs-string">&quot;rm -f /usr/www/Backup.zip\n&quot;</span>);<br>    fwrite(line, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">char</span>), <span class="hljs-built_in">strlen</span>(line), fp);<br>    <span class="hljs-built_in">sprintf</span>(line, <span class="hljs-string">&quot;mkdir /usr/www/backup\n&quot;</span>);<br>    fwrite(line, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">char</span>), <span class="hljs-built_in">strlen</span>(line), fp);<br>    <span class="hljs-built_in">sprintf</span>(line, <span class="hljs-string">&quot;mkdir /usr/www/backup/etc\n&quot;</span>);<br>    fwrite(line, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">char</span>), <span class="hljs-built_in">strlen</span>(line), fp);<br>    <span class="hljs-built_in">sprintf</span>(line, <span class="hljs-string">&quot;mkdir /usr/www/backup/data\n&quot;</span>);<br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    more sprintf</span><br><span class="hljs-comment">    */</span><br>    fflush(fp);<br>    fclose(fp);<br>&#125;<br>system(<span class="hljs-string">&quot;sh &quot;</span>SHELL_FILE);<br></code></pre></td></tr></table></figure>
 
 <h2 id="fprintf"><a href="#fprintf" class="headerlink" title="fprintf()"></a>fprintf()</h2><h3 id="现状-3"><a href="#现状-3" class="headerlink" title="现状"></a>现状</h3><p>在写文件时，不止上面那种执行命令的情况，包括修改配置文件需要写很多行,使用sprintf()，不仅要多调用一次fwrite，还要担心定义的数组line是否会越界，所以可以直接使用fprintf()</p>
 <h3 id="优化-3"><a href="#优化-3" class="headerlink" title="优化"></a>优化</h3><p>fprintf()我之前也是没有用过的，也是看到建议后才知道，真惭愧，优化后的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SHELL_FILE   /tmp/cmd_shell.sh</span></span><br><span class="line"></span><br><span class="line">FILE *fp;</span><br><span class="line"><span class="keyword">if</span> ((fp = fopen(SHELL_FILE, <span class="string">&quot;w&quot;</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(fp, <span class="string">&quot;rm -f /usr/www/Backup.zip\n&quot;</span>);</span><br><span class="line">    <span class="built_in">fprintf</span>(fp, <span class="string">&quot;mkdir /usr/www/backup\n&quot;</span>);</span><br><span class="line">    <span class="built_in">fprintf</span>(fp, <span class="string">&quot;mkdir /usr/www/backup/etc\n&quot;</span>);</span><br><span class="line">    <span class="built_in">fprintf</span>(fp, <span class="string">&quot;mkdir /usr/www/backup/data\n&quot;</span>);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    more fprintf</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    fflush(fp);</span><br><span class="line">    fclose(fp);</span><br><span class="line">&#125;</span><br><span class="line">system(<span class="string">&quot;sh &quot;</span>SHELL_FILE);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SHELL_FILE   /tmp/cmd_shell.sh</span><br><br>FILE *fp;<br><span class="hljs-keyword">if</span> ((fp = fopen(SHELL_FILE, <span class="hljs-string">&quot;w&quot;</span>)) != <span class="hljs-literal">NULL</span>)<br>&#123;<br>    <span class="hljs-built_in">fprintf</span>(fp, <span class="hljs-string">&quot;rm -f /usr/www/Backup.zip\n&quot;</span>);<br>    <span class="hljs-built_in">fprintf</span>(fp, <span class="hljs-string">&quot;mkdir /usr/www/backup\n&quot;</span>);<br>    <span class="hljs-built_in">fprintf</span>(fp, <span class="hljs-string">&quot;mkdir /usr/www/backup/etc\n&quot;</span>);<br>    <span class="hljs-built_in">fprintf</span>(fp, <span class="hljs-string">&quot;mkdir /usr/www/backup/data\n&quot;</span>);<br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    more fprintf</span><br><span class="hljs-comment">    */</span><br>    fflush(fp);<br>    fclose(fp);<br>&#125;<br>system(<span class="hljs-string">&quot;sh &quot;</span>SHELL_FILE);<br></code></pre></td></tr></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第一次优化的点就是这些了，后续有继续优化会及时更新新的文章.</p>
 <p>我买一本 《Effective Modem C++》，抽空阅读后也会将收获（笔记）记录下来</p>
 
-        <p class="suffix-end">__END__</p>
-        <div class="suffix-box">
-            <div class="suffix-box-left">
-                <img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg" alt="Carl Chen">
-            </div>
-            <div class="suffix-box-right">
-                <span class="suffix-box-title">文章作者</span>：Carl Chen
-                <br>
-                <span class="suffix-box-title">文章出处</span>：<a href="/2021/10/24/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" target="_blank">第一次代码优化</a>
-                <br>
-                <span class="suffix-box-title">作者签名</span>：不想秃头的Carl.
-                <br>
-                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
-                <br>
-                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
-                <br>
-            </div>
-            <div style="clear: both;"></div>
-        </div>
-    </div>
-    <div class="article-footer">
-        
-            <div class="category">
-                分类：
                 
-                    <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
-                
-            </div>
-        
-        
-            <div class="tag">
-                标签：
-                
-                    <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">工作总结</a>
-                
-            </div>
-        
-        <div class="article-prev-next">
+              </div>
             
-                <a href="/2021/11/01/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" class="prev-prefix">« </a> 上一篇：    <a href="/2021/11/01/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" title="发布于 2021-11-01 09:41">第二次代码优化</a>
-                <br>
-            
-            
-                <a href="/2021/10/20/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E7%A8%8B%E5%BA%8F%E8%B8%A9%E5%9D%91%E6%80%BB%E7%BB%93/" class="next-prefix">» </a> 下一篇：    <a href="/2021/10/20/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E7%A8%8B%E5%BA%8F%E8%B8%A9%E5%9D%91%E6%80%BB%E7%BB%93/" title="发布于 2021-10-20 11:58">服务管理程序踩坑总结</a>
-            
-        </div>
-    </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
     
-    <div class="article-comments">
-        <div class="comments-title">
-            评论列表
-        </div>
-        <div class="comments-content">
-        </div>
-    </div>
-
-</div>
-
-    </div>
-</div>
-    <div id="footer"></div>
-    <div id="sidebar">
-    <div class="menu-wrap" style="display:none;">
-        <nav class="menu">
-            <div class="menu-introduce"> 
-                <div class="introduce-avatar"></div> 
-                <div class="introduce-info"> 
-                    <div class="introduce-user"><span></span></div>        
-                </div> 
-            </div> 
-            <div class="menu-list">
-                <ul></ul> 
-            </div> 
-            <div class="menu-link"></div> 
-        </nav>
-        <button class="menu-button-close"></button>
-        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
-                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
-            </svg>
-        </div>
-    </div>
-    <button class="menu-button-open">MENU</button>
-    <div class="menu-cover"></div>
-</div>
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
-<script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
-<script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
-<div class="search-window">
-    <div class="search-content">
-        <div class="search-content-icon">
-            <i class="iconfont icon-search"></i>
-        </div>
-        <div id="search-input" class="search-input"></div>
-    </div>
-
-    <div class="search-scroll">
-        <div class="search-result">
-            <div id="search-stats" class="search-stats"></div>
-            <div id="search-hits"></div>
-            <div id="search-pagination" class="search-pagination"></div>
-        </div>
-    </div>
-
-    <span class="search-close-icon">
-        <i class="iconfont icon-close"></i>
-    </span>
-</div>
-    <div id="tools">
-    <div class="progressbar-top"></div>
-    <link type="text/css" rel="stylesheet" href="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
-    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
-    <div class="wrap-right"></div>
-    <div class="loading"></div>
-</div>
-    <script>
-    window.config = {
-        GitHubUserName     : 'first19326',
-        GitHubRepositories : 'Hexo-LiveForCode',
-
-        BlogUser      : 'Carl Chen',
-        BlogAvatar    : 'https://fastly.jsdelivr.net/gh/Carl-5535/images@master/head/carl.jpg',
-        BlogStartDate : '2020-11-08',
-
-        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, Live For Code',
-        WebsiteTitleBlurTimeOut  : 500,
-        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
-        WebsiteTitleFocusTimeOut : 1000,
-        WebsiteFavicon           : 'https://fastly.jsdelivr.net/gh/Carl-5535/images@master/head/ harmonica.png',
-
-        ProgressBar: {
-            id       : 'topProgressBar',
-            color    : '#77B6FF',
-            height   : '2px',
-            duration : 0.2
-        },
-
-        Loading: {
-            rebound: {
-                tension  : 16,
-                friction : 5
-            },
-            spinner: {
-                id     : 'spinner',
-                radius : 90,
-                sides  : 3,
-                depth  : 4,
-                colors : {
-                    background : '#F0F0F0',
-                    stroke     : '#272633',
-                    base       : '',
-                    child      : '#272633'
-                },
-                alwaysForward : true,
-                restAt        : 0.5,
-                renderBase    : false
-            }
-        },
-
-        HomeHeaderAnimationRendered : true,
-        HomeHeaderAnimation         : {
-            radius      : 15,
-            density     : 0.2,
-            color       : 'rgba(255, 255, 255, .2)',
-            clearOffset : 0.3
-        },
-
-        ArticleHeaderAnimationRendered : false,
-        ArticleHeaderAnimation         : {
-            triW                  : 14,
-            triH                  : 20,
-            neighbours            : [
-                
-                    'side',
-                
-                    'top',
-                
-                    'bottom',
-                
-            ],
-            speedTrailAppear      : 0.1,
-            speedTrailDisappear   : 0.1,
-            speedTriOpen          : 1,
-            trailMaxLength        : 30,
-            trailIntervalCreation : 100,
-            delayBeforeDisappear  : 2,
-            colors                : [
-                
-                    '#96EDA6',
-                
-                    '#5BC6A9',
-                
-                    '#38668C',
-                
-                    '#374D84',
-                
-                    '#BED5CB',
-                
-                    '#62ADC6',
-                
-                    '#8EE5DE',
-                
-                    '#304E7B',
-                
-            ]
-        },
-
-        BackAnimationRendered          : true,
-        IEBrowserBackAnimationRendered : false,
-        BackAnimation                  : {
-            colorSaturation  : '60%',
-            colorBrightness  : '50%',
-            colorAlpha       : 0.5,
-            colorCycleSpeed  : 5,
-            verticalPosition : 'random',
-            horizontalSpeed  : 200,
-            ribbonCount      : 3,
-            strokeSize       : 0,
-            parallaxAmount   : -0.2,
-            animateSections  : true
-        },
-
-        HomeHeaderImage : [
-            
-                'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
-            
-        ],
-        HomeBannerText  : '代码大部分时间是给人看的，只是偶尔运行一下',
-
-        ArticleHeaderImage : [
-            
-                'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
-            
-        ],
-
-        OtherBannerText  : '',
-
-        MenuList : [
-            
-                {
-                    name   : '首页',
-                    href   : '/',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '标签',
-                    href   : '/tag',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '分类',
-                    href   : '/category',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '归档',
-                    href   : '/archive',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '关于',
-                    href   : '/about',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '搜索',
-                    href   : '',    
-                    target : '',
-                    class  : 'search'
-                },
-            
-                {
-                    name   : '留言板',
-                    href   : '/comment',    
-                    target : '',
-                    class  : ''
-                },
-            
-                {
-                    name   : '友情链接',
-                    href   : '/friend',    
-                    target : '',
-                    class  : ''
-                },
-            
-        ],
-        MenuLink : [
-            
-                {
-                    icon : 'icon-weibo', 
-                    url  : ''
-                },
-            
-                {
-                    icon : 'icon-wechat', 
-                    url  : ''
-                },
-            
-                {
-                    icon : 'icon-qq', 
-                    url  : ''
-                },
-            
-                {
-                    icon : 'icon-github', 
-                    url  : 'https://github.com/carl-5535'
-                },
-            
-        ],
-
-        FooterStyle : 2,
-        BottomText  : {
-            icon    : 'like-fill',
-            left    : '人生若只如初见',
-            right   : '何事秋风悲画扇'
-        },
-        ThemeInfo   : false,
-
-        ConsoleList : [
-            
-                [
-                    
-                        'Based on cnblogs theme SimpleMemory.',
-                    
-                        '',
-                    
-                ],
-            
-                [
-                    
-                        'SimpleMemory Author:',
-                    
-                        'BNDong',
-                    
-                ],
-            
-                [
-                    
-                        'Theme:',
-                    
-                        'LiveForCode',
-                    
-                ],
-            
-        ],
-
-        FontIconExtend : "",
-
-        Donate : {
-            paypal  : '',
-            bitcoin : '',
-            alipay  : 'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
-            wechat  : 'https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
-        },
-
-        Code : {
-            style : 'normal'
-        },  
-
-        Search : {
-            applicationID : 'XMCRUTQ6TF',
-            apiKey        : 'd163ebeca12b61ad7721462381cea6a9',
-            indexName     : 'BLOG',
-            hits          : {
-                page : 10
-            },
-            labels        : {
-                placeholder : '搜索',
-                empty       : '未发现与 「${query}」 相关的内容',
-                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
-            }
-        }, 
-
-        Valine : {
-            switch         : true,
-            el             : '.comments-content',
-            appId          : 'OVvCeGMH5XNm42b1wuU52HK0-gzGzoHsz',
-            appKey         : 'TltgUJqHRaoztnKrsy4SeYTW',
-            placeholder    : '你是我一生只会遇见一次的惊喜...',
-            avatar         : 'mm',
-            meta           : 'nick,mail,link',
-            requiredFields : 'nick,mail',
-            pageSize       : 5,
-            lang           : 'zh-cn',
-            visitor        : true,
-            enableQQ       : true
-        },
-
-        Tocbot : {
-            switch                : true,
-            tocSelector           : '.toc',
-            contentSelector       : '.article-body',
-            headingSelector       : 'h1, h2, h3, h4, h5',
-            headingsOffset        : 0,
-            scrollSmooth          : true,
-            scrollSmoothOffset    : -5,
-            positionFixedSelector : '.toc',
-            positionFixedClass    : 'toc-fixed',
-            fixedSidebarOffset    : '',
-        },
-
-        Require : {
-            baseUrl     : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
-            waitSeconds : 100
-        },
-
-        Meting : {
-            id       : "3778678", 
-            lrcshow  : false, 
-            server   : "netease", 
-            type     : "playlist", 
-            fixed    : true, 
-            autoplay : false, 
-            loop     : "all", 
-            order    : "random", 
-            preload  : "auto", 
-            volume   : 0.67, 
-            mutex    : true
-        },
-
-        LazyLoad : {
-            default : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
-        },
+      <span class="category-chain">
+        
+  <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" class="category-chain-item">工作总结</a>
+  
   
 
-        Style : {
-            aplayer          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
-            archive          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
-            donate           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
-            fancybox         : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
-            footer           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
-            iconfont         : "https://at.alifastly.com/t/font_1546312_l3yohatebw.css",
-            index            : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
-            menuBubble       : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
-            page             : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
-            post             : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
-            search           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
-            tocbot           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
-            normal           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
-            night            : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
-            clipboard        : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
-        },
+      </span>
+    
+  
+</span>
 
-        Script: {
-            aplayer          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
-            config           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
-            index            : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
-            instantSearch    : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
-            jQuery           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
-            loading          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
-            meting           : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
-            iscroll          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
-            require          : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
-        },
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">#工作总结</a>
+      
+    </div>
+  
+</div>
 
-        Font: {
-            LongCang   : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
-            Monda      : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
-            NotoSansSC : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
-            Playball   : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
-            PTMono     : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
-            RobotoSlab : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
-            Rosario    : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
-            UbuntuMono : "https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
-        },
 
-        Suffix : {
-            about : '不想秃头的Carl.'
-        },
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>第一次代码优化</div>
+      <div>http://example.com/2021/10/24/工作总结/第一次代码优化/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年10月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
             
-        Theme : {
-            url  : 'https://github.com/first19326/Hexo-LiveForCode',
-            name : 'Hexo - Live For Code'
-        }  
-    };
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/01/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" title="第二次代码优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第二次代码优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/20/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E7%A8%8B%E5%BA%8F%E8%B8%A9%E5%9D%91%E6%80%BB%E7%BB%93/" title="服务管理程序踩坑总结">
+                        <span class="hidden-mobile">服务管理程序踩坑总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
 </script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js"></script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
