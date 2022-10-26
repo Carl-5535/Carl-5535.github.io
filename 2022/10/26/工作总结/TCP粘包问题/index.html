@@ -16,24 +16,24 @@
   <meta name="author" content="Carl Chen">
   <meta name="keywords" content="">
   
-    <meta name="description" content="数据结构-二叉树">
+    <meta name="description" content="TCP粘包问题分析与解决">
 <meta property="og:type" content="article">
-<meta property="og:title" content="数据结构-二叉树">
-<meta property="og:url" content="https://carl-5535.github.io/2021/01/20/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E4%BA%8C%E5%8F%89%E6%A0%91/index.html">
+<meta property="og:title" content="TCP粘包问题">
+<meta property="og:url" content="https://carl-5535.github.io/2022/10/26/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/TCP%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Carl&#39;s Blog">
-<meta property="og:description" content="数据结构-二叉树">
+<meta property="og:description" content="TCP粘包问题分析与解决">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/%E4%BA%8C%E5%8F%89%E6%A0%91.jgl51ljilxk.png">
-<meta property="article:published_time" content="2021-01-20T12:36:24.000Z">
-<meta property="article:modified_time" content="2022-06-05T14:22:50.954Z">
+<meta property="og:image" content="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/tcpsticking.png">
+<meta property="article:published_time" content="2022-10-26T08:18:00.000Z">
+<meta property="article:modified_time" content="2022-10-26T08:33:43.098Z">
 <meta property="article:author" content="Carl Chen">
-<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="工作总结">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/%E4%BA%8C%E5%8F%89%E6%A0%91.jgl51ljilxk.png">
+<meta name="twitter:image" content="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/tcpsticking.png">
   
   
   
-  <title>数据结构-二叉树 - Carl&#39;s Blog</title>
+  <title>TCP粘包问题 - Carl&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="数据结构-二叉树"></span>
+            <span id="subtitle" data-typed-text="TCP粘包问题"></span>
           
         </div>
 
@@ -209,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2021-01-20 20:36" pubdate>
-          2021年1月20日 晚上
+        <time datetime="2022-10-26 16:18" pubdate>
+          2022年10月26日 下午
         </time>
       </span>
     
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          1.1k 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          12 分钟
+          9 分钟
         
       </span>
     
@@ -270,37 +270,39 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">数据结构-二叉树</h1>
+            <h1 style="display: none">TCP粘包问题</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h1><p>二叉树是n（n &gt;= 0）个结点的有限集合，该集合或者为空集（称为空二叉树），或者由一个根结点和两颗互不相交的、分别称为根结点的左子树和右子树的二叉树组成</p>
-<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/%E4%BA%8C%E5%8F%89%E6%A0%91.jgl51ljilxk.png" srcset="/img/loading.gif" lazyload alt="erchashu"></p>
-<h2 id="二叉树的特点"><a href="#二叉树的特点" class="headerlink" title="二叉树的特点"></a>二叉树的特点</h2><ol>
-<li><p>每个结点最多有两颗子树，所以二叉树不存在度大于2的结点</p>
-</li>
-<li><p>左子树和右子树是有顺序的，次序不能颠倒</p>
-</li>
-<li><p>即使树中某结点只有一颗子树，也要区分它是左子树还是右子树</p>
-</li>
-</ol>
-<h2 id="二叉树的数据结构"><a href="#二叉树的数据结构" class="headerlink" title="二叉树的数据结构"></a>二叉树的数据结构</h2><p>由于二叉树最多有两个孩子，所以我们可以创建拥有一个数据域和两个指针域的结构体，由这些结构体构成的链表也叫二叉链表</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">BiTNode</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-keyword">char</span> data;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">BiTNode</span> *<span class="hljs-title">lchild</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">BiTNode</span> *<span class="hljs-title">rchild</span>;</span><br>&#125;BitNode, *BiTree;<br></code></pre></td></tr></table></figure>
-
-<h2 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h2><h3 id="前序遍历"><a href="#前序遍历" class="headerlink" title="前序遍历"></a>前序遍历</h3><p>若二叉树为空，则返回，否则先访问根结点，然后前序遍历左子树，再遍历右子树</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PreOrederTraverse</span><span class="hljs-params">(BiTree T)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (T == <span class="hljs-literal">NULL</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>,T-&gt;data);<br>    PreOrederTraverse(T-&gt;lchild);<br>    PreOrederTraverse(T-&gt;rchild);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h3 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h3><p>若二叉树为空，则返回，否则按照左子树，根结点，右子树的顺序遍历</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">InOrederTraverse</span><span class="hljs-params">(BiTree T)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (T == <span class="hljs-literal">NULL</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    InOrederTraverse(T-&gt;lchild);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>,T-&gt;data);<br>    InOrederTraverse(T-&gt;rchild);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h3 id="后序遍历"><a href="#后序遍历" class="headerlink" title="后序遍历"></a>后序遍历</h3><p>若二叉树为空，则返回，否则按照左子树，右子树，根结点的顺序遍历</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PostOrederTraverse</span><span class="hljs-params">(BiTree T)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (T == <span class="hljs-literal">NULL</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    PostOrederTraverse(T-&gt;lchild);<br>    PostOrederTraverse(T-&gt;rchild);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>,T-&gt;data);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="创建二叉树"><a href="#创建二叉树" class="headerlink" title="创建二叉树"></a>创建二叉树</h2><p>以#代表空结点,使用前序创建二叉树</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PreCreateBiTree</span><span class="hljs-params">(BiTree *T)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> ch;<br>    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%c&quot;</span>,&amp;ch);<br>    <span class="hljs-keyword">if</span> (ch == <span class="hljs-string">&#x27;#&#x27;</span>)<br>    &#123;<br>        *T = <span class="hljs-literal">NULL</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        *T = (BiTree)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(BiTNode));<br>        <span class="hljs-keyword">if</span> (!*T)<br>        &#123;<br>            <span class="hljs-built_in">exit</span>();<br>        &#125;<br>        (*T)-&gt;data = ch;<br>        PreCreateBiTree(&amp;(*T)-&gt;lchild);<br>        PreCreateBiTree(&amp;(*T)-&gt;rchild);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p>只实现了前序创建，中序和后序创建有点问题，目前不知道哪里出现了错误</p>
+                <h2 id="TCP特性"><a href="#TCP特性" class="headerlink" title="TCP特性"></a>TCP特性</h2><p>TCP 是面向连接的、可靠的、基于字节流的传输层通信协议。</p>
+<ul>
+<li>面向连接：⼀定是⼀对⼀才能连接，不能⼀个主机同时向多个主机发送消息，即⼀对多是⽆法做到的；</li>
+<li>可靠的：⽆论⽹络中出现了怎样的变化，TCP 都可以保证数据⼀定能够到达接收端，数据在传输过程中不会消失（TCP 通过序列号和包重传确认机制保证数据包的有序和一定被正确发到目的地）；</li>
+<li>字节流：数据传输像流水一样是没有边界的，所以⽆论我们消息有多⼤都可以进⾏传输；<br>消息是有序的，当前⼀个消息没有收到的时候，即使它先收到了后⾯的字节，那么也不能扔给应⽤层去处理，同时对重复的报⽂会⾃动丢弃。</li>
+</ul>
+<h2 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h2><ul>
+<li>粘包，所谓粘包就是连续给发送端发送两个或者两个以上的数据包，接收端在一次收取中，可能收到的数据包可能是几个包（包括一个）加上某个包的部分，或者干脆就是几个完整的包在一起。</li>
+<li>半包，则是可能收到的数据只是一个包的部分。</li>
+</ul>
+<p>进一步具体讲：</p>
+<ul>
+<li>TCP发送方：TCP本身传输的数据包大小有限制，如果应用发出的消息包过大，TCP会把应用消息包拆分为多个TCP数据包发送出去；如果应用发送数据包太小，TCP为了减少网络请求次数的开销，它会等待多个消息包一起，打成一个TCP数据包一次发送出去。</li>
+<li>TCP接收方：TCP 缓冲区里的数据都是字符流的形式，没有明确的边界，因为数据没边界，所以应用从TCP缓冲区中读取数据时就没办法指定一个或几个消息一起读，而只能选择一次读取多大的数据流，而这个数据流中就可能包含着某个消息包的一部分数据。</li>
+</ul>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><h3 id="定长消息"><a href="#定长消息" class="headerlink" title="定长消息"></a>定长消息</h3><p>规定每个数据包的大小，如64k，每次只取64k，如果不够64k就等待满足后取出</p>
+<p>缺点：这种方式只有在确定包等于64k时才推荐使用，如果小于64k，需要在数据末尾填充占位符，浪费带宽；如果大于64k要分包发送，并且额外再写处理逻辑</p>
+<h3 id="特殊标志作为结束符"><a href="#特殊标志作为结束符" class="headerlink" title="特殊标志作为结束符"></a>特殊标志作为结束符</h3><p>在数据包中遇到规定好的特殊的符号值时就认为到一个包的末尾了。</p>
+<p>缺点：如果包中需要包含这个特殊符号值时，只能做转义处理</p>
+<h3 id="包头-包体"><a href="#包头-包体" class="headerlink" title="包头 + 包体"></a>包头 + 包体</h3><p>为数据包添加一个包头，包头记录着数据包的长度</p>
+<p>缺点：会浪费传输包头的带宽</p>
+<p>这种方法是我目前正在使用的方法，取数据时先取出包头，再根据包头取出所需要的数据</p>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>首先定义一个缓存区，包头+包体不会存在大于此缓存区的情况，每次将接收的数据放入缓存区，再通过包头取出所需要的数据</p>
+<p>定义未使用空间，每次取数据时，记录一个包大小之后未使用的空间，如果剩余空间小于未使用的空间，说明未使用的空间中还有数据，此时出现粘包现象，如下图：</p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/tcpsticking.png" srcset="/img/loading.gif" lazyload alt="tcp_sticking"></p>
+<p>处理逻辑如下：</p>
+<p><img src="https://fastly.jsdelivr.net/gh/Carl-5535/images@master/blog/sticking.png" srcset="/img/loading.gif" lazyload alt="tcp_sticking"></p>
+<p>代码实现参考<a href="/2022/10/25/CarlSDK/Cpackage/">Cpackage对象</a>中的接收数据包部分内容</p>
 
                 
               </div>
@@ -319,7 +321,7 @@
     
       <span class="category-chain">
         
-  <a href="/category/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="category-chain-item">数据结构</a>
+  <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" class="category-chain-item">工作总结</a>
   
   
 
@@ -334,7 +336,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">#数据结构</a>
+        <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">#工作总结</a>
       
     </div>
   
@@ -346,8 +348,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>数据结构-二叉树</div>
-      <div>https://carl-5535.github.io/2021/01/20/数据结构/数据结构-二叉树/</div>
+      <div>TCP粘包问题</div>
+      <div>https://carl-5535.github.io/2022/10/26/工作总结/TCP粘包问题/</div>
     </div>
     <div class="license-meta">
       
@@ -359,7 +361,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2021年1月20日</div>
+          <div>2022年10月26日</div>
         </div>
       
       
@@ -391,18 +393,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/01/20/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/FOTA%E5%8D%87%E7%BA%A7%E5%8C%85%E7%AD%BE%E5%90%8D/" title="FOTA升级包签名">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">FOTA升级包签名</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/01/20/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%A0%91/" title="数据结构-树">
-                        <span class="hidden-mobile">数据结构-树</span>
+                      <a href="/2022/10/25/CarlSDK/Cpackage/" title="Cpackage">
+                        <span class="hidden-mobile">Cpackage</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
