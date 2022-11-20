@@ -24,10 +24,9 @@
 <meta property="og:description" content="用来建立连接并通信的对象">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-15T14:27:00.000Z">
-<meta property="article:modified_time" content="2022-11-15T15:31:46.903Z">
+<meta property="article:modified_time" content="2022-11-20T14:13:27.379Z">
 <meta property="article:author" content="Carl Chen">
 <meta property="article:tag" content="Carlsdk">
-<meta property="article:tag" content="造轮子">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -274,7 +273,7 @@
             
               <div class="markdown-body">
                 
-                <h2 id="CSocketListener"><a href="#CSocketListener" class="headerlink" title="CSocketListener"></a>CSocketListener</h2><p>CSocketListener是一个基类，作用是创建Server端的socket，完成socket的操作，调用listen()等待client的连接，接收client的数据，并提供了两个发送接口用来发给所有的client或者特定的client</p>
+                <h2 id="CSocketListener"><a href="#CSocketListener" class="headerlink" title="CSocketListener"></a>CSocketListener</h2><p>CSocketListener是一个抽象类，作用是创建Server端的socket，完成socket的操作，调用listen()等待client的连接，接收client的数据，并提供了两个发送接口用来发给所有的client或者特定的client</p>
 <p>CSocketListener只负责接受和发送，具体数据的处理由下一个名为CFrameworkListener的派生类继实现</p>
 <h2 id="设置listener-socket"><a href="#设置listener-socket" class="headerlink" title="设置listener socket"></a>设置listener socket</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C++">CSocketListener::<span class="hljs-built_in">CSocketListener</span>(<span class="hljs-keyword">int</span> port)<br>&#123;<br>    <span class="hljs-comment">//Creat mListenerSocket</span><br>    mListenerSocket.<span class="hljs-built_in">create</span>(CSocket::C_SOCKET_NETWORK);<br>    mListenerSocket.<span class="hljs-built_in">bind</span>(<span class="hljs-literal">nullptr</span>, port);<br>    mListenerSocket.<span class="hljs-built_in">setBlocking</span>(<span class="hljs-literal">false</span>);<br>    <span class="hljs-comment">//Stop main thread or not</span><br>    <span class="hljs-comment">//default value is false</span><br>    mShouldStop = <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -331,8 +330,6 @@
       <i class="iconfont icon-tags"></i>
       
         <a href="/tags/Carlsdk/">#Carlsdk</a>
-      
-        <a href="/tags/%E9%80%A0%E8%BD%AE%E5%AD%90/">#造轮子</a>
       
     </div>
   

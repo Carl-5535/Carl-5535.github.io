@@ -16,22 +16,22 @@
   <meta name="author" content="Carl Chen">
   <meta name="keywords" content="">
   
-    <meta name="description" content="用来建立连接并通信的对象">
+    <meta name="description" content="I-O多路复用监听soket是否有数据可读">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CSocketClient">
-<meta property="og:url" content="https://carl-5535.github.io/2022/11/14/CarlSDK/CSocketClient/index.html">
+<meta property="og:title" content="CSelect">
+<meta property="og:url" content="https://carl-5535.github.io/2022/11/20/CarlSDK/CSelect/index.html">
 <meta property="og:site_name" content="Carl&#39;s Blog">
-<meta property="og:description" content="用来建立连接并通信的对象">
+<meta property="og:description" content="I-O多路复用监听soket是否有数据可读">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-14T03:53:00.000Z">
-<meta property="article:modified_time" content="2022-11-20T13:57:54.799Z">
+<meta property="article:published_time" content="2022-11-20T13:50:00.000Z">
+<meta property="article:modified_time" content="2022-11-20T14:04:47.586Z">
 <meta property="article:author" content="Carl Chen">
 <meta property="article:tag" content="Carlsdk">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>CSocketClient - Carl&#39;s Blog</title>
+  <title>CSelect - Carl&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CSocketClient"></span>
+            <span id="subtitle" data-typed-text="CSelect"></span>
           
         </div>
 
@@ -207,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-11-14 11:53" pubdate>
-          2022年11月14日 中午
+        <time datetime="2022-11-20 21:50" pubdate>
+          2022年11月20日 晚上
         </time>
       </span>
     
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          2.3k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          14 分钟
+          20 分钟
         
       </span>
     
@@ -268,24 +268,15 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CSocketClient</h1>
+            <h1 style="display: none">CSelect</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="CSocketClient"><a href="#CSocketClient" class="headerlink" title="CSocketClient"></a>CSocketClient</h2><p>前面已经实现了用于建立连接的CSocket对象和用于收发数据包的CPackage对象，CSocketClient是将上面提到的两个对象作为成员的一个对象，用于Client和Server之间通信，server端维护一个CSocketClient列表，每个进程维护一个单独的CSocketClient</p>
-<h2 id="服务端使用的构造函数"><a href="#服务端使用的构造函数" class="headerlink" title="服务端使用的构造函数"></a>服务端使用的构造函数</h2><p>server通过accept()接受client的sock_fds, 就可以通过传入fd创建一个CSocketClient对象，server计划使用select监听所有client，所以设置为非阻塞模式</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C++">CSocketClient::<span class="hljs-built_in">CSocketClient</span>(<span class="hljs-keyword">int</span> sock_fd)<br>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;sock_fd:%d\n&quot;</span>, sock_fd);<br>    mSocket = std::make_shared&lt;CSocket&gt;(sock_fd);<br>    mSocket-&gt;<span class="hljs-built_in">setBlocking</span>(<span class="hljs-literal">false</span>);<br>    mPackage = std::make_shared&lt;CPackage&gt;(mSocket);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="客户端使用的构造函数"><a href="#客户端使用的构造函数" class="headerlink" title="客户端使用的构造函数"></a>客户端使用的构造函数</h2><p>client需要创建sockt_fd，所以传入的参数为需要创建的socket类型，以及阻塞模式，这里一般设置为阻塞模式，一直等待server的数据</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs C++">CSocketClient::<span class="hljs-built_in">CSocketClient</span>(<span class="hljs-keyword">int</span> socket_type, <span class="hljs-keyword">bool</span> blocking)<br>&#123;<br>    mSocket = std::make_shared&lt;CSocket&gt;();<br>    mSocket-&gt;<span class="hljs-built_in">create</span>(socket_type);<br>    mSocket-&gt;<span class="hljs-built_in">setBlocking</span>(blocking);<br>    mPackage = std::make_shared&lt;CPackage&gt;(mSocket);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;sock_fd:%d\n&quot;</span>, mSocket-&gt;<span class="hljs-built_in">getSocketFd</span>());<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="获取CSocket对象"><a href="#获取CSocket对象" class="headerlink" title="获取CSocket对象"></a>获取CSocket对象</h2><p>客户端需要获取CSocket对象，来进行connect，shutdown操作，直接返回即可：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function">std::shared_ptr&lt;CSocket&gt; <span class="hljs-title">CSocketClient::getSocket</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> mSocket;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">CSocketClient::sendData</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *data, <span class="hljs-keyword">int</span> data_length)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> ret = <span class="hljs-number">-1</span>;<br><br>    <span class="hljs-keyword">if</span> (data == <span class="hljs-literal">nullptr</span> || data_length &lt;= <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> ret;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (mPackage)<br>    &#123;<br>        ret = mPackage-&gt;<span class="hljs-built_in">sendDataPackage</span>(data, data_length);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;sendData:%s, length:%d, ret:%d\n&quot;</span>, data, data_length, ret);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> ret;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">CSocketClient::recvData</span><span class="hljs-params">(<span class="hljs-keyword">char</span> **data, <span class="hljs-keyword">int</span> *data_length)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> ret = <span class="hljs-number">-1</span>;<br><br>    <span class="hljs-keyword">if</span> (data == <span class="hljs-literal">nullptr</span> || data_length == <span class="hljs-literal">nullptr</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> ret;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (mPackage)<br>    &#123;<br>        ret = mPackage-&gt;<span class="hljs-built_in">recvDataPackage</span>(data, data_length);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> ret;<br>&#125;<br></code></pre></td></tr></table></figure>
+                <h2 id="CSelect"><a href="#CSelect" class="headerlink" title="CSelect"></a>CSelect</h2><p>在CSocketListener接受数据时，由于是多client所以使用select进行I/O多路复用，CSelect是实现select操作的对象</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>Select比较简单，具体用法可以查看Linux系统编程：<a href="/2021/02/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">I/O多路复用</a></p>
+<p>实现代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;cselect.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cerrno&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cstring&gt;</span></span><br><br>CSelect::<span class="hljs-built_in">CSelect</span>()<br>&#123;<br>    mMaxFd = <span class="hljs-number">0</span>;<br>    <span class="hljs-built_in">FD_ZERO</span>(&amp;mErrorFds);<br>    <span class="hljs-built_in">FD_ZERO</span>(&amp;mWriteFds);<br>    <span class="hljs-built_in">FD_ZERO</span>(&amp;mReadFds);<br>    <span class="hljs-built_in">FD_ZERO</span>(&amp;mReadSelectFds);<br>    <span class="hljs-built_in">FD_ZERO</span>(&amp;mWriteSelectFds);<br>    <span class="hljs-built_in">FD_ZERO</span>(&amp;mErrorSelectFds);<br>&#125;<br><br>CSelect:: ~<span class="hljs-built_in">CSelect</span>()<br>&#123;<br><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">CSelect::zeroFds</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd_type)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_READ)<br>    &#123;<br>        <span class="hljs-built_in">FD_ZERO</span>(&amp;mReadFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_WRITE)<br>    &#123;<br>        <span class="hljs-built_in">FD_ZERO</span>(&amp;mWriteFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_ERROR)<br>    &#123;<br>        <span class="hljs-built_in">FD_ZERO</span>(&amp;mErrorFds);<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">CSelect::addFd</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd_type, <span class="hljs-keyword">int</span> fd)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_READ)<br>    &#123;<br>        <span class="hljs-built_in">FD_SET</span>(fd, &amp;mReadFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_WRITE)<br>    &#123;<br>        <span class="hljs-built_in">FD_SET</span>(fd, &amp;mWriteFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_ERROR)<br>    &#123;<br>        <span class="hljs-built_in">FD_SET</span>(fd, &amp;mErrorFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd &gt; mMaxFd)<br>    &#123;<br>        mMaxFd = fd;<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">CSelect::removeFd</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd_type, <span class="hljs-keyword">int</span> fd)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_READ)<br>    &#123;<br>        <span class="hljs-built_in">FD_CLR</span>(fd, &amp;mReadFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_WRITE)<br>    &#123;<br>        <span class="hljs-built_in">FD_CLR</span>(fd, &amp;mWriteFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_ERROR)<br>    &#123;<br>        <span class="hljs-built_in">FD_CLR</span>(fd, &amp;mErrorFds);<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">CSelect::isSetFd</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd_type, <span class="hljs-keyword">int</span> fd)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">bool</span> is_set = <span class="hljs-literal">false</span>;<br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_READ)<br>    &#123;<br>        is_set = <span class="hljs-built_in">FD_ISSET</span>(fd, &amp;mReadSelectFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_WRITE)<br>    &#123;<br>        is_set = <span class="hljs-built_in">FD_ISSET</span>(fd, &amp;mWriteSelectFds);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_ERROR)<br>    &#123;<br>        is_set = <span class="hljs-built_in">FD_ISSET</span>(fd, &amp;mErrorSelectFds);<br>    &#125;<br>    <span class="hljs-keyword">return</span> is_set;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">CSelect::select</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd_type)</span></span><br><span class="hljs-function"></span>&#123;<br>    fd_set *read_fds = <span class="hljs-literal">nullptr</span>;<br>    fd_set *write_fds = <span class="hljs-literal">nullptr</span>;<br>    fd_set *error_fds = <span class="hljs-literal">nullptr</span>;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_READ)<br>    &#123;<br>        <span class="hljs-built_in">memcpy</span>(&amp;mReadSelectFds, &amp;mReadFds, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(fd_set));<br>        read_fds = &amp;mReadSelectFds;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_WRITE)<br>    &#123;<br>        <span class="hljs-built_in">memcpy</span>(&amp;mWriteSelectFds, &amp;mWriteFds, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(fd_set));<br>        write_fds = &amp;mWriteSelectFds;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (fd_type &amp; C_FDS_ERROR)<br>    &#123;<br>        <span class="hljs-built_in">memcpy</span>(&amp;mErrorSelectFds, &amp;mErrorFds, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(fd_set));<br>        error_fds = &amp;mErrorSelectFds;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> ::<span class="hljs-built_in">select</span>(mMaxFd + <span class="hljs-number">1</span>, read_fds, write_fds, error_fds, <span class="hljs-literal">nullptr</span>);<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -331,8 +322,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CSocketClient</div>
-      <div>https://carl-5535.github.io/2022/11/14/CarlSDK/CSocketClient/</div>
+      <div>CSelect</div>
+      <div>https://carl-5535.github.io/2022/11/20/CarlSDK/CSelect/</div>
     </div>
     <div class="license-meta">
       
@@ -344,7 +335,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年11月14日</div>
+          <div>2022年11月20日</div>
         </div>
       
       
@@ -376,9 +367,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/11/15/CarlSDK/CSocketListener/" title="CSocketListener">
+                      <a href="/2022/11/20/CarlSDK/CFrameworkLinster/" title="CFrameworkLinster">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">CSocketListener</span>
+                        <span class="hidden-mobile">CFrameworkLinster</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -386,8 +377,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/26/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/TCP%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98/" title="TCP粘包问题">
-                        <span class="hidden-mobile">TCP粘包问题</span>
+                      <a href="/2022/11/19/CarlSDK/%E7%BA%BF%E7%A8%8B%E5%AF%B9%E8%B1%A1/" title="线程操作对象">
+                        <span class="hidden-mobile">线程操作对象</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
