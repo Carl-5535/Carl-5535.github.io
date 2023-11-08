@@ -16,22 +16,30 @@
   <meta name="author" content="Carl Chen">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Server数据处理对象">
+    <meta name="description" content="Record of issues with 2000 power on&#x2F;off">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CClient">
-<meta property="og:url" content="https://carl-5535.github.io/2022/11/20/CarlSDK/CClient/index.html">
+<meta property="og:title" content="Record of issues with 2000 power on&#x2F;off">
+<meta property="og:url" content="https://carl-5535.github.io/2023/05/18/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/%E5%BC%80%E5%85%B3%E6%9C%BA%E6%B5%8B%E8%AF%95fail%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="Carl&#39;s Blog">
-<meta property="og:description" content="Server数据处理对象">
+<meta property="og:description" content="Record of issues with 2000 power on&#x2F;off">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-20T14:31:00.000Z">
-<meta property="article:modified_time" content="2023-11-08T14:43:50.964Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/eth3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/arp.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/tcpdump_eth3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/eth4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/arp_eth4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/arp_pc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/tcpdump_pc.png">
+<meta property="article:published_time" content="2023-05-18T08:39:44.000Z">
+<meta property="article:modified_time" content="2023-11-05T12:03:16.505Z">
 <meta property="article:author" content="Carl Chen">
-<meta property="article:tag" content="Carlsdk">
+<meta property="article:tag" content="工作总结">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/eth3.png">
   
   
   
-  <title>CClient - Carl&#39;s Blog</title>
+  <title>Record of issues with 2000 power on/off - Carl&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +204,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CClient"></span>
+            <span id="subtitle" data-typed-text="Record of issues with 2000 power on/off"></span>
           
         </div>
 
@@ -207,8 +215,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-11-20 22:31" pubdate>
-          2022年11月20日 晚上
+        <time datetime="2023-05-18 16:39" pubdate>
+          2023年5月18日 下午
         </time>
       </span>
     
@@ -219,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          641 字
         
       </span>
     
@@ -230,7 +238,7 @@
         
         
         
-          1 分钟
+          6 分钟
         
       </span>
     
@@ -268,12 +276,48 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CClient</h1>
+            <h1 style="display: none">Record of issues with 2000 power on/off</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <!--
+ * @Author: Carl Chen
+ * @Date: 2023-05-18 16:39:44
+ * @LastEditors: Carl Chen
+ * @LastEditTime: 2023-05-18 17:16:58
+ * @Description: 
+ * @Version: v0.0.1
+ * @History:
+ *     v0.0.1  creat file
+-->
+
+<h2 id="1G-LAN-Port"><a href="#1G-LAN-Port" class="headerlink" title="1G LAN Port"></a>1G LAN Port</h2><h3 id="problem"><a href="#problem" class="headerlink" title="problem"></a>problem</h3><ol>
+<li>DUT can ping PC</li>
+<li>PC can not ping DUT</li>
+</ol>
+<h3 id="Solution-steps"><a href="#Solution-steps" class="headerlink" title="Solution steps"></a>Solution steps</h3><ol>
+<li>eth3 is normal<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/eth3.png" srcset="/img/loading.gif" lazyload alt="eth3"></li>
+<li>arp table is normal<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/arp.png" srcset="/img/loading.gif" lazyload alt="arp"></li>
+<li>DUT Received ARP package but did not reply<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/tcpdump_eth3.png" srcset="/img/loading.gif" lazyload alt="tcpdump"></li>
+<li>After setting the command “iptables -F”, PC can ping DUT</li>
+</ol>
+<h3 id="conclusion"><a href="#conclusion" class="headerlink" title="conclusion"></a>conclusion</h3><p>It may be due to an issue with the iptable rule</p>
+<h2 id="10G-LAN-Port"><a href="#10G-LAN-Port" class="headerlink" title="10G LAN Port"></a>10G LAN Port</h2><h3 id="problem-1"><a href="#problem-1" class="headerlink" title="problem"></a>problem</h3><ol>
+<li>DUT can not ping PC</li>
+<li>PC can not ping DUT</li>
+</ol>
+<h3 id="Solution-steps-1"><a href="#Solution-steps-1" class="headerlink" title="Solution steps"></a>Solution steps</h3><ol>
+<li>eth4 is normal<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/eth4.png" srcset="/img/loading.gif" lazyload alt="eth4"></li>
+<li>arp table is normal<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/arp_eth4.png" srcset="/img/loading.gif" lazyload alt="arp_eth4"><br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/arp_pc.png" srcset="/img/loading.gif" lazyload alt="arp_pc"></li>
+<li>DUT Received ARP package but did not reply</li>
+<li>PC Received ARP package but did not reply<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/tcpdump_pc.png" srcset="/img/loading.gif" lazyload alt="tcpdump_pc"></li>
+<li>After setting the command “iptables -F”, PC can ping DUT but DUT can not ping PC</li>
+<li>Turn off Windows Firewall, DUT can ping PC</li>
+</ol>
+<h3 id="conclusion-1"><a href="#conclusion-1" class="headerlink" title="conclusion"></a>conclusion</h3><p>It may be due to an issue with the iptable rule</p>
+<h2 id="others"><a href="#others" class="headerlink" title="others"></a>others</h2><p><strong>When testing 10G, the MAC address of eth4 was modified to 74:93:DA:3B:FF:9C. Because the problem was not resolved, it was changed back again</strong></p>
+
                 
               </div>
             
@@ -291,7 +335,7 @@
     
       <span class="category-chain">
         
-  <a href="/category/Carlsdk/" class="category-chain-item">Carlsdk</a>
+  <a href="/category/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" class="category-chain-item">工作总结</a>
   
   
 
@@ -306,7 +350,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Carlsdk/">#Carlsdk</a>
+        <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">#工作总结</a>
       
     </div>
   
@@ -318,8 +362,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CClient</div>
-      <div>https://carl-5535.github.io/2022/11/20/CarlSDK/CClient/</div>
+      <div>Record of issues with 2000 power on/off</div>
+      <div>https://carl-5535.github.io/2023/05/18/工作总结/开关机测试fail分析/</div>
     </div>
     <div class="license-meta">
       
@@ -331,7 +375,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年11月20日</div>
+          <div>2023年5月18日</div>
         </div>
       
       
@@ -363,18 +407,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/11/21/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/jsonhpp/" title="Json for Modern C++">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Json for Modern C++</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/11/20/CarlSDK/CFrameworkLinster/" title="CFrameworkLinster">
-                        <span class="hidden-mobile">CFrameworkLinster</span>
+                      <a href="/2023/03/24/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/nuc972-%E4%B8%AD%E6%96%AD%E6%8C%89%E9%94%AE/" title="nuc972-中断按键">
+                        <span class="hidden-mobile">nuc972-中断按键</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

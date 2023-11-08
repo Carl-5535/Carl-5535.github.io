@@ -24,7 +24,7 @@
 <meta property="og:description" content="数据包对象，包含发送和接收方法">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-10-25T02:50:00.000Z">
-<meta property="article:modified_time" content="2022-11-26T04:26:44.298Z">
+<meta property="article:modified_time" content="2023-11-08T14:42:53.044Z">
 <meta property="article:author" content="Carl Chen">
 <meta property="article:tag" content="Carlsdk">
 <meta name="twitter:card" content="summary_large_image">
@@ -274,7 +274,7 @@
               <div class="markdown-body">
                 
                 <h1 id="CPackage"><a href="#CPackage" class="headerlink" title="CPackage"></a>CPackage</h1><p>Cpackage是Carlsdk中使用Csocket进行收发数据包的类，对数据包进行了定义，保证数据收发的完整性</p>
-<p>此对象主要应对大数据包的收发，以及可能出现的TCP粘包问题</p>
+<p>此对象主要应对大数据包的收发，以及可能出现的TCP粘包问题。</p>
 <h2 id="数据包"><a href="#数据包" class="headerlink" title="数据包"></a>数据包</h2><p>数据包由包头和包体两部分组成，包头4个字节，包体最大8 * 1024个字节，使用如下两个宏</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> C_DATA_PACKAGE_HEADER_SIZE                4</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> C_DATA_PACKAGE_MAX_LENGTH              (8 * 1024)</span><br></code></pre></td></tr></table></figure>
 
