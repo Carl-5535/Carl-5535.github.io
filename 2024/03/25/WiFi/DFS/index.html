@@ -1,0 +1,711 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Dynamic frequency selection(DFS)动态信道选择(DFS)，可以允许未授权设备使用已经分配给雷达的5GHz频段并且不会对这些雷达造成干扰的机制。 DFS的概念是：让未授权的设备在正在使用的信道上检测雷达系统是否存在，如果雷达超过某个阈值，清空信道并选择另一个可用的信道。 DFS的目标 在5GHz的信道上和雷达共存 执行均匀加载或跨频谱扩展。在5 GHz带宽中，有许多信道">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DFS">
+<meta property="og:url" content="https://carl-5535.github.io/2024/03/25/WiFi/DFS/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="Dynamic frequency selection(DFS)动态信道选择(DFS)，可以允许未授权设备使用已经分配给雷达的5GHz频段并且不会对这些雷达造成干扰的机制。 DFS的概念是：让未授权的设备在正在使用的信道上检测雷达系统是否存在，如果雷达超过某个阈值，清空信道并选择另一个可用的信道。 DFS的目标 在5GHz的信道上和雷达共存 执行均匀加载或跨频谱扩展。在5 GHz带宽中，有许多信道">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-25T07:25:00.000Z">
+<meta property="article:modified_time" content="2024-03-28T05:38:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>DFS - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DFS"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-25 15:25" pubdate>
+          2024年3月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">DFS</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Dynamic-frequency-selection-DFS"><a href="#Dynamic-frequency-selection-DFS" class="headerlink" title="Dynamic frequency selection(DFS)"></a>Dynamic frequency selection(DFS)</h1><p>动态信道选择(DFS)，可以允许未授权设备使用已经分配给雷达的5GHz频段并且不会对这些雷达造成干扰的机制。</p>
+<p>DFS的概念是：让未授权的设备在正在使用的信道上检测雷达系统是否存在，如果雷达超过某个阈值，清空信道并选择另一个可用的信道。</p>
+<h2 id="DFS的目标"><a href="#DFS的目标" class="headerlink" title="DFS的目标"></a>DFS的目标</h2><ol>
+<li>在5GHz的信道上和雷达共存</li>
+<li>执行均匀加载或跨频谱扩展。在5 GHz带宽中，有许多信道可以供无线设备工作。DFS还需要随机选择信道，以便在整个频谱中统一使用信道</li>
+</ol>
+<p>5 GHz频段的兼容工作要求接入点设备能够检测到带内雷达信号的存在。通常，这些信号采用长度为1 - 100 μ s的周期性窄带脉冲或50 - 100 μ s的啁啾脉冲的形式。当探测到雷达时，接入点需要在10s内清空和雷达共存的通道，并跳转到不同的通道。</p>
+<h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><ul>
+<li><strong>Channel Availability Check Time</strong> : 在启动信道上的通信链路之前，系统应监测该信道是否有雷达存在的时间。这也被简称为CAC。</li>
+<li><strong>Interference Detection Threshold</strong> : 假设一个0 dBi天线，系统可以检测到的触发移动到另一个信道的最小信号电平。</li>
+<li><strong>Channel Move Time</strong> : 系统清除信道的时间，从检测到雷达到信道上最后传输结束的时间。</li>
+<li><strong>Channel Closing Transmission Time</strong> : 信道移动期间，系统的总传输时间</li>
+<li><strong>Non-Occupancy Time</strong> : 雷达在通道上检测到该通道不能使用后的一段时间。</li>
+<li><strong>Master Device</strong> : 具有雷达探测能力并可以控制网络中的其他设备的设备(例如，一个接入点被认为是一个主设备)</li>
+<li><strong>Client Device</strong> : 未经主设备授权，不能在通道上发起通信的设备(例如，笔记本Wi-Fi卡——请注意，支持ad-hoc模式的Wi-Fi卡被视为主设备)</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>高通技术芯片中的一个专用雷达检测模块负责将雷达脉冲与传入的信标/管理或数据帧区分开来。<br>每当硬件检测到RADAR PHY错误时，就会产生一个中断，MAC层向软件(中断处理程序)提供下列信息:</p>
+<ul>
+<li>RSSI值</li>
+<li>脉冲宽度</li>
+<li>收集数据的时间戳。该信息用于通过比较两个连续脉冲的时间戳来确定PRF/PRI值：<ul>
+<li>重复频率/脉冲重复间隔(PRF/PRI)</li>
+<li>线性调频脉冲，PRF/PRI 可能不同</li>
+<li>脉冲强度(RSSI)</li>
+<li>脉冲宽度</li>
+</ul>
+</li>
+</ul>
+<p>有一个与雷达检测相关联的事件队列。RSSI、脉冲宽度和时间戳由中断处理程序存储在队列中。</p>
+<p>有一个DFS定时器任务，用于读取与雷达检测相关的队列中的条目。它根据雷达滤波器表中定义的PRI、RSSI和脉冲宽度值来检查时间戳、RSSI和脉冲宽度值。</p>
+<p>雷达PHY处理可以offload到固件。它被称为offloading - dfs。FO (Full-Offload)芯片通常将雷达PHY错误处理offload到固件。在offloaded-DFS中，整个处理过程在固件中进行，如果处理发现过滤器匹配，则从固件向主机发送雷达发现事件(WMI_PDEV_DFS_RADAR_DETECTION_EVENTID)。驻留在主机中的DFS组件解析事件并向MLME发送雷达发现指示。对于partial offload芯片，脉冲在宿主DFS组件中处理。所有芯片(partial offload and fulloffload)的DFS高级统一图如图所示</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>在加载DFS模块的过程中，有几个参数可能会影响DFS</p>
+<ul>
+<li>domainoverride<br>  0 = Uninitialized (default)<br>  1 = FCC Domain (FCC3, US)<br>  2 = ETSI Domain (Europe)<br>  3 = Japan Domain</li>
+<li>usenol<br>  将此参数设置为0，即使检测到雷达，DFS模块也不会改变(空出)通道。这仅用于DFS认证和测试目的</li>
+<li>countrycode<br>  这个参数可以用来设置国家代码。如果设置了该参数，则使用该参数自动选择对应的DFS域。演示频道使用国家代码0x1ff。</li>
+</ul>
+<h2 id="Radartool"><a href="#Radartool" class="headerlink" title="Radartool"></a>Radartool</h2><p>Radartool可以用来配置DFS模块，以帮助调试DFS问题</p>
+<p>Usage: radartool &lt;command&gt; [value]</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>0</td>
+<td>强制AP使用相同的信道，即使在该信道上检测到雷达后也是如此</td>
+</tr>
+<tr>
+<td>usenol</td>
+<td>1</td>
+<td>正常的操作。AP在探测到雷达时将切换频道</td>
+</tr>
+<tr>
+<td></td>
+<td>2</td>
+<td>仅用于内部测试)，可以配置主机的NOL超时时间，不将通道添加到FW NOL中。</td>
+</tr>
+<tr>
+<td>dfsdebug</td>
+<td>0-3</td>
+<td></td>
+</tr>
+<tr>
+<td>bangradar</td>
+<td>None</td>
+<td>这是一个测试软件，模拟成功探测雷达情况下的行为。软件模块被通知雷达探测事件</td>
+</tr>
+<tr>
+<td>shownol</td>
+<td>None</td>
+<td>显示NOL列表中的信道</td>
+</tr>
+<tr>
+<td>enable</td>
+<td>None</td>
+<td>软件中打开打雷达侦测</td>
+</tr>
+<tr>
+<td>disable</td>
+<td>None</td>
+<td>在软件中禁用雷达检测，即使是有效的DFS通道</td>
+</tr>
+<tr>
+<td>numdetects</td>
+<td>None</td>
+<td>打印雷达脉冲检测次数的统计</td>
+</tr>
+<tr>
+<td>setnol</td>
+<td>None</td>
+<td>将指定通道添加到NOL列表中，即使在此通道中未检测到雷达</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DFS</div>
+      <div>https://carl-5535.github.io/2024/03/25/WiFi/DFS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/01/WiFi/Zero%20DFS/" title="Zero DFS">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Zero DFS</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/01/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/Quectel%E5%B1%95%E8%AE%AF%E6%A8%A1%E7%BB%84%E4%B8%AD%E7%9A%84Secure%20Boot/" title="Quectel展讯模组中的Secure Boot">
+                        <span class="hidden-mobile">Quectel展讯模组中的Secure Boot</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

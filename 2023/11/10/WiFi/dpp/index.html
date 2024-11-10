@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="DPPDPP（Device Provision Protocol）提出的目的是为了通过Configurator将不同的设备（包括路由器、手机以及各种IoT设备等）加入网络。例如，通过手机（作为Configurator）扫描某个设备（作为Enrollee）上的二维码，就可以将该设备连接上配置好的AP（这个AP也是一个Enrollee，被Configurator配置过）。WiFi联盟官方名字是WiFi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dpp">
+<meta property="og:url" content="https://carl-5535.github.io/2023/11/10/WiFi/dpp/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="DPPDPP（Device Provision Protocol）提出的目的是为了通过Configurator将不同的设备（包括路由器、手机以及各种IoT设备等）加入网络。例如，通过手机（作为Configurator）扫描某个设备（作为Enrollee）上的二维码，就可以将该设备连接上配置好的AP（这个AP也是一个Enrollee，被Configurator配置过）。WiFi联盟官方名字是WiFi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-10T07:30:00.000Z">
+<meta property="article:modified_time" content="2023-11-10T07:31:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="WiFi">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>dpp - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dpp"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-11-10 15:30" pubdate>
+          2023年11月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">dpp</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="DPP"><a href="#DPP" class="headerlink" title="DPP"></a>DPP</h1><p>DPP（Device Provision Protocol）提出的目的是为了通过Configurator将不同的设备（包括路由器、手机以及各种IoT设备等）加入网络。例如，通过手机（作为Configurator）扫描某个设备（作为Enrollee）上的二维码，就可以将该设备连接上配置好的AP（这个AP也是一个Enrollee，被Configurator配置过）。WiFi联盟官方名字是WiFi Easy Connect，DPP是这个feature的协议。</p>
+<h2 id="DPP中的概念"><a href="#DPP中的概念" class="headerlink" title="DPP中的概念"></a>DPP中的概念</h2><ul>
+<li><p>Configurator：作为配置网络的控制器，将不同的其他设备连接入无线局域网，也用于配置AP。</p>
+</li>
+<li><p>Enrollee：需要接入无线局域网的设备（可能是AP，也可以是作为STA的设备）。</p>
+</li>
+<li><p>Initiator：在DPP authentication 过程中的发起者。</p>
+</li>
+<li><p>Responser：对应Initiator，在DPP authentication过程中的回复者。</p>
+</li>
+<li><p>Connector：有点类似于介绍信，Configurator发放Connector给Enrollee，Enrollee使用Connector向AP发起网络连接请求。</p>
+</li>
+</ul>
+<h2 id="DPP的流程"><a href="#DPP的流程" class="headerlink" title="DPP的流程"></a>DPP的流程</h2><p>DPP主要包括以下4个流程：bootstrapping，authentication，configuration以及network introduction。</p>
+<h3 id="bootstrapping"><a href="#bootstrapping" class="headerlink" title="bootstrapping"></a>bootstrapping</h3><p>bootstrapping的目的就是让其中一方获取到另一方的Public key。可以通过NFC,扫描二维码，蓝牙等获取。</p>
+<h3 id="authentication"><a href="#authentication" class="headerlink" title="authentication"></a>authentication</h3><p>发起authentication过程的一方称之为Initiator。authentication protocol结束之后，Initiator就相信这个Responder确实是它获取到（比如扫二维码得到）的Public key的真正所有者，同时确定哪一方做Configurator或Enrollee。authentication过程包含三条消息，request，response以及confirm，用于认证和交换各自的capabilities（是否充当Configurator）。此外，authentication过程还生成了会话密钥key用于后面的configuration阶段。</p>
+<p>综上，authentication有三大作用：1）认证 2）确定双方的角色 3）生成key。</p>
+<h3 id="configuration"><a href="#configuration" class="headerlink" title="configuration"></a>configuration</h3><p>通过authentication过程的双方进入到configuration阶段。这个阶段必须由Enrollee发起（不管前边authentication过程中是不是Initiator）且发送的信息通过key加密。在configuration阶段，Enrollee需要告诉Configurator自己是AP还是STA（还有可能是Configurator）。在收到Enrollee发起的request消息后，Configurator发送配置信息给Enrollee，其中包含目标网络的SSID，AKM，以及Credential信息（根据目标网络的类型以及DPP协议版本可能需要提供不同的信息，如Pre-shared key，Connector等）。如果Enrollee收到的Credential信息是Pre-shared key，那么DPP流程结束，直接进入WPA2或WPA3的连接过程（auth，assoc，etc.）</p>
+<p>综上，configuration的作用有：1）确定Enrollee角色 2）提供网络配置信息</p>
+<h3 id="introduction"><a href="#introduction" class="headerlink" title="introduction"></a>introduction</h3><p>introduction只会发生在1）Enrollee是STA 2）在configuration过程中收到的回复信息包含Connector。而且，这个过程和configurator没关系了，是发生在STA和AP之间的。STA拿着Configurator给的介绍信（Connector）找到AP，并发起连接。STA发送DPP Peer Discovery Request frame给AP，AP收到request后根据获取的信息生成PMK，并回复Response信息，STA收到response后也导出PMK。随后进入传统的WiFi连接流程（auth，assoc，etc.）</p>
+<h2 id="DPP-Demo"><a href="#DPP-Demo" class="headerlink" title="DPP Demo"></a>DPP Demo</h2><p>RG AP(Enrollee+Configurator) + RE STA(Enrollee)</p>
+<h3 id="on-AP-side-Enable-a-radio-and-run-a-VAP"><a href="#on-AP-side-Enable-a-radio-and-run-a-VAP" class="headerlink" title="on AP side, Enable a radio and run a VAP"></a>on AP side, Enable a radio and run a VAP</h3><blockquote>
+<p>默认@wifi-iface[0]已经up，且工作正常</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs SHELL">uci set wireless.wifi0.disabled=&#x27;0&#x27;<br>uci set wireless.wifi1.disabled=&#x27;1&#x27;<br>uci set wireless.wifi2.disabled=&#x27;1&#x27;<br>uci set wireless.wifi0.channel=&#x27;6&#x27;<br>uci set wireless.@wifi-iface[0].dpp=&#x27;1&#x27;<br>uci set wireless.@wifi-iface[0].dpp_type=&#x27;qrcode&#x27;<br>uci set wireless.@wifi-iface[0].dpp_curve=&#x27;P-256&#x27;<br>uci set wireless.@wifi-iface[0].encryption=&#x27;dpp&#x27;<br>uci commit wireless<br>wifi<br></code></pre></td></tr></table></figure>
+
+<h3 id="on-STA-side-Enable-a-radio-and-run-a-STA"><a href="#on-STA-side-Enable-a-radio-and-run-a-STA" class="headerlink" title="on STA side, Enable a radio and run a STA"></a>on STA side, Enable a radio and run a STA</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs SHELL">uci set wireless.wifi0.disabled=&#x27;0&#x27;<br>uci set wireless.wifi1.disabled=&#x27;1&#x27;<br>uci set wireless.wifi2.disabled=&#x27;1&#x27;<br>uci set wireless.bsta=wifi-iface<br>uci set wireless.bsta.device=&#x27;wifi0&#x27;<br>uci set wireless.bsta.network=&#x27;lan&#x27;<br>uci set wireless.bsta.ssid=&#x27;DPP&#x27;<br>uci set wireless.bsta.dpp=&#x27;1&#x27;<br>uci set wireless.bsta.encryption=&#x27;dpp&#x27;<br>uci set wireless.bsta.mode=&#x27;sta&#x27;<br>uci set wireless.bsta.wds=&#x27;1&#x27;<br>uci commit wireless<br>wifi<br></code></pre></td></tr></table></figure>
+
+<h3 id="on-STA-side，creat-config-file"><a href="#on-STA-side，creat-config-file" class="headerlink" title="on STA side，creat config file"></a>on STA side，creat config file</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs SHELL">vi /etc/wpa_supplicant.conf #add text<br>ctrl_interface=DIR=/var/run/wpa_supplicant<br>ctrl_interface_group=0<br>update_config=1<br>pmf=2<br>dpp_config_processing=2<br></code></pre></td></tr></table></figure>
+
+<h3 id="On-STA-side-run-command"><a href="#On-STA-side-run-command" class="headerlink" title="On STA side, run command"></a>On STA side, run command</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs SHELL">killall wpa_supplicant<br>wpa_supplicant -Dnl80211 -iath04 -c /etc/wpa_supplicant.conf  &amp;<br>wpa_cli -i ath04<br><br>dpp_bootstrap_gen type=qrcode curve=P-256 channel=81/6 key=30770201010420e7a9e2a43291cb5889cc37b540434cfacf6762156d013d6e2e88bd1ce0364562a00a06082a8648ce3d030107a144034200040dbb18afb95c60a634a8653f124e4863a041aea37a69f10391ac57496d70fa60e86707b8e0bde3981d8622fc3385aa1a3a29e204ceedc6ce0b70b07fe0fc5112<br><br>dpp_bootstrap_get_uri 1  #generate a DPP_QR_CODE uri<br><br>dpp_listen 2437<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="On-AP-side-run-command"><a href="#On-AP-side-run-command" class="headerlink" title="On AP side ,run command"></a>On AP side ,run command</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">/usr/sbin/hostapd_cli -i ath03 -p /var/run/hostapd-wifi0<br>		<br>dpp_configurator_add curve=P-256<br><br>dpp_configurator_sign conf=ap-dpp configurator=1 ssid=445050<br><br>DPP_QR_CODE DPP:V:2;K:MDkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDIgACDbsYr7lcYKY0qGU/Ek5IY6BBrqN6afEDkaxXSW1w+mA=;;<br><br>dpp_auth_init peer=2 role=configurator conf=sta-dpp ssid=445050 configurator=1<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/WiFi/">#WiFi</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dpp</div>
+      <div>https://carl-5535.github.io/2023/11/10/WiFi/dpp/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年11月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/11/29/Linux0.11/1)%E5%BC%80%E6%9C%BA%E5%90%8E%E6%9C%80%E5%BC%80%E5%A7%8B%E7%9A%84%E4%B8%A4%E8%A1%8C%E4%BB%A3%E7%A0%81/" title="开机后最开始的两行代码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">开机后最开始的两行代码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/10/tr369/REGISTER_FUNC/" title="REGISTER_FUNC">
+                        <span class="hidden-mobile">REGISTER_FUNC</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

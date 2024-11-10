@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景最近在用rock-chips的芯片做项目，在移植openssh后，无法正常使用密码登录ssh，记录解决思路和解决方法。 shadow&#x2F;etc&#x2F;shadow 文件是 Linux 系统中用于存储用户密码和账户过期信息的文件。它包含了每个用户的账户信息，尤其是与身份验证和密码相关的内容。每一行包含一个用户的信息，字段之间由冒号 : 分隔。 具体格式为： 1用户名:加密后的密码:最后更改密码的天数:最">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSH登陆失败">
+<meta property="og:url" content="https://carl-5535.github.io/2024/11/05/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/SSH%E7%99%BB%E9%99%86%E5%A4%B1%E8%B4%A5/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="背景最近在用rock-chips的芯片做项目，在移植openssh后，无法正常使用密码登录ssh，记录解决思路和解决方法。 shadow&#x2F;etc&#x2F;shadow 文件是 Linux 系统中用于存储用户密码和账户过期信息的文件。它包含了每个用户的账户信息，尤其是与身份验证和密码相关的内容。每一行包含一个用户的信息，字段之间由冒号 : 分隔。 具体格式为： 1用户名:加密后的密码:最后更改密码的天数:最">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-05T01:27:00.000Z">
+<meta property="article:modified_time" content="2024-11-05T01:27:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="工作总结">
+<meta property="article:tag" content="Linux用户">
+<meta property="article:tag" content="shadow">
+<meta property="article:tag" content="SSH">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>SSH登陆失败 - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SSH登陆失败"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-11-05 09:27" pubdate>
+          2024年11月5日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SSH登陆失败</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近在用rock-chips的芯片做项目，在移植openssh后，无法正常使用密码登录ssh，记录解决思路和解决方法。</p>
+<h2 id="shadow"><a href="#shadow" class="headerlink" title="shadow"></a>shadow</h2><p><code>/etc/shadow</code> 文件是 Linux 系统中用于存储用户密码和账户过期信息的文件。它包含了每个用户的账户信息，尤其是与身份验证和密码相关的内容。每一行包含一个用户的信息，字段之间由冒号 <code>:</code> 分隔。</p>
+<p>具体格式为：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">用户名:加密后的密码:最后更改密码的天数:最小天数:最大天数:警告期:不活动期:到期时间:保留字段</span><br></code></pre></td></tr></table></figure>
+<p>下面是每个字段的详细说明：</p>
+<ol>
+<li><strong>用户名</strong> (<code>用户名</code>):<ul>
+<li>存储用户的用户名。</li>
+<li>例如：<code>root</code>、<code>john</code>。</li>
+</ul>
+</li>
+<li><strong>加密后的密码</strong> (<code>加密后的密码</code>):<ul>
+<li>存储用户的密码，通常是经过加密处理的密码。</li>
+<li>如果该字段包含一个特殊字符 <code>!</code> 或 <code>*</code>，表示该账户已被锁定，不能登录。</li>
+<li>例如：<code>$6$WqWvMyD6$zGs...</code> 表示加密后的密码（此处为 SHA-512 加密）。</li>
+</ul>
+</li>
+<li><strong>最后更改密码的天数</strong> (<code>最后更改密码的天数</code>):<ul>
+<li>记录自 1970年1月1日以来的天数，表示最后一次更改密码的日期。</li>
+<li>例如：<code>18000</code> 表示密码在 18000 天更改。</li>
+</ul>
+</li>
+<li><strong>最小天数</strong> (<code>最小天数</code>):<ul>
+<li>密码更改的最小天数。设置为 <code>0</code> 时，用户可以立即更改密码；如果大于 <code>0</code>，则必须等待至少这个天数才能更改密码。</li>
+<li>例如：<code>0</code> 表示不限制密码更改的最小时间。</li>
+</ul>
+</li>
+<li><strong>最大天数</strong> (<code>最大天数</code>):<ul>
+<li>密码的最大有效天数，超过此天数后必须更改密码。</li>
+<li>例如：<code>90</code> 表示密码在 90 天后到期，用户必须更改密码。</li>
+</ul>
+</li>
+<li><strong>警告期</strong> (<code>警告期</code>):<ul>
+<li>在密码到期前的多少天开始警告用户，提醒其更改密码。</li>
+<li>例如：<code>7</code> 表示密码到期前 7 天开始警告用户。</li>
+</ul>
+</li>
+<li><strong>不活动期</strong> (<code>不活动期</code>):<ul>
+<li>密码过期后，用户账户在不活动多少天后会被禁用。如果设置为 <code>0</code>，表示密码过期后立即禁用账户。</li>
+<li>例如：<code>30</code> 表示密码到期后的 30 天内账户可以保持不活动状态。</li>
+</ul>
+</li>
+<li><strong>到期时间</strong> (<code>到期时间</code>):<ul>
+<li>账户的到期日期，表示账户从该日期开始不再可用。值为 <code>0</code> 时表示没有设置到期日期。</li>
+<li>例如：<code>0</code> 表示账户没有设置到期日期。</li>
+</ul>
+</li>
+<li><strong>保留字段</strong> (<code>保留字段</code>):<ul>
+<li>目前此字段保留，通常为空。</li>
+</ul>
+</li>
+</ol>
+<h2 id="密码加密类型"><a href="#密码加密类型" class="headerlink" title="密码加密类型"></a>密码加密类型</h2><p>在 <code>/etc/shadow</code> 文件中，密码的加密类型通常通过密码字段的前缀来标识。每种加密算法在加密后的密码字符串中都有特定的标识符。这些标识符帮助系统和程序知道如何解密和验证密码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">root:$6$KbVQqYnd$B7JCO4sZj3a9fEv1gN66yIZw1sVgStVoCgPj.Som1JjszRrlQZ8xoAneLwUNlU4p4uK3Frlwz9h.Mt7NkWo8y.:18000:0:90:7:30:0:<br>johndoe:$6$7Zqg7YhZ$YsYjX3VLo7WLBmBQpijA3e7/FaKZ19n3nFs.L4Bd32XYkXqkc7fG5z.k2d5bD6fnmPInFoDdrYIoFD2e7ab4L.:18200:5:60:5:10:0:<br>alice:$1$4HnHuygI$uMNFPmygPqJtE5T6EYFiOT9zq0tM8UmQIkcGz1yb7s.:18500:7:120:10:14:0:<br>guest:!!:19000:0:0:0:0:0:<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>DES</code>：<code>$1$</code></li>
+<li><code>MD5</code>：<code>$1$</code>（但与 DES 区别通常是密码长度）</li>
+<li><code>SHA-256</code>：<code>$5$</code></li>
+<li><code>SHA-512</code>：<code>$6$</code></li>
+<li><code>Blowfish</code> 或 <code>bcrypt</code>：<code>$2a$</code> 或 <code>$2y$</code></li>
+<li><code>未加密的密码</code>：如果密码字段为空（例如：<code>root::</code>），则表示用户密码为空，或未加密（即无保护）。</li>
+</ul>
+<h2 id="密码过期"><a href="#密码过期" class="headerlink" title="密码过期"></a>密码过期</h2><p>登陆失败后查看system log引入眼帘的第一个错误是密码过期：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">auth.info sshd[162]: User root password has expired (root forced)<br></code></pre></td></tr></table></figure>
+
+<p>重设密码后仍然显示过期，重设密码指令：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># passwd</span><br><span class="hljs-string">Changing</span> <span class="hljs-string">password</span> <span class="hljs-string">for</span> <span class="hljs-string">root</span><br><span class="hljs-attr">New password:</span><br><span class="hljs-attr">Bad password:</span> <span class="hljs-string">too</span> <span class="hljs-string">short</span><br><span class="hljs-attr">Retype password:</span><br><span class="hljs-attr">passwd:</span> <span class="hljs-string">password</span> <span class="hljs-string">for</span> <span class="hljs-string">root</span> <span class="hljs-string">changed</span> <span class="hljs-string">by</span> <span class="hljs-string">root</span><br></code></pre></td></tr></table></figure>
+
+<p>查看<code>/etc/shadow</code>发现第三个字段为0，手动改成1800，不会再出现密码过期的错误。</p>
+<p>改密码仍然出错的原因是系统时间不对导致，发现系统时间是19700101</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># date</span><br><span class="hljs-attribute">Thu</span> Jan  <span class="hljs-number">1</span> <span class="hljs-number">00</span>:<span class="hljs-number">27</span>:<span class="hljs-number">11</span> UTC <span class="hljs-number">1970</span><br></code></pre></td></tr></table></figure>
+
+<p>使用<code>date -s</code>修改系统事件后，再重设密码也可解决此问题。</p>
+<h2 id="密码错误"><a href="#密码错误" class="headerlink" title="密码错误"></a>密码错误</h2><p>解决第一个问题后仍然登录失败，错误是密码错误：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">Failed password for root from 192.168.1.111 port 62048 ssh2<br></code></pre></td></tr></table></figure>
+
+<p>可以确定的是我密码一定是一样的，因为设置的是<code>1111</code>，首先清除密码在做尝试</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># passwd -d root</span><br><span class="hljs-attribute">passwd</span>: password for root changed by root<br><br><span class="hljs-comment"># cat /etc/shadow</span><br><span class="hljs-attribute">root</span>::<span class="hljs-number">1800</span>:<span class="hljs-number">0</span>:<span class="hljs-number">99999</span>:<span class="hljs-number">7</span>:::<br></code></pre></td></tr></table></figure>
+
+<p>这样是可以不用密码登录成功的，我立马想到了之前项目遇到的ssh不支持sha512的问题，觉得可能是加密方式的不支持导致的，于是更换des：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># passwd -a des</span><br><span class="hljs-attribute">Changing</span> password for root<br><span class="hljs-attribute">New</span> password:<br><span class="hljs-attribute">Bad</span> password: too short<br><span class="hljs-attribute">Retype</span> password:<br><span class="hljs-attribute">passwd</span>: password for root changed by root<br><span class="hljs-comment"># cat /etc/shadow</span><br><span class="hljs-attribute">root</span>:J<span class="hljs-number">85</span>gt<span class="hljs-number">9</span>z<span class="hljs-number">3</span>v.MB<span class="hljs-number">6</span>:<span class="hljs-number">18000</span>:<span class="hljs-number">0</span>:<span class="hljs-number">99999</span>:<span class="hljs-number">7</span>:::<br></code></pre></td></tr></table></figure>
+
+<p>仍然是不用密码就登陆进来了，可能是passwd的des没有<code>$1$</code>导致的,但是手动加上后仍然会密码错误。</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>这种情况下只有在openssh的源码中跟踪，来查看密码为什么会被判断为错误。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span></span><br><span class="hljs-function"><span class="hljs-title">sys_auth_passwd</span><span class="hljs-params">(struct ssh *ssh, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *password)</span></span><br><span class="hljs-function"></span>&#123;<br>    Authctxt *authctxt = ssh-&gt;authctxt;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">passwd</span> *<span class="hljs-title">pw</span> =</span> authctxt-&gt;pw;<br>    <span class="hljs-keyword">char</span> *encrypted_password, *salt = <span class="hljs-literal">NULL</span>;<br><br>    <span class="hljs-comment">/* Just use the supplied fake password if authctxt is invalid */</span><br>    <span class="hljs-keyword">char</span> *pw_password = authctxt-&gt;valid ? shadow_pw(pw) : pw-&gt;pw_passwd;<br>  <br>    <span class="hljs-keyword">if</span> (pw_password == <span class="hljs-literal">NULL</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>    <span class="hljs-comment">/* Check for users with no password. */</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(pw_password, <span class="hljs-string">&quot;&quot;</span>) == <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-built_in">strcmp</span>(password, <span class="hljs-string">&quot;&quot;</span>) == <span class="hljs-number">0</span>)<br>        <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span>);<br>     <br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * Encrypt the candidate password using the proper salt, or pass a</span><br><span class="hljs-comment">     * NULL and let xcrypt pick one.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">if</span> (authctxt-&gt;valid &amp;&amp; pw_password[<span class="hljs-number">0</span>] &amp;&amp; pw_password[<span class="hljs-number">1</span>])<br>        salt = pw_password;<br>    encrypted_password = xcrypt(password, salt);<br>  <br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * Authentication is accepted if the encrypted passwords</span><br><span class="hljs-comment">     * are identical.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">return</span> encrypted_password != <span class="hljs-literal">NULL</span> &amp;&amp;<br>        <span class="hljs-built_in">strcmp</span>(encrypted_password, pw_password) == <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以上是密码判断的代码，通过添加debug信息，我发现<code>encrypted_password</code>为空，导致永远返回密码错误。问题应该就出现在<code>xcrypt()</code>中，离真相越来越近了！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">char</span> *</span><br><span class="hljs-function"><span class="hljs-title">xcrypt</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *password, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *salt)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> *crypted;<br>  <br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * If we don&#x27;t have a salt we are encrypting a fake password for</span><br><span class="hljs-comment">     * for timing purposes.  Pick an appropriate salt.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">if</span> (salt == <span class="hljs-literal">NULL</span>)<br>        salt = pick_salt();<br>  <br><span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(__hpux) &amp;&amp; !defined(HAVE_SECUREWARE)</span><br>    <span class="hljs-keyword">if</span> (iscomsec())<br>        crypted = bigcrypt(password, salt);<br>    <span class="hljs-keyword">else</span><br>        crypted = crypt(password, salt);<br><span class="hljs-meta"># <span class="hljs-meta-keyword">elif</span> defined(HAVE_SECUREWARE)</span><br>    crypted = bigcrypt(password, salt);<br><span class="hljs-meta"># <span class="hljs-meta-keyword">else</span></span><br>    crypted = crypt(password, salt);<br><span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span><br>  <br>    <span class="hljs-keyword">return</span> crypted;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>继续添加debug信息，最终调用的是<code>crypt()</code>函数，在服务器上写test调用crypt发现可以正常加密，所以应该是编译的时候链接出了问题。</p>
+<h2 id="编译分析"><a href="#编译分析" class="headerlink" title="编译分析"></a>编译分析</h2><p>我计划使用交叉编译工具编译和服务器相同的test，在rock-chips的板子上运行，但是我竟然没在lib目录里找到<code>crypt</code>的库，只有<code>crypto</code>的库,于是我立马到板子上查看也没有<code>crypt</code>的库，所以在openssh的编译的链接中，没有链接到正确的库。</p>
+<p>最终我在一个叫<strong>runtime_lib</strong>的目录中找到了crypt的库，使用这个库编译test在板子上验证通过，可以正常加密。</p>
+<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>在openssh的编译中链接上<code>crypt</code>库，最终解决问题。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">#工作总结</a>
+      
+        <a href="/tags/Linux%E7%94%A8%E6%88%B7/">#Linux用户</a>
+      
+        <a href="/tags/shadow/">#shadow</a>
+      
+        <a href="/tags/SSH/">#SSH</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SSH登陆失败</div>
+      <div>https://carl-5535.github.io/2024/11/05/工作总结/SSH登陆失败/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年11月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/07/Linux0.11/15)%E7%BC%93%E5%86%B2%E5%8C%BA%E5%88%9D%E5%A7%8B%E5%8C%96/" title="15)缓冲区初始化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">15)缓冲区初始化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/10/18/Linux0.11/14)%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%88%9D%E5%A7%8B%E5%8C%96/" title="14)进程调度初始化">
+                        <span class="hidden-mobile">14)进程调度初始化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

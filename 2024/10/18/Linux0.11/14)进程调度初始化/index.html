@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="shed_initshed_init主要负责进程调度的初始化，是多进程的基石 TSS 和 LDT123456&#x2F;&#x2F; kernel&#x2F;sched.cvoid sched_init(void) &amp;#123;    set_tss_desc(gdt+4, &amp;(init_task.task.tss));    set_ldt_desc(gdt+5, &amp;(init_task.task.ldt))">
+<meta property="og:type" content="article">
+<meta property="og:title" content="14)进程调度初始化">
+<meta property="og:url" content="https://carl-5535.github.io/2024/10/18/Linux0.11/14)%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%88%9D%E5%A7%8B%E5%8C%96/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="shed_initshed_init主要负责进程调度的初始化，是多进程的基石 TSS 和 LDT123456&#x2F;&#x2F; kernel&#x2F;sched.cvoid sched_init(void) &amp;#123;    set_tss_desc(gdt+4, &amp;(init_task.task.tss));    set_ldt_desc(gdt+5, &amp;(init_task.task.ldt))">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202410181321343.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202411061339916.png">
+<meta property="article:published_time" content="2024-10-18T05:16:00.000Z">
+<meta property="article:modified_time" content="2024-10-18T05:16:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="Linux源码">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202410181321343.png">
+  
+  
+  
+  <title>14)进程调度初始化 - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="14)进程调度初始化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-10-18 13:16" pubdate>
+          2024年10月18日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">14)进程调度初始化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="shed-init"><a href="#shed-init" class="headerlink" title="shed_init"></a>shed_init</h2><p>shed_init主要负责进程调度的初始化，是多进程的基石</p>
+<h2 id="TSS-和-LDT"><a href="#TSS-和-LDT" class="headerlink" title="TSS 和 LDT"></a>TSS 和 LDT</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/sched.c</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sched_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    set_tss_desc(gdt+<span class="hljs-number">4</span>, &amp;(init_task.task.tss));<br>    set_ldt_desc(gdt+<span class="hljs-number">5</span>, &amp;(init_task.task.ldt));<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>又看到了熟悉的gdt，前面讲过gdt是全局描述符表，里面存着段基址，TSS和LDT就是在gdt中又加了两个段描述符：</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202410181321343.png" srcset="/img/loading.gif" lazyload></p>
+<p>TSS 叫任务状态段，就是保存和恢复进程的上下文的，所谓上下文，其实就是各个寄存器的信息，这样进程切换的时候，才能做到保存和恢复上下文，继续执行。</p>
+<p>所以他的结构体就是储存寄存器的信息：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// include/linux/sched.h</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tss_struct</span> &#123;</span><br>    <span class="hljs-keyword">long</span> back_link;<br>    <span class="hljs-keyword">long</span> esp0;<br>    <span class="hljs-keyword">long</span> ss0;<br>    <span class="hljs-keyword">long</span> esp1;<br>    <span class="hljs-keyword">long</span> ss1;<br>    <span class="hljs-keyword">long</span> esp2;<br>    <span class="hljs-keyword">long</span> ss2;<br>    <span class="hljs-keyword">long</span> cr3;<br>    <span class="hljs-keyword">long</span> eip;<br>    <span class="hljs-keyword">long</span> eflags;<br>    <span class="hljs-keyword">long</span> eax, ecx, edx, ebx;<br>    <span class="hljs-keyword">long</span> esp;<br>    <span class="hljs-keyword">long</span> ebp;<br>    <span class="hljs-keyword">long</span> esi;<br>    <span class="hljs-keyword">long</span> edi;<br>    <span class="hljs-keyword">long</span> es;<br>    <span class="hljs-keyword">long</span> cs;<br>    <span class="hljs-keyword">long</span> ss;<br>    <span class="hljs-keyword">long</span> ds;<br>    <span class="hljs-keyword">long</span> fs;<br>    <span class="hljs-keyword">long</span> gs;<br>    <span class="hljs-keyword">long</span> ldt;<br>    <span class="hljs-keyword">long</span> trace_bitmap;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i387_struct</span> <span class="hljs-title">i387</span>;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>而 LDT(Local Descriptor Table) 叫局部描述符表，是与 GDT 全局描述符表相对应的，内核态的代码用 GDT 里的数据段和代码段，而用户进程的代码用每个用户进程自己的 LDT 里的数据段和代码段。这样不同的进程不会互相乱用或破坏对方的内存。</p>
+<h2 id="初始化-task-struct-数组"><a href="#初始化-task-struct-数组" class="headerlink" title="初始化 task_struct 数组"></a>初始化 task_struct 数组</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/sched.c</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">desc_struct</span> &#123;</span><br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> a,b;<br>&#125;<br><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> * <span class="hljs-title">task</span>[64] =</span> &#123;&amp;(init_task.task), &#125;;<br><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sched_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    ...<br>    <span class="hljs-keyword">int</span> i;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">desc_struct</span> * <span class="hljs-title">p</span>;</span><br>        p = gdt+<span class="hljs-number">6</span>;<br>    <span class="hljs-keyword">for</span>(i=<span class="hljs-number">1</span>;i&lt;<span class="hljs-number">64</span>;i++) &#123;<br>        task[i] = <span class="hljs-literal">NULL</span>;<br>        p-&gt;a=p-&gt;b=<span class="hljs-number">0</span>;<br>        p++;<br>        p-&gt;a=p-&gt;b=<span class="hljs-number">0</span>;<br>        p++;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个段代码干了两件事，首先将task_struct数组初始化，然后把gdt后面的项也全部初始化。</p>
+<p>每个进程都有自己的LDT和TSS,每一个desc_struct指向GDT里的一项，所以每初始化一个task结构体，需要初始化GDT中的两项(LDT和TSS)。</p>
+<p>因为正在执行的代码未来会变成第一个进程的指令流，所以第一个task以及对应的TSS和LDT已经赋好初值了，所以要从第二个开始初始化</p>
+<h3 id="desc-struct"><a href="#desc-struct" class="headerlink" title="desc_struct"></a>desc_struct</h3><p>在 x86 保护模式下，一个完整的段描述符可以在内存中占用 8 字节（64 位），而这两个 <code>unsigned long</code> 变量（每个 4 字节）可以用来简化对描述符的访问和操作。</p>
+<ul>
+<li>**<code>a</code>**：通常用于存储描述符的低 32 位部分，包括基地址和一些权限信息。</li>
+<li>**<code>b</code>**：用于存储描述符的高 32 位部分，通常包含剩余的基地址、段界限和其他控制信息。</li>
+</ul>
+<p>通过这种方式，使用两个变量能够简化描述符的处理，并且在汇编语言中访问这些字段时更为方便。</p>
+<h3 id="task-struct"><a href="#task-struct" class="headerlink" title="task_struct"></a>task_struct</h3><p>task里保存的是进程信息。数组大小是64，说明这里一共可以有64个进程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// include/linux/sched.h</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> &#123;</span><br><span class="hljs-comment">/* these are hardcoded - don&#x27;t touch */</span><br>    <span class="hljs-keyword">long</span> state; <span class="hljs-comment">/* -1 unrunnable, 0 runnable, &gt;0 stopped */</span><br>    <span class="hljs-keyword">long</span> counter;<br>    <span class="hljs-keyword">long</span> priority;<br>    <span class="hljs-keyword">long</span> signal;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sigaction</span> <span class="hljs-title">sigaction</span>[32];</span><br>    <span class="hljs-keyword">long</span> blocked; <span class="hljs-comment">/* bitmap of masked signals */</span><br>  <span class="hljs-comment">/* various fields */</span><br>    <span class="hljs-keyword">int</span> exit_code;<br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> start_code,end_code,end_data,brk,start_stack;<br>    <span class="hljs-keyword">long</span> pid,father,pgrp,session,leader;<br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">short</span> uid,euid,suid;<br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">short</span> gid,egid,sgid;<br>    <span class="hljs-keyword">long</span> alarm;<br>    <span class="hljs-keyword">long</span> utime,stime,cutime,cstime,start_time;<br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">short</span> used_math;<br>  <span class="hljs-comment">/* file system info */</span><br>    <span class="hljs-keyword">int</span> tty;  <span class="hljs-comment">/* -1 if no tty, so it must be signed */</span><br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">short</span> umask;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">pwd</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">root</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">executable</span>;</span><br>    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> close_on_exec;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> * <span class="hljs-title">filp</span>[<span class="hljs-title">NR_OPEN</span>];</span><br>  <span class="hljs-comment">/* ldt for this task 0 - zero 1 - cs 2 - ds&amp;ss */</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">desc_struct</span> <span class="hljs-title">ldt</span>[3];</span><br>  <span class="hljs-comment">/* tss for this task */</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tss_struct</span> <span class="hljs-title">tss</span>;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="tr寄存器和ldt寄存器"><a href="#tr寄存器和ldt寄存器" class="headerlink" title="tr寄存器和ldt寄存器"></a>tr寄存器和ldt寄存器</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/sched.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ltr(n) __asm__(<span class="hljs-meta-string">&quot;ltr %%ax&quot;</span>::<span class="hljs-meta-string">&quot;a&quot;</span> (_TSS(n)))</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> lldt(n) __asm__(<span class="hljs-meta-string">&quot;lldt %%ax&quot;</span>::<span class="hljs-meta-string">&quot;a&quot;</span> (_LDT(n)))</span><br><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sched_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    ...<br>    ltr(<span class="hljs-number">0</span>);<br>    lldt(<span class="hljs-number">0</span>);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>ltr 是给 tr 寄存器赋值，以告诉 CPU 任务状态段 TSS 在内存的位置；lldt 一个是给 ldt 寄存器赋值，以告诉 CPU 局部描述符 LDT 在内存的位置。</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202411061339916.png" srcset="/img/loading.gif" lazyload alt="tr和ldt"></p>
+<p>这样，CPU 之后就能通过 tr 寄存器找到当前进程的任务状态段信息，也就是上下文信息，以及通过 ldt 寄存器找到当前进程在用的局部描述符表信息。</p>
+<h2 id="中断设置"><a href="#中断设置" class="headerlink" title="中断设置"></a>中断设置</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/sched.c</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sched_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    ...<br>    outb_p(<span class="hljs-number">0x36</span>,<span class="hljs-number">0x43</span>);      <span class="hljs-comment">/* binary, mode 3, LSB/MSB, ch 0 */</span><br>    outb_p(LATCH &amp; <span class="hljs-number">0xff</span> , <span class="hljs-number">0x40</span>);    <span class="hljs-comment">/* LSB */</span><br>    outb(LATCH &gt;&gt; <span class="hljs-number">8</span> , <span class="hljs-number">0x40</span>);    <span class="hljs-comment">/* MSB */</span><br>    set_intr_gate(<span class="hljs-number">0x20</span>,&amp;timer_interrupt);<br>    outb(inb_p(<span class="hljs-number">0x21</span>)&amp;~<span class="hljs-number">0x01</span>,<span class="hljs-number">0x21</span>);<br>    set_system_gate(<span class="hljs-number">0x80</span>,&amp;system_call);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这段代码的作用是：</p>
+<ul>
+<li>初始化定时器（设置周期性中断）。</li>
+<li>设置定时器中断向量和定时器中断的处理程序。</li>
+<li>禁用定时器的中断。</li>
+<li>设置系统调用中断向量和处理程序。</li>
+</ul>
+<p>时钟中断，中断号为 0x20，中断处理程序为 timer_interrupt。那么每次定时器向 CPU 发出中断后，便会执行这个中断处理函数。</p>
+<p>system_call，中断号是 0x80，所有用户态程序想要调用内核提供的方法，都需要基于这个系统调用来进行。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux%E6%BA%90%E7%A0%81/">#Linux源码</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>14)进程调度初始化</div>
+      <div>https://carl-5535.github.io/2024/10/18/Linux0.11/14)进程调度初始化/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年10月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/05/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/SSH%E7%99%BB%E9%99%86%E5%A4%B1%E8%B4%A5/" title="SSH登陆失败">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SSH登陆失败</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/10/14/Linux0.11/13)%E6%97%B6%E9%97%B4%E5%88%9D%E5%A7%8B%E5%8C%96/" title="13)时间初始化">
+                        <span class="hidden-mobile">13)时间初始化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

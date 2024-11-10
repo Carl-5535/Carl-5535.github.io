@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="tty_init123456&#x2F;&#x2F; kernel&#x2F;chr_drv&#x2F;tty_io.cvoid tty_init(void)&amp;#123;    rs_init();    con_init();&amp;#125;  这个方法被拆分成了两个子方法 rs_init123456789&#x2F;&#x2F; kernel&#x2F;chr_drv&#x2F;serial.cvoid rs_init(void)&amp;#123;    set_intr_gate">
+<meta property="og:type" content="article">
+<meta property="og:title" content="12)控制台初始化">
+<meta property="og:url" content="https://carl-5535.github.io/2024/08/07/Linux0.11/12)%E6%8E%A7%E5%88%B6%E5%8F%B0%E5%88%9D%E5%A7%8B%E5%8C%96/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="tty_init123456&#x2F;&#x2F; kernel&#x2F;chr_drv&#x2F;tty_io.cvoid tty_init(void)&amp;#123;    rs_init();    con_init();&amp;#125;  这个方法被拆分成了两个子方法 rs_init123456789&#x2F;&#x2F; kernel&#x2F;chr_drv&#x2F;serial.cvoid rs_init(void)&amp;#123;    set_intr_gate">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091135294.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091138771.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091139995.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407241357063.png">
+<meta property="article:published_time" content="2024-08-07T05:31:00.000Z">
+<meta property="article:modified_time" content="2024-10-11T03:43:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="Linux源码">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091135294.png">
+  
+  
+  
+  <title>12)控制台初始化 - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="12)控制台初始化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-07 13:31" pubdate>
+          2024年8月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">12)控制台初始化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="tty-init"><a href="#tty-init" class="headerlink" title="tty_init"></a>tty_init</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/chr_drv/tty_io.c</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">tty_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>    rs_init();<br>    con_init();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个方法被拆分成了两个子方法</p>
+<h2 id="rs-init"><a href="#rs-init" class="headerlink" title="rs_init"></a>rs_init</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/chr_drv/serial.c</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">rs_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>    set_intr_gate(<span class="hljs-number">0x24</span>,rs1_interrupt);<br>    set_intr_gate(<span class="hljs-number">0x23</span>,rs2_interrupt);<br>    init(tty_table[<span class="hljs-number">1</span>].read_q.data);<br>    init(tty_table[<span class="hljs-number">2</span>].read_q.data);<br>    outb(inb_p(<span class="hljs-number">0x21</span>)&amp;<span class="hljs-number">0xE7</span>,<span class="hljs-number">0x21</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个方法开启了串口中断，设置了对应的中断处理程序。串口在我们现在的 PC 机上已经很少用到了</p>
+<h2 id="con-init"><a href="#con-init" class="headerlink" title="con_init"></a>con_init</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/chr_drv/console.c</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">con_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    ...<br>    <span class="hljs-keyword">if</span> (ORIG_VIDEO_MODE == <span class="hljs-number">7</span>) &#123;<br>        ...<br>        <span class="hljs-keyword">if</span> ((ORIG_VIDEO_EGA_BX &amp; <span class="hljs-number">0xff</span>) != <span class="hljs-number">0x10</span>) &#123;...&#125;<br>        <span class="hljs-keyword">else</span> &#123;...&#125;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        ...<br>        <span class="hljs-keyword">if</span> ((ORIG_VIDEO_EGA_BX &amp; <span class="hljs-number">0xff</span>) != <span class="hljs-number">0x10</span>) &#123;...&#125;<br>        <span class="hljs-keyword">else</span> &#123;...&#125;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这些判断是在根据不同的显示模式设置不同的参数</p>
+<h2 id="直写显存"><a href="#直写显存" class="headerlink" title="直写显存"></a>直写显存</h2><p>如果可以随意操作内存和 CPU 等设备，怎么操作才能让显示器上显示一个字符“h”呢？</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091135294.png" srcset="/img/loading.gif" lazyload></p>
+<p>内存中有这样一部分区域，是和显存映射的。啥意思，就是你往上图的这些内存区域中写数据，相当于写在了显存中。而往显存中写数据，就相当于写在了屏幕上。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov [0xB8000],&#x27;h&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>当往现存里写一个h,屏幕就会出现一个h</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091138771.png" srcset="/img/loading.gif" lazyload></p>
+<p>这片内存每两个字节可以表示一个显示在屏幕上的字符，第一个是字符的编码，第二个是字符的颜色。我们先看编码，先不管颜色，如果多写几个字符就像下面这样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov [0xB8000],&#x27;h&#x27;<br>mov [0xB8002],&#x27;e&#x27;<br>mov [0xB8004],&#x27;l&#x27;<br>mov [0xB8006],&#x27;l&#x27;<br>mov [0xB8008],&#x27;o&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>屏幕就会出现hello:<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408091139995.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们就假设显示模式是我们现在的这种文本模式，可以简化成这样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/chr_drv/console.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ORIG_X          (*(unsigned char *)0x90000)</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ORIG_Y          (*(unsigned char *)0x90001)</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">con_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    <span class="hljs-keyword">register</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> a;<br>    <span class="hljs-comment">// 第一部分 获取显示模式相关信息</span><br>    video_num_columns = (((*(<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">short</span> *)<span class="hljs-number">0x90006</span>) &amp; <span class="hljs-number">0xff00</span>) &gt;&gt; <span class="hljs-number">8</span>);<br>    video_size_row = video_num_columns * <span class="hljs-number">2</span>;<br>    video_num_lines = <span class="hljs-number">25</span>;<br>    video_page = (*(<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">short</span> *)<span class="hljs-number">0x90004</span>);<br>    video_erase_char = <span class="hljs-number">0x0720</span>;<br>    <span class="hljs-comment">// 第二部分 显存映射的内存区域 </span><br>    video_mem_start = <span class="hljs-number">0xb8000</span>;<br>    video_port_reg  = <span class="hljs-number">0x3d4</span>;<br>    video_port_val  = <span class="hljs-number">0x3d5</span>;<br>    video_mem_end = <span class="hljs-number">0xba000</span>;<br>    <span class="hljs-comment">// 第三部分 滚动屏幕操作时的信息</span><br>    origin  = video_mem_start;<br>    scr_end = video_mem_start + video_num_lines * video_size_row;<br>    top = <span class="hljs-number">0</span>;<br>    bottom  = video_num_lines;<br>    <span class="hljs-comment">// 第四部分 定位光标并开启键盘中断</span><br>    gotoxy(ORIG_X, ORIG_Y);<br>    set_trap_gate(<span class="hljs-number">0x21</span>,&amp;keyboard_interrupt);<br>    outb_p(inb_p(<span class="hljs-number">0x21</span>)&amp;<span class="hljs-number">0xfd</span>,<span class="hljs-number">0x21</span>);<br>    a=inb_p(<span class="hljs-number">0x61</span>);<br>    outb_p(a|<span class="hljs-number">0x80</span>,<span class="hljs-number">0x61</span>);<br>    outb(a,<span class="hljs-number">0x61</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>第一部分</strong>获取 0x90006 地址处的数据，就是获取显示模式等相关信息.<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407241357063.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>第二部分</strong>就是显存映射的内存地址范围，我们现在假设它是 CGA 类型的文本模式，所以映射的内存就是从 0xB8000 到 0xBA000。</p>
+<p><strong>第三部分</strong>是设置一些滚动屏幕时需要的参数，定义顶行和底行是哪里。这里顶行就是第一行，底行就是最后一行，很合理。</p>
+<p><strong>第四部分</strong>是把光标定位到之前保存的光标位置处（取内存地址 0x90000 处的数据），然后设置并开启键盘中断。</p>
+<p>开启键盘中断后，在键盘上敲击一个按键后就会触发中断，中断程序会读键盘码转换成 ASCII 码，然后写到光标处的内存地址，其实也就相当于往显存里写，于是这个键盘敲击的字符就显示在了屏幕上。</p>
+<h2 id="为-x、y、pos-参数赋值"><a href="#为-x、y、pos-参数赋值" class="headerlink" title="为 x、y、pos 参数赋值"></a>为 x、y、pos 参数赋值</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// kernel/chr_drv/console.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ORIG_X          (*(unsigned char *)0x90000)</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ORIG_Y          (*(unsigned char *)0x90001)</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">con_init</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<br>    ...<br>    <span class="hljs-comment">// 第四部分 定位光标并开启键盘中断</span><br>    gotoxy(ORIG_X, ORIG_Y);<br>    ...<br>&#125;<br><br><span class="hljs-comment">// kernel/chr_drv/console.c</span><br><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">gotoxy</span><span class="hljs-params">(<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> new_x,<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> new_y)</span> </span>&#123;<br>   ...<br>   x = new_x;<br>   y = new_y;<br>   pos = origin + y*video_size_row + (x&lt;&lt;<span class="hljs-number">1</span>);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>就是给 x、y、pos 这三个参数附上了值。其中 x 表示光标在哪一列，y 表示光标在哪一行，pos 表示根据列号和行号计算出来的内存指针。也就是说，往这个 pos 指向的地址写数据，就相当于往控制台的 x 列 y 行处写入字符了</p>
+<p>当你按下键盘后，触发键盘中断，之后的程序调用链是下面这样的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c">_keyboard_interrupt:<br>    ...<br>    call _do_tty_interrupt<br>    ...<br>    <br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">do_tty_interrupt</span><span class="hljs-params">(<span class="hljs-keyword">int</span> tty)</span> </span>&#123;<br>   copy_to_cooked(tty_table+tty);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">copy_to_cooked</span><span class="hljs-params">(struct tty_struct * tty)</span> </span>&#123;<br>    ...<br>    tty-&gt;write(tty);<br>    ...<br>&#125;<br><br><span class="hljs-comment">// 控制台时 tty 的 write 为 con_write 函数</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">con_write</span><span class="hljs-params">(struct tty_struct * tty)</span> </span>&#123;<br>    ...<br>    __asm__(<span class="hljs-string">&quot;movb _attr,%%ah\n\t&quot;</span><br>      <span class="hljs-string">&quot;movw %%ax,%1\n\t&quot;</span><br>      ::<span class="hljs-string">&quot;a&quot;</span> (c),<span class="hljs-string">&quot;m&quot;</span> (*(<span class="hljs-keyword">short</span> *)pos)<br>      :<span class="hljs-string">&quot;ax&quot;</span>);<br>     pos += <span class="hljs-number">2</span>;<br>     x++;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>通过中断调用到中断处理函数_keyboard_interrupt，然后一路调用到 con_write 中的关键代码。这段由 asm 包裹的内联汇编代码，就是把键盘输入的字符 c 写入 pos 指针指向的内存，相当于往屏幕输出了。而之后两行 pos+=2 和 x++，就是调整所谓的光标。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux%E6%BA%90%E7%A0%81/">#Linux源码</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>12)控制台初始化</div>
+      <div>https://carl-5535.github.io/2024/08/07/Linux0.11/12)控制台初始化/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/25/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/WiFi%E5%8A%9F%E8%80%97%E9%99%8D%E4%BD%8E/" title="WiFi功耗降低">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">WiFi功耗降低</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/07/Linux0.11/11)%E5%9D%97%E8%AE%BE%E5%A4%87%E5%88%9D%E5%A7%8B%E5%8C%96/" title="11)块设备初始化">
+                        <span class="hidden-mobile">11)块设备初始化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

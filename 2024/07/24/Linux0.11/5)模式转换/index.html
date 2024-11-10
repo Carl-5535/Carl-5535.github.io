@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="模式转换接下来需要从现在的 16 位的实模式转变为之后 32 位的保护模式 保护模式的地址计算123456lidt  idt_48      ; load idt with 0,0lgdt  gdt_48      ; load gdt with whatever appropriateidt_48:    .word   0     ; idt limit&#x3D;0    .word   0,0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5)模式转换">
+<meta property="og:url" content="https://carl-5535.github.io/2024/07/24/Linux0.11/5)%E6%A8%A1%E5%BC%8F%E8%BD%AC%E6%8D%A2/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="模式转换接下来需要从现在的 16 位的实模式转变为之后 32 位的保护模式 保护模式的地址计算123456lidt  idt_48      ; load idt with 0,0lgdt  gdt_48      ; load gdt with whatever appropriateidt_48:    .word   0     ; idt limit&#x3D;0    .word   0,0">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291044415.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291045543.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291046592.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291049086.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291112383.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291330850.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291331805.png">
+<meta property="article:published_time" content="2024-07-24T06:10:00.000Z">
+<meta property="article:modified_time" content="2024-07-29T05:31:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="Linux源码">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291044415.png">
+  
+  
+  
+  <title>5)模式转换 - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5)模式转换"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 14:10" pubdate>
+          2024年7月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">5)模式转换</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="模式转换"><a href="#模式转换" class="headerlink" title="模式转换"></a>模式转换</h1><p>接下来需要从现在的 16 位的实模式转变为之后 32 位的保护模式</p>
+<h2 id="保护模式的地址计算"><a href="#保护模式的地址计算" class="headerlink" title="保护模式的地址计算"></a>保护模式的地址计算</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs asm">lidt  idt_48      ; load idt with 0,0<br>lgdt  gdt_48      ; load gdt with whatever appropriate<br><br>idt_48:<br>    .word   0     ; idt limit=0<br>    .word   0,0   ; idt base=0L<br></code></pre></td></tr></table></figure>
+
+<p>16位实模式下地址的计算方式是段基址左移四位，再加上偏移地址<br>当 CPU 切换到保护模式后，同样的代码，内存地址的计算方式就不一样了<br>ds 寄存器里存储的值，在实模式下叫做段基址，在保护模式下叫段选择子。段选择子里存储着段描述符的索引</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291044415.png" srcset="/img/loading.gif" lazyload></p>
+<p>通过段描述符索引，可以从全局描述符表 gdt 中找到一个段描述符，段描述符里存储着段基址。</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291045543.png" srcset="/img/loading.gif" lazyload></p>
+<p>段基址取出来，再和偏移地址相加，就得到了物理地址（准确说是线性地址，再经过分页转换后才是物理地址），整个过程如下：</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291046592.png" srcset="/img/loading.gif" lazyload></p>
+<p>总结一下就是，段寄存器（比如 ds、ss、cs）里存储的是段选择子，段选择子去全局描述符表中寻找段描述符，从中取出段基址。然后再加上偏移地址，就得到了最终的物理地址。</p>
+<h2 id="全局描述符表-gdt"><a href="#全局描述符表-gdt" class="headerlink" title="全局描述符表 gdt"></a>全局描述符表 gdt</h2><p>操作系统把全局描述符表 gdt的位置信息存储在一个叫 gdtr 的寄存器中。<br><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291049086.png" srcset="/img/loading.gif" lazyload></p>
+<p>指令就是<code>lgdt    gdt_48</code>, lgdt 就表示把后面的值（gdt_48）放在 gdtr 寄存器中，gdt_48 标签如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs asm">gdt_48:<br>    .word   0x800       ; gdt limit=2048, 256 GDT entries<br>    .word   512+gdt,0x9 ; gdt base = 0X9xxxx<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>**<code>0x800</code>**：GDT的界限是2048字节，表示最多可以有256个GDT条目。</li>
+<li>**<code>512+gdt</code> 和 <code>0x9</code>**：GDT的基地址是 <code>0x9xxxx</code>，具体地址通过将 <code>512</code> 加上某个基地址 <code>gdt</code> 来计算，即<code>0x9020 + gdt</code><br>setup.s 编译后是放在 0x90200 这个内存地址的，而 gdt 表示 setup.s 内的偏移量，所以要加上 0x90200 这个值，才能表示 gdt 这个标签在整个内存中的准确地址。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291112383.png" srcset="/img/loading.gif" lazyload></p>
+<p>gdt 这个标签处，就是全局描述符表在内存中的真正数据了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs asm">gdt:<br>    .word   0,0,0,0     ; dummy<br><br>    .word   0x07FF      ; 8Mb - limit=2047 (2048*4096=8Mb)<br>    .word   0x0000      ; base address=0<br>    .word   0x9A00      ; code read/exec<br>    .word   0x00C0      ; granularity=4096, 386<br><br>    .word   0x07FF      ; 8Mb - limit=2047 (2048*4096=8Mb)<br>    .word   0x0000      ; base address=0<br>    .word   0x9200      ; data read/write<br>    .word   0x00C0      ; granularity=4096, 386<br></code></pre></td></tr></table></figure>
+
+<p>将这些数值按描述符结构映射：</p>
+<ol>
+<li><strong>Limit 15:0</strong>: <code>0x07FF</code></li>
+<li><strong>Base 15:0</strong>: <code>0x0000</code></li>
+<li><strong>Base 23:16</strong>: <code>0x00</code></li>
+<li><strong>Type</strong>: <code>0x9A</code><ul>
+<li>二进制: <code>10011010</code></li>
+<li><strong>P</strong>: 1 (段存在)</li>
+<li><strong>DPL</strong>: 00 (特权级别 0)</li>
+<li><strong>S</strong>: 1 (代码段或数据段)</li>
+<li><strong>Type</strong>: 1010 (代码段，可读、可执行)</li>
+</ul>
+</li>
+<li><strong>Limit 19:16</strong>: <code>0x0</code></li>
+<li><strong>AVL</strong>: 0</li>
+<li><strong>D/B</strong>: 1 (32 位操作数)</li>
+<li><strong>G</strong>: 1 (4KB 粒度)</li>
+<li><strong>Base 31:24</strong>: <code>0x00</code></li>
+</ol>
+<p>将这些部分组合起来，我们得到了一个描述 8MB（2048 个 4KB 页）的代码段描述符，基地址为 0。</p>
+<p>所以这个 GDT 定义了两个段，一个是代码段，一个是数据段。每个段的大小都是 8MB，基地址都是 0，粒度为 4KB，运行在 32 位保护模式下。代码段是只读可执行的，而数据段是可读可写的。</p>
+<p>第二个和第三个段描述符的段基址都是 0，也就是之后在逻辑地址转换物理地址的时候，通过段选择子查找到无论是代码段还是数据段，取出的段基址都是 0，那么物理地址将直接等于程序员给出的逻辑地址（准确说是逻辑地址中的偏移地址）</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291330850.png" srcset="/img/loading.gif" lazyload></p>
+<p>idtr 寄存器是中断描述符表，其原理和全局描述符表一样。发生中断时，CPU 会拿着中断号从中断描述符表里寻找中断处理程序的地址，找到以后，就会跳转到相应的中断程序去执行。</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407291331805.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux%E6%BA%90%E7%A0%81/">#Linux源码</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5)模式转换</div>
+      <div>https://carl-5535.github.io/2024/07/24/Linux0.11/5)模式转换/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/29/Linux0.11/6)%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/" title="6)进入保护模式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6)进入保护模式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/Linux0.11/4)%E8%B0%83%E6%95%B4%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" title="4)调整内存布局">
+                        <span class="hidden-mobile">4)调整内存布局</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

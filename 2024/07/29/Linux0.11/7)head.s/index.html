@@ -1,0 +1,737 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Carl Chen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="重新设置栈12345678_pg_dir:_startup_32:    mov eax,0x10    mov ds,ax    mov es,ax    mov fs,ax    mov gs,ax    lss esp,_stack_start  _pg_dir这个表示页目录，之后在设置分页机制时，页目录会存放在这里，也会覆盖这里的代码  EAX 是一个32位寄存器，能够存储一个32位（4字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7)head.s">
+<meta property="og:url" content="https://carl-5535.github.io/2024/07/29/Linux0.11/7)head.s/index.html">
+<meta property="og:site_name" content="Carl&#39;s Blog">
+<meta property="og:description" content="重新设置栈12345678_pg_dir:_startup_32:    mov eax,0x10    mov ds,ax    mov es,ax    mov fs,ax    mov gs,ax    lss esp,_stack_start  _pg_dir这个表示页目录，之后在设置分页机制时，页目录会存放在这里，也会覆盖这里的代码  EAX 是一个32位寄存器，能够存储一个32位（4字">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407301030557.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407311451805.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407311508931.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407311509881.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408021312628.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408021323919.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408021347792.png">
+<meta property="article:published_time" content="2024-07-29T08:04:00.000Z">
+<meta property="article:modified_time" content="2024-08-05T03:04:00.000Z">
+<meta property="article:author" content="Carl Chen">
+<meta property="article:tag" content="Linux源码">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407301030557.png">
+  
+  
+  
+  <title>7)head.s - Carl&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"carl-5535.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Carl&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="7)head.s"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-29 16:04" pubdate>
+          2024年7月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">7)head.s</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="重新设置栈"><a href="#重新设置栈" class="headerlink" title="重新设置栈"></a>重新设置栈</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs asm">_pg_dir:<br>_startup_32:<br>    mov eax,0x10<br>    mov ds,ax<br>    mov es,ax<br>    mov fs,ax<br>    mov gs,ax<br>    lss esp,_stack_start<br></code></pre></td></tr></table></figure>
+
+<p><code>_pg_dir</code>这个表示页目录，之后在设置分页机制时，页目录会存放在这里，也会覆盖这里的代码</p>
+<ul>
+<li><strong>EAX</strong> 是一个32位寄存器，能够存储一个32位（4字节）的整数。</li>
+<li>它可以被分为多个部分进行访问：<ul>
+<li><strong>AX</strong>：EAX 的低16位。</li>
+<li><strong>AH</strong>：AX 的高8位。</li>
+<li><strong>AL</strong>：AX 的低8位。</li>
+</ul>
+</li>
+</ul>
+<p>连续五个 mov 操作，分别给 ds、es、fs、gs 这几个段寄存器赋值为 0x10，根据段描述符结构解析，表示这几个段寄存器的值为指向全局描述符表中的第二个段描述符，也就是数据段描述符。</p>
+<p>lss 指令相当于让 ss:esp 这个栈顶指针，指向了 _stack_start 这个标号的位置</p>
+<ul>
+<li><code>lss</code> 指令：加载段寄存器和堆栈指针。它的全称是 Load Far Pointer to Stack Segment and Stack Pointer。</li>
+<li>语法：<code>lss destination, source</code>，其中 <code>destination</code> 是目标寄存器对（通常是 <code>esp</code> 和 <code>ss</code>），<code>source</code> 是内存地址。</li>
+</ul>
+<p><code>lss esp, _stack_start</code> 这条指令做以下事情：</p>
+<ol>
+<li>从 <code>_stack_start</code> 地址读取 6 个字节的数据。</li>
+<li>将这 6 个字节的数据分成两部分：<ul>
+<li>前 4 个字节用于设置 <code>esp</code>（堆栈指针）。</li>
+<li>后 2 个字节用于设置 <code>ss</code>（堆栈段寄存器）。</li>
+</ul>
+</li>
+</ol>
+<p>这个 stack_start 标号定义在了很久之后才会讲到的 sched.c 里</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">long</span> user_stack[<span class="hljs-number">4096</span> &gt;&gt; <span class="hljs-number">2</span>];<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span><br>  <span class="hljs-keyword">long</span> *a;<br>  <span class="hljs-keyword">short</span> b;<br>&#125;<br>stack_start = &#123;&amp;user_stack[<span class="hljs-number">4096</span> &gt;&gt; <span class="hljs-number">2</span>], <span class="hljs-number">0x10</span>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>因此，<code>lss esp, _stack_start</code> 实际上会：</p>
+<ol>
+<li>从 <code>stack_start</code> 结构体中读取 <code>a</code> 和 <code>b</code> 的值。</li>
+<li>将 <code>stack_start.a</code> 的值（即 <code>&amp;user_stack[1024]</code>）加载到 <code>esp</code> 中。</li>
+<li>将 <code>stack_start.b</code> 的值（即 <code>0x10</code>）加载到 <code>ss</code> 中。</li>
+</ol>
+<p>赋值给 ss 的 0x10 仍然按照保护模式下的段选择子去解读，其指向的是全局描述符表中的第二个段描述符（数据段描述符），段基址是 0。</p>
+<p>赋值给 esp 寄存器的就是 user_stack 数组的末端地址，那最终的栈顶地址，也指向了这里，后面的压栈操作，就是往这个新的栈顶地址处压。</p>
+<h2 id="设置-idt-和-gdt"><a href="#设置-idt-和-gdt" class="headerlink" title="设置 idt 和 gdt"></a>设置 idt 和 gdt</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs asm">call setup_idt ;设置中断描述符表<br>call setup_gdt ;设置全局描述符表<br>mov eax,10h<br>mov ds,ax<br>mov es,ax<br>mov fs,ax<br>mov gs,ax<br>lss esp,_stack_start<br></code></pre></td></tr></table></figure>
+
+<p>这里先设置了 idt 和 gdt，然后又重新执行了一遍刚刚执行过的代码。</p>
+<p>因为重新设置了idt 和 gdt，这里刷新一次栈，确保栈和段寄存器正确设置，有助于避免潜在的问题。</p>
+<h3 id="idt"><a href="#idt" class="headerlink" title="idt"></a>idt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs asm">setup_idt:<br>    lea edx,ignore_int<br>    mov eax,00080000h<br>    mov ax,dx<br>    mov dx,8E00h<br>    lea edi,_idt<br>    mov ecx,256<br>rp_sidt:<br>    mov [edi],eax<br>    mov [edi+4],edx<br>    add edi,8<br>    dec ecx<br>    jne rp_sidt<br>    lidt fword ptr idt_descr<br>    ret<br><br>idt_descr:<br>    dw 256*8-1<br>    dd _idt<br><br>_idt:<br>    DQ 256 dup(0)<br></code></pre></td></tr></table></figure>
+
+<p>这段代码的主要作用是初始化中断描述符表（IDT），将所有256个中断向量初始化为指向同一个默认中断处理程序 <code>ignore_int</code>，并加载 IDT 描述符，使 CPU 使用新的 IDT。</p>
+<h3 id="gdt"><a href="#gdt" class="headerlink" title="gdt"></a>gdt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs asm">_gdt:<br>    DQ 0000000000000000h    ;/* NULL descriptor */<br>    DQ 00c09a0000000fffh    ;/* 16Mb */<br>    DQ 00c0920000000fffh    ;/* 16Mb */<br>    DQ 0000000000000000h    ;/* TEMPORARY - don&#x27;t use */<br>    DQ 252 dup(0)<br></code></pre></td></tr></table></figure>
+
+<p>为什么gdt的第一项为空</p>
+<ol>
+<li><p><strong>捕捉空指针引用</strong><br> 在保护模式下，如果程序试图访问一个无效的段选择子（例如，一个未初始化的选择子），CPU 会引用 GDT 中的第一项（选择子值为 0）。通过将第一项设置为空描述符，可以确保这种访问导致 CPU 触发段错误异常，从而帮助捕捉和调试错误。</p>
+</li>
+<li><p><strong>兼容性要求</strong><br> 根据 x86 体系结构的规范，选择子 0 被保留为空描述符，不能用于有效的段选择。这一要求确保了任何引用选择子 0 的操作都不会导致对有效内存段的访问。</p>
+</li>
+<li><p><strong>简化段管理</strong><br> 在 GDT 中保留一个空描述符简化了段管理。操作系统和编译器可以确保选择子 0 总是无效的，而不需要额外的检查。这种设计减少了出错的可能性，并且使得内存管理更加可靠。</p>
+</li>
+<li><p><strong>历史原因和惯例</strong><br> 这是一个历史遗留的惯例，早期的操作系统和编译器设计者们就开始这样做了。这样做的原因之一是为了向后兼容旧的软件和硬件设计，这些设计假设 GDT 的第一项是一个空描述符。</p>
+</li>
+</ol>
+<p>这里和之前一样，只是大小从8MB变成了16MB，最终设置完成的位置如图：</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407301030557.png" srcset="/img/loading.gif" lazyload></p>
+<p>原来设置的 gdt 是在 setup 程序中，之后这个地方要被缓冲区覆盖掉，所以这里重新设置在 head 程序中。这样，这块内存区域之后就不会被其他程序用到并且覆盖了。</p>
+<h2 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h2><p>在实模式下物理地址是<code>段地址x16+偏移地址</code>；在保护模式没有开启分页时，物理地址是<code>段基址和偏移地址相加</code>；打开分页后，需要再根据分页机制进行转换：</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407311451805.png" srcset="/img/loading.gif" lazyload></p>
+<p>根据闪客在极客空间的例子，如果线性地址是二进制的<br><code>0000000011_0100000000_000000000000</code></p>
+<p>CPU 在看到我们给出的内存地址后，首先把线性地址被拆分成了这样：<br><code>高 10 位：中间 10 位：后 12 位</code></p>
+<p>高 10 位负责在页目录表中找到一个页目录项，这个页目录项的值加上中间 10 位拼接后的地址去页表中去寻找一个页表项，这个页表项的值，再加上后 12 位偏移地址，就是最终的物理地址。</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407311508931.png" srcset="/img/loading.gif" lazyload></p>
+<p>这一切的操作，都离不开计算机的一个硬件叫 MMU，中文名叫内存管理单元，有时也叫 PMMU，中文名是分页内存管理单元。这个部件负责的就是把虚拟地址转换为物理地址。</p>
+<p>所以整个过程我们不用操心，作为操作系统这个软件层，只需要提供好页目录表和页表，这种页表方案叫做二级页表，第一级叫页目录表 PDE，第二级叫页表 PTE。他们的结构如下：</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202407311509881.png" srcset="/img/loading.gif" lazyload></p>
+<p>开启分页机制，并且跳转到 main 函数也在head.s中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asm">jmp after_page_tables<br>...<br>after_page_tables:<br>    push 0<br>    push 0<br>    push 0<br>    push L6<br>    push _main<br>    jmp setup_paging<br>L6:<br>    jmp L6<br></code></pre></td></tr></table></figure>
+
+<p>开启分页机制：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs asm">setup_paging:<br>    mov ecx,1024*5<br>    xor eax,eax<br>    xor edi,edi<br>    pushf<br>    cld<br>    rep stosd<br>    mov eax,_pg_dir<br>    mov [eax],pg0+7<br>    mov [eax+4],pg1+7<br>    mov [eax+8],pg2+7<br>    mov [eax+12],pg3+7<br>    mov edi,pg3+4092<br>    mov eax,00fff007h<br>    std<br>L3: stosd<br>    sub eax,00001000h<br>    jge L3<br>    popf<br>    xor eax,eax<br>    mov cr3,eax<br>    mov eax,cr0<br>    or  eax,80000000h<br>    mov cr0,eax<br>    ret<br></code></pre></td></tr></table></figure>
+
+<p>当时 Linux-0.11 认为，总共可以使用的内存不会超过 16M，也即最大地址空间为 0xFFFFFF。</p>
+<p>而按照当前的页目录表和页表这种机制，1 个页目录表最多包含 1024 个页目录项（也就是 1024 个页表），1 个页表最多包含 1024 个页表项（也就是 1024 个页），1 页为 4KB（因为有 12 位偏移地址）。</p>
+<p>因此，16M 的地址空间可以用 1 个页目录表 + 4 个页表搞定。<br>4（页表数）* 1024（页表项数） * 4KB（一页大小）= 16MB</p>
+<p>所以，上面这段代码就是，将页目录表放在内存地址的最开头<code> _pg_dir</code>处</p>
+<p>之后紧挨着这个页目录表，放置 4 个页表，代码里也有这四个页表的标签项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asm">.org 0x1000 pg0:<br>.org 0x2000 pg1:<br>.org 0x3000 pg2:<br>.org 0x4000 pg3:<br>.org 0x5000<br></code></pre></td></tr></table></figure>
+
+<p>每个页表（<code>pg0</code>, <code>pg1</code>, <code>pg2</code>, <code>pg3</code>）都位于不同的起始地址，分别是0x1000、0x2000、0x3000和0x4000。在x86架构下，一个页表项通常是32位或64位，即4字节或8字节。对于32位系统，我们通常考虑每个页表项为4字节。</p>
+<p>一个页表通常包含1024个页表项，因为每个页表项可以映射到4KB的物理内存。所以，一个页表的大小计算如下：</p>
+<blockquote>
+<p>页表大小 = 页表项大小 × 页表项数量 = 4 字节 × 1024 = 4096 字节 = 4 KB</p>
+</blockquote>
+<p>既然这里有4个页表，那么总的页表空间占用为：</p>
+<blockquote>
+<p>总页表空间 = 4 × 4 KB = 16 KB</p>
+</blockquote>
+<p>所以，这四个页表一起占用了16KB的空间。需要注意的是，这仅是页表本身所占用的空间，而它们共同管理着16MB的物理内存。</p>
+<p>最终将页目录表和页表填写好数值，并覆盖整个 16MB 的内存。随后，开启分页机制。</p>
+<p>其实就是更改 cr0 寄存器中的一位（31 位），还记得我们开启保护模式么？也是改这个寄存器中的一位的值。</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408021312628.png" srcset="/img/loading.gif" lazyload></p>
+<p>如 idt 和 gdt 一样，我们也需要通过一个寄存器，告诉 CPU 我们把这些页表放在了哪里，具体就是这段代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asm">xor eax,eax<br>mov cr3,eax<br></code></pre></td></tr></table></figure>
+
+<p>我们相当于告诉 cr3 寄存器，0 地址处就是页目录表，再通过页目录表就可以找到所有的页表，也就相当于 让 CPU 知道分页机制的全貌了。</p>
+<p>最终内存就变成了这个样子：</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408021323919.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="跳到主函数"><a href="#跳到主函数" class="headerlink" title="跳到主函数"></a>跳到主函数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asm">after_page_tables:<br>    push 0<br>    push 0<br>    push 0<br>    push L6<br>    push _main<br>    jmp setup_paging<br>...<br>setup_paging:<br>    ...<br>    ret<br></code></pre></td></tr></table></figure>
+
+<p>push 指令就是压栈，五个 push 指令过去后，栈会变成这个样子。</p>
+<p><img src="https://raw.githubusercontent.com/Carl-5535/images/master/blog/202408021347792.png" srcset="/img/loading.gif" lazyload></p>
+<p>CPU 会把 esp 寄存器（栈顶地址）所指向的内存处的值，赋值给 eip 寄存器，而 cs:eip 就是 CPU 要执行的下一条指令的地址。而此时栈顶刚好是 main.c 里写的 main 函数的内存地址，是我们刚刚特意压入栈的，所以 CPU 就自然而然跳过来了。</p>
+<p>除了 main 函数的地址压栈外，其他压入栈中的数据（比如 L6），是 main 函数返回时的跳转地址，但由于在操作系统层面的设计上，main 是绝对不会返回的，所以也就没用了。而其他的三个压栈的 0，本意是作为 main 函数的参数，但实际上似乎也没有用到，所以不必关心。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux%E6%BA%90%E7%A0%81/">#Linux源码</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>7)head.s</div>
+      <div>https://carl-5535.github.io/2024/07/29/Linux0.11/7)head.s/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Carl Chen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/05/Linux0.11/8)main/" title="8)main">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">8)main</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/29/Linux0.11/6)%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/" title="6)进入保护模式">
+                        <span class="hidden-mobile">6)进入保护模式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
